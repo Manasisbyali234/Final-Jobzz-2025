@@ -1,0 +1,28 @@
+#sidebar-admin-wraper .admin-nav ul li a {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 12px 22px !important; /* slightly more horizontal padding */
+    white-space: nowrap !important;
+    line-height: 1.4 !important;
+    gap: 14px; /* increased gap between icon and text */
+}
+
+#sidebar-admin-wraper .admin-nav ul li a i {
+    flex: 0 0 22px !important; /* a bit wider icon slot for balance */
+    width: 22px !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+    margin-right: 0 !important; /* gap handles spacing */
+    line-height: 1 !important; /* prevent vertical overflow */
+    position: static !important; /* override global absolute positioning */
+    left: auto !important;
+    top: auto !important;
+}
+
+#sidebar-admin-wraper .admin-nav-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important; /* allow ellipsis */
+    overflow: hidden; /* avoid overlap on narrow widths */
+    text-overflow: ellipsis; /* show ellipsis instead of overlapping */
+}

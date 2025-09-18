@@ -1,0 +1,167 @@
+.site-text-primary {
+    color: #fd7e14 !important;
+}
+
+.twm-jobs-browse.site-text-primary {
+    color: #fd7e14 !important;
+    font-weight: 600 !important;
+}
+
+.twm-jobs-browse.site-text-primary:hover {
+    color: #e8690a !important;
+}
+
+.btn-apply,
+button.btn-apply,
+.site-button.btn-apply {
+    background-color: #fd7e14 !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    border-radius: 5px !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+}
+
+.btn-apply:hover,
+button.btn-apply:hover,
+.site-button.btn-apply:hover {
+    background-color: #e8690a !important;
+    color: #fff !important;
+    text-shadow: none !important;
+}
+
+/* Override site-button default styling */
+.site-button,
+button.site-button,
+.panel-body .site-button,
+.twm-tabs-style-1 .site-button {
+    background-color: #fd7e14 !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    border: none !important;
+}
+
+.site-button:hover,
+button.site-button:hover,
+.panel-body .site-button:hover,
+.twm-tabs-style-1 .site-button:hover {
+    background-color: #e8690a !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Animation Styles for Home Page */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+}
+
+.animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hover effects for cards */
+.hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hover-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced button hover states */
+.site-button,
+button.site-button {
+    transition: all 0.3s ease;
+}
+
+.site-button:hover,
+button.site-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+}
+
+/* Smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Job card container for positioning */
+.twm-jobs-grid-style1 {
+    position: relative !important;
+}
+
+/* Apply Now button styling */
+.apply-now-button {
+    background-color: #f56523 !important;
+    border-color: #f56523 !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    /* Make button smaller but still visible */
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    /* Position to bottom right corner */
+    position: absolute !important;
+    bottom: 12px !important;
+    right: 12px !important;
+    z-index: 10 !important;
+}
+
+.apply-now-button:hover {
+    background-color: #e36b0e !important;
+    border-color: #e36b0e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+    color: white !important;
+}
+
+/* Navigation link hover effects */
+.circle-line-btn {
+    transition: all 0.3s ease;
+}
+
+.circle-line-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Professional fade-in animation for sections */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered animation for multiple elements */
+.animate-on-scroll:nth-child(1) { animation-delay: 0.1s; }
+.animate-on-scroll:nth-child(2) { animation-delay: 0.2s; }
+.animate-on-scroll:nth-child(3) { animation-delay: 0.3s; }
+.animate-on-scroll:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hover-card:hover {
+        transform: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-button:hover,
+    button.site-button:hover {
+        transform: none;
+        box-shadow: 0 2px 10px rgba(253, 126, 20, 0.2);
+    }
+}

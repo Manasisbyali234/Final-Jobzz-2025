@@ -1,6 +1,7 @@
 import JobZImage from "../../../../common/jobz-img";
 import SectionJobsSidebar1 from "../../sections/jobs/sidebar/section-jobs-sidebar1";
 import SectionRecordsFilter from "../../sections/common/section-records-filter";
+import { Container, Row, Col } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { publicUser } from "../../../../../globals/route-names";
 import SectionPagination from "../../sections/common/section-pagination";
@@ -11,28 +12,58 @@ import api from "../../../../../utils/api";
 function EmployersGridPage() {
     const [employers, setEmployers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sortBy, setSortBy] = useState("Most Recent");
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const _filterConfig = {
         prefix: "Showing",
-        type: "Result",
+        type: "employers",
         total: employers.length.toString(),
-        showRange: true,
-        showingUpto: employers.length.toString()
+        showRange: false,
+        showingUpto: ""
     };
 
     useEffect(() => {
         loadScript("js/custom.js");
         fetchEmployers();
-    }, []);
+    }, [sortBy, itemsPerPage]);
+
+    const handleSortChange = (value) => {
+        setSortBy(value);
+    };
+
+    const handleItemsPerPageChange = (value) => {
+        setItemsPerPage(value);
+    };
 
     const fetchEmployers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/public/employers');
+            const params = new URLSearchParams();
+            if (sortBy !== undefined && sortBy !== null) {
+                params.append('sortBy', sortBy);
+            }
+            if (itemsPerPage) {
+                params.append('limit', itemsPerPage.toString());
+            }
+
+            const url = `http://localhost:5000/api/public/employers?${params.toString()}`;
+            const response = await fetch(url);
             const data = await response.json();
             if (data.success) {
+                let employerList = data.employers || data.data || [];
+
+                // Frontend filtering fallback if backend doesn't support sortBy
+                if (sortBy && sortBy !== 'Most Recent') {
+                    employerList = employerList.filter(employer => {
+                        const employerType = employer.industry || employer.category || employer.companyType || '';
+                        return employerType.toLowerCase().includes(sortBy.toLowerCase());
+                    });
+                    console.log(`Filtered ${employerList.length} employers for type: ${sortBy}`);
+                }
+
                 // Get profiles and job counts for each employer
                 const employersWithData = await Promise.all(
-                    data.employers.map(async (employer) => {
+                    employerList.map(async (employer) => {
                         // Get employer profile
                         const profileResponse = await fetch(`http://localhost:5000/api/public/employers/${employer._id}`);
                         const profileData = await profileResponse.json();
@@ -63,21 +94,27 @@ function EmployersGridPage() {
 
     return (
         <>
-            <div className="section-full p-t120  p-b90 site-bg-white">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-4 col-md-12 rightSidebar">
+            <div className="section-full py-5 site-bg-white" data-aos="fade-up">
+                <Container>
+                    <Row className="mb-4">
+                        <Col lg={4} md={12} className="rightSidebar" data-aos="fade-right" data-aos-delay="100">
                             <SectionJobsSidebar1 />
-                        </div>
+                        </Col>
 
-                        <div className="col-lg-8 col-md-12">
-                            <SectionRecordsFilter _config={_filterConfig} />
+                        <Col lg={8} md={12} data-aos="fade-left" data-aos-delay="200">
+                            <div className="mb-4">
+                                <SectionRecordsFilter
+                                    _config={_filterConfig}
+                                    onSortChange={handleSortChange}
+                                    onItemsPerPageChange={handleItemsPerPageChange}
+                                />
+                            </div>
 
                             <div className="twm-employer-list-wrap">
-                                <div className="row">
-                                    {employers.length > 0 ? employers.map((employer) => (
-                                        <div key={employer._id} className="col-lg-6 col-md-6">
-                                            <div className="twm-employer-grid-style1 mb-5">
+                                <Row>
+                                    {employers.length > 0 ? employers.map((employer, index) => (
+                                        <Col key={employer._id} lg={6} md={6} className="mb-4" data-aos="fade-up" data-aos-delay={index * 100}>
+                                            <div className="twm-employer-grid-style1 hover-card">
                                                 <div className="twm-media">
                                                     {employer.profile?.logo ? (
                                                         <img src={employer.profile.logo} alt="Company Logo" />
@@ -109,20 +146,20 @@ function EmployersGridPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Col>
                                     )) : (
-                                        <div className="col-12 text-center p-5">
+                                        <Col xs={12} className="text-center py-5" data-aos="fade-up">
                                             <h5>No employers found</h5>
                                             <p>Please check back later for new companies.</p>
-                                        </div>
+                                        </Col>
                                     )}
-                                </div>
+                                </Row>
                             </div>
 
                             <SectionPagination />
-                        </div>
-                    </div>
-                </div>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         </>
     );

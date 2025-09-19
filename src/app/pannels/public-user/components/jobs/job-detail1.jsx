@@ -83,7 +83,10 @@ function JobDetail1Page() {
         return <div className="text-center p-5">Job not found</div>;
     }
 
+    const isEnded = (job?.status && job.status !== 'active') || (typeof job?.applicationLimit === 'number' && job.applicationLimit > 0 && (job?.applicationCount || 0) >= job.applicationLimit);
+
     const handleApplyClick = async () => {
+        if (isEnded) return; // Guard
         if (!isLoggedIn) {
             alert('Please login first to apply for jobs!');
             return;

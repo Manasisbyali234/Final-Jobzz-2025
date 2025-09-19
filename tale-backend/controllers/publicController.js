@@ -336,7 +336,10 @@ exports.applyForJob = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Job not found' });
     }
     if (job.status !== 'active') {
-      return res.status(400).json({ success: false, message: 'Job is no longer active' });
+      return res.status(400).json({ success: false, message: 'Job post ended' });
+    }
+    if (typeof job.applicationLimit === 'number' && job.applicationLimit > 0 && job.applicationCount >= job.applicationLimit) {
+      return res.status(400).json({ success: false, message: 'Job post ended: application limit reached' });
     }
 
     // Handle file upload if resume is provided
@@ -366,6 +369,19 @@ exports.applyForJob = async (req, res) => {
       appliedAt: new Date(),
       isGuestApplication: true
     });
+
+    // Increment the job's application count and close if limit reached
+    await Job.findByIdAndUpdate(jobId, { $inc: { applicationCount: 1 } });
+    const updatedJob = await Job.findById(jobId).select('applicationCount applicationLimit status');
+    if (
+      updatedJob &&
+      typeof updatedJob.applicationLimit === 'number' &&
+      updatedJob.applicationLimit > 0 &&
+      updatedJob.applicationCount >= updatedJob.applicationLimit &&
+      updatedJob.status !== 'closed'
+    ) {
+      await Job.findByIdAndUpdate(jobId, { status: 'closed' });
+    }
 
     res.status(201).json({
       success: true,

@@ -2,10 +2,11 @@ import JobZImage from "../../../../common/jobz-img";
 import { NavLink, useNavigate } from "react-router-dom";
 import { publicUser } from "../../../../../globals/route-names";
 import SectionPagination from "../common/section-pagination";
+import { Container, Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { isAuthenticated, redirectToLogin } from "../../../../../utils/auth";
 
-function SectionJobsGrid({ filters }) {
+function SectionJobsGrid({ filters, onTotalChange }) {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -31,19 +32,46 @@ function SectionJobsGrid({ filters }) {
                 params.append('category', filters.category);
                 console.log('Category filter being sent:', filters.category);
             }
-            
+            if (filters?.sortBy !== undefined && filters?.sortBy !== null) {
+                params.append('sortBy', filters.sortBy);
+            }
+            if (filters?.itemsPerPage) {
+                params.append('limit', filters.itemsPerPage.toString());
+            }
+
             const url = `http://localhost:5000/api/public/jobs?${params.toString()}`;
             console.log('API URL:', url);
             const response = await fetch(url);
             const data = await response.json();
+            console.log('API Response:', data);
             if (data.success) {
-                setJobs(data.jobs || data.data || []);
+                let jobList = data.jobs || data.data || [];
+
+                // Frontend filtering fallback if backend doesn't support sortBy
+                if (filters?.sortBy && filters.sortBy !== 'Most Recent') {
+                    jobList = jobList.filter(job => {
+                        const jobType = job.employmentType || job.jobType || '';
+                        return jobType.toLowerCase() === filters.sortBy.toLowerCase();
+                    });
+                    console.log(`Filtered ${jobList.length} jobs for type: ${filters.sortBy}`);
+                }
+
+                setJobs(jobList);
+                if (onTotalChange) {
+                    onTotalChange(jobList.length);
+                }
             } else {
                 setJobs([]);
+                if (onTotalChange) {
+                    onTotalChange(0);
+                }
             }
         } catch (error) {
             console.error('Error fetching jobs:', error);
             setJobs([]);
+            if (onTotalChange) {
+                onTotalChange(0);
+            }
         } finally {
             setLoading(false);
         }
@@ -55,10 +83,10 @@ function SectionJobsGrid({ filters }) {
 
     return (
         <>
-            <div className="row">
-                {jobs.length > 0 ? jobs.map((job) => (
-                    <div key={job._id} className="col-lg-6 col-md-12 m-b30">
-                        <div className="twm-jobs-grid-style1">
+            <Row>
+                {jobs.length > 0 ? jobs.map((job, index) => (
+                    <Col key={job._id} lg={6} md={12} className="mb-4" data-aos="fade-up" data-aos-delay={index * 100}>
+                        <div className="twm-jobs-grid-style1 hover-card">
                             <div className="twm-media">
                                 {job.employerProfile?.logo ? (
                                     <img src={job.employerProfile.logo} alt="Company Logo" />
@@ -100,21 +128,21 @@ function SectionJobsGrid({ filters }) {
                                     <h6 className="twm-job-address posted-by-company mb-0">
                                         Posted by {job.employerId?.employerType === 'consultant' || job.companyName ? 'Consultancy' : 'Company'}
                                     </h6>
-                                    <NavLink to={`${publicUser.jobs.DETAIL1}/${job._id}`} className="btn btn-sm apply-now-button" style={{backgroundColor: '#f56523', color: '#fff', border: 'none', borderRadius: '5px', padding: '6px 16px', fontWeight: '500', textDecoration: 'none'}}>
+                                    <NavLink to={`${publicUser.jobs.DETAIL1}/${job._id}`} className="btn btn-sm apply-now-button">
                                         Apply Now
                                     </NavLink>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Col>
                 )) : (
-                    <div className="col-12 text-center p-5">
+                    <Col xs={12} className="text-center py-5" data-aos="fade-up">
                         <h5>No jobs found</h5>
                         <p>Please check back later for new opportunities.</p>
-                    </div>
+                    </Col>
                 )}
 
-				</div>
+			</Row>
 				<SectionPagination />
 			</>
 		);

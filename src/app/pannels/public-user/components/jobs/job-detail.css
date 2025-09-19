@@ -9,3 +9,44 @@
     background-color: #6c757d !important;
     border-color: #6c757d !important;
 }
+
+.site-text-primary {
+    color: #fd7e14 !important;
+}
+
+.twm-jobs-browse.site-text-primary {
+    color: #fd7e14 !important;
+    font-weight: 600 !important;
+}
+
+.twm-jobs-browse.site-text-primary:hover {
+    color: #e8690a !important;
+}
+/* Apply orange color to all primary text elements */
+.site-text-primary,
+.twm-job-websites.site-text-primary,
+.twm-jobs-browse.site-text-primary,
+a.site-text-primary {
+    color: #fd7e14 !important;
+}
+
+.site-text-primary:hover,
+.twm-job-websites.site-text-primary:hover,
+.twm-jobs-browse.site-text-primary:hover,
+a.site-text-primary:hover {
+    color: #e8690a !important;
+}
+/* Apply button styling */
+.btn-apply {
+    background-color: #fd7e14 !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    border-radius: 5px !important;
+    font-weight: 600 !important;
+}
+
+.btn-apply:hover {
+    background-color: #e8690a !important;
+    color: #fff !important;
+}

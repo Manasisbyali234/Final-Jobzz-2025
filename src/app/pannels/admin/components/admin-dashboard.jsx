@@ -37,15 +37,16 @@ function AdminDashboardPage() {
 
     return (
         <>
-            <div className="wt-admin-right-page-header clearfix">
-                <h2>Admin Dashboard</h2>
-            </div>
+            <div className="container py-5">
+                <div className="wt-admin-right-page-header clearfix mb-4" data-aos="fade-up">
+                    <h2>Admin Dashboard</h2>
+                </div>
 
-            <div className="twm-dash-b-blocks mb-5">
+                <div className="twm-dash-b-blocks mb-5" data-aos="fade-up" data-aos-delay="100">
                 <div className="row">
                     <div className="col-xl-3 col-lg-6 col-md-12 mb-3">
                         <div className="panel panel-default">
-                            <div className="panel-body wt-panel-body gradi-1 dashboard-card">
+                            <div className="panel-body wt-panel-body gradi-1 dashboard-card hover-card">
                                 <div className="wt-card-wrap">
                                     <div className="wt-card-icon">
                                         <i className="far fa-address-book" />
@@ -65,7 +66,7 @@ function AdminDashboardPage() {
 
                     <div className="col-xl-3 col-lg-6 col-md-12 mb-3">
                         <div className="panel panel-default">
-                            <div className="panel-body wt-panel-body gradi-2 dashboard-card">
+                            <div className="panel-body wt-panel-body gradi-2 dashboard-card hover-card">
                                 <div className="wt-card-wrap">
                                     <div className="wt-card-icon">
                                         <i className="far fa-file-alt" />
@@ -85,7 +86,7 @@ function AdminDashboardPage() {
 
                     <div className="col-xl-3 col-lg-6 col-md-12 mb-3">
                         <div className="panel panel-default">
-                            <div className="panel-body wt-panel-body gradi-3 dashboard-card">
+                            <div className="panel-body wt-panel-body gradi-3 dashboard-card hover-card">
                                 <div className="wt-card-wrap">
                                     <div className="wt-card-icon">
                                         <i className="far fa-envelope" />
@@ -105,7 +106,7 @@ function AdminDashboardPage() {
                     
                     <div className="col-xl-3 col-lg-6 col-md-12 mb-3">
                         <div className="panel panel-default">
-                            <div className="panel-body wt-panel-body gradi-4 dashboard-card">
+                            <div className="panel-body wt-panel-body gradi-4 dashboard-card hover-card">
                                 <div className="wt-card-wrap">
                                     <div className="wt-card-icon">
                                         <i className="far fa-bell" />
@@ -125,12 +126,13 @@ function AdminDashboardPage() {
                 </div>
             </div>
 
-            <div className="twm-pro-view-chart-wrap">
+            <div className="twm-pro-view-chart-wrap" data-aos="fade-up" data-aos-delay="150">
                 <div className="row">
                     <div className="col-lg-12 col-md-12 col-12 mb-4">
                         <AdminDashboardActivityChart />
                     </div>
                 </div>
+            </div>
             </div>
         </>
     );

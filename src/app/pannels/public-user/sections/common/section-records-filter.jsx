@@ -1,8 +1,21 @@
 
-function SectionRecordsFilter({ _config }) {
+function SectionRecordsFilter({ _config, onSortChange, onItemsPerPageChange }) {
+    const handleSortChange = (e) => {
+        if (onSortChange) {
+            onSortChange(e.target.value);
+        }
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        if (onItemsPerPageChange) {
+            const value = parseInt(e.target.value.replace('Show ', ''));
+            onItemsPerPageChange(value);
+        }
+    };
+
     return (
         <>
-            <div className="product-filter-wrap d-flex justify-content-between align-items-center m-b30">
+            <div className="product-filter-wrap d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
                 <span className="woocommerce-result-count-left">
                     {
                         _config.prefix
@@ -14,23 +27,24 @@ function SectionRecordsFilter({ _config }) {
                         _config.total + " " + _config.type
                     }
                 </span>
-                <form className="woocommerce-ordering twm-filter-select" method="get">
-                    <span className="woocommerce-result-count">Short By</span>
-                    <select className="wt-select-bar-2 selectpicker" data-live-search="true" data-bv-field="size">
-                        <option>Most Recent</option>
-                        <option>Freelance</option>
-                        <option>Full Time</option>
-                        <option>Internship</option>
-                        <option>Part Time</option>
-                        <option>Temporary</option>
+                <form className="woocommerce-ordering twm-filter-select d-flex align-items-center gap-3" method="get">
+                    <span className="woocommerce-result-count">Sort By</span>
+                    <select className="wt-select-bar-2 form-select" onChange={handleSortChange}>
+                        <option value="Most Recent">Most Recent</option>
+                        <option value="Freelance">Freelance</option>
+                        <option value="Full-time">Full Time</option>
+                        <option value="Internship">Internship</option>
+                        <option value="Part-time">Part Time</option>
+                        <option value="Temporary">Temporary</option>
+                        <option value="Contract">Contract</option>
                     </select>
-                    <select className="wt-select-bar-2 selectpicker" data-live-search="true" data-bv-field="size">
-                        <option>Show 10</option>
-                        <option>Show 20</option>
-                        <option>Show 30</option>
-                        <option>Show 40</option>
-                        <option>Show 50</option>
-                        <option>Show 60</option>
+                    <select className="wt-select-bar-2 form-select" onChange={handleItemsPerPageChange}>
+                        <option value="10">Show 10</option>
+                        <option value="20">Show 20</option>
+                        <option value="30">Show 30</option>
+                        <option value="40">Show 40</option>
+                        <option value="50">Show 50</option>
+                        <option value="60">Show 60</option>
                     </select>
                 </form>
             </div>

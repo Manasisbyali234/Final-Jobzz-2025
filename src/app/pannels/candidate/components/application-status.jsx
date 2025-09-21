@@ -50,16 +50,29 @@ function CanStatusPage() {
 	};
 
 	const getRoundStatus = (application, roundIndex) => {
-		const status = application.status;
+		// Check if there are actual interview rounds data
+		if (application.interviewRounds && application.interviewRounds.length > 0) {
+			const round = application.interviewRounds.find(r => r.round === roundIndex + 1);
+			if (round) {
+				switch (round.status) {
+					case 'passed':
+						return { text: 'Passed', class: 'bg-success text-white' };
+					case 'failed':
+						return { text: 'Failed', class: 'bg-danger text-white' };
+					case 'pending':
+					default:
+						return { text: 'Pending', class: 'bg-warning text-dark' };
+				}
+			}
+		}
 		
-		if (status === 'pending' && roundIndex === 0) {
-			return { text: 'Pending', class: 'bg-warning text-dark' };
-		} else if (status === 'shortlisted' && roundIndex === 0) {
+		// Fallback to application status logic
+		const status = application.status;
+		if (status === 'shortlisted' && roundIndex === 0) {
 			return { text: 'Shortlisted', class: 'bg-success text-white' };
 		} else if (status === 'interviewed') {
 			if (roundIndex === 0) return { text: 'Completed', class: 'bg-success text-white' };
 			if (roundIndex === 1) return { text: 'In Progress', class: 'bg-warning text-dark' };
-			return { text: 'Pending', class: 'bg-secondary text-white' };
 		} else if (status === 'hired') {
 			return { text: 'Completed', class: 'bg-success text-white' };
 		} else if (status === 'rejected') {

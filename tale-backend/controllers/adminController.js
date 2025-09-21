@@ -75,6 +75,77 @@ exports.getDashboardStats = async (req, res) => {
   }
 };
 
+// Chart Data Controller
+exports.getChartData = async (req, res) => {
+  try {
+    // Get monthly application data for the last 6 months
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const monthlyApplications = await Application.aggregate([
+      { $match: { createdAt: { $gte: sixMonthsAgo } } },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } }
+    ]);
+
+    const monthlyEmployers = await Employer.aggregate([
+      { $match: { createdAt: { $gte: sixMonthsAgo } } },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } }
+    ]);
+
+    // Get top employers by job count
+    const topEmployers = await Job.aggregate([
+      { $match: { status: 'active' } },
+      {
+        $lookup: {
+          from: 'employers',
+          localField: 'employerId',
+          foreignField: '_id',
+          as: 'employer'
+        }
+      },
+      { $unwind: '$employer' },
+      {
+        $group: {
+          _id: '$employerId',
+          companyName: { $first: '$employer.companyName' },
+          jobCount: { $sum: 1 }
+        }
+      },
+      { $sort: { jobCount: -1 } },
+      { $limit: 5 }
+    ]);
+
+    res.json({
+      success: true,
+      chartData: {
+        monthlyApplications,
+        monthlyEmployers,
+        topEmployers
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // User Management Controllers
 exports.getUsers = async (req, res) => {
   try {

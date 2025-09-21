@@ -58,7 +58,7 @@ function HomeJobsList() {
                                         <a href="#" className="twm-job-websites site-text-primary">{job.companyName}</a>
                                     )}
                                     <div style={{fontSize: '12px', color: '#888', marginTop: '4px'}}>
-                                        Posted by: <strong>{job.employerId?.employerType === 'consultant' || job.companyName ? 'Consultancy' : 'Company'}</strong>
+                                        Posted by: <strong>{job.employerId?.employerType === 'consultant' ? 'Consultancy' : 'Company'}</strong>
                                     </div>
                                 </div>
                                 <div className="twm-right-content">

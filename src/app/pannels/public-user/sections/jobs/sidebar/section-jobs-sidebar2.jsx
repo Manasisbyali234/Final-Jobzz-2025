@@ -24,7 +24,7 @@ function SectionJobsSidebar2 ({ _config, job }) {
 
 								<li>
 									<i className="fas fa-file-signature" />
-									<span className="twm-title">{job?.applicationCount || 0} Applications</span>
+									<span className="twm-title">{job?.applicationCount || 0} Applications{(typeof job?.applicationLimit === 'number' && job.applicationLimit > 0) ? ` / Limit: ${job.applicationLimit}` : ''}</span>
 								</li>
 							</ul>
 

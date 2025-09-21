@@ -41,7 +41,6 @@ function EmpCompanyProfilePage() {
     });
 
     const [loading, setLoading] = useState(false);
-    const [editingTeamSize, setEditingTeamSize] = useState(false);
 
     useEffect(() => {
         loadScript("js/custom.js");
@@ -413,45 +412,20 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Team Size 
-                                        <button 
-                                            type="button" 
-                                            className="btn btn-sm btn-outline-primary ml-2"
-                                            onClick={() => setEditingTeamSize(!editingTeamSize)}
-                                            style={{fontSize: '12px', padding: '2px 8px'}}
-                                        >
-                                            {editingTeamSize ? 'Cancel' : 'Edit'}
-                                        </button>
-                                    </label>
-                                    {editingTeamSize ? (
-                                        <div>
-                                            <select
-                                                className="form-control"
-                                                value={formData.teamSize}
-                                                onChange={(e) => handleInputChange('teamSize', e.target.value)}
-                                            >
-                                                <option value="">Select team size</option>
-                                                <option value="1-5">1-5</option>
-                                                <option value="5-10">5-10</option>
-                                                <option value="10-20">10-20</option>
-                                                <option value="20-50">20-50</option>
-                                                <option value="50-100">50-100</option>
-                                                <option value="100+">100+</option>
-                                            </select>
-                                            <button 
-                                                type="button" 
-                                                className="btn btn-sm btn-success mt-2"
-                                                onClick={() => setEditingTeamSize(false)}
-                                                style={{fontSize: '12px', padding: '4px 12px'}}
-                                            >
-                                                Save
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="form-control" style={{backgroundColor: '#f8f9fa', border: '1px solid #dee2e6'}}>
-                                            {formData.teamSize || 'Not specified'}
-                                        </div>
-                                    )}
+                                    <label>Team Size</label>
+                                    <select
+                                        className="form-control"
+                                        value={formData.teamSize}
+                                        onChange={(e) => handleInputChange('teamSize', e.target.value)}
+                                    >
+                                        <option value="">Select team size</option>
+                                        <option value="1-5">1-5</option>
+                                        <option value="5-10">5-10</option>
+                                        <option value="10-20">10-20</option>
+                                        <option value="20-50">20-50</option>
+                                        <option value="50-100">50-100</option>
+                                        <option value="100+">100+</option>
+                                    </select>
                                 </div>
                             </div>
 

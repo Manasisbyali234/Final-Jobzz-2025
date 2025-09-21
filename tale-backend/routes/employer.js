@@ -1,5 +1,5 @@
 const express = require('express');
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const employerController = require('../controllers/employerController');
 const employerPasswordController = require('../controllers/employerPasswordController');
@@ -21,10 +21,7 @@ router.post('/register', [
   body('companyName').notEmpty().withMessage('Company name is required')
 ], handleValidationErrors, employerController.registerEmployer);
 
-router.post('/login', [
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('password').notEmpty().withMessage('Password is required')
-], handleValidationErrors, employerController.loginEmployer);
+router.post('/login', employerController.loginEmployer);
 
 // Password Reset Routes (Public - before auth middleware)
 router.post('/password/reset', [
@@ -48,6 +45,7 @@ router.post('/profile/document', upload.single('document'), employerController.u
 
 // Job Management Routes
 router.get('/jobs', employerController.getEmployerJobs);
+router.get('/recent-jobs', employerController.getRecentJobs);
 router.post('/jobs', [
   body('title').notEmpty().withMessage('Job title is required'),
   body('description').notEmpty().withMessage('Job description is required'),
@@ -76,6 +74,8 @@ router.get('/messages/:conversationId', employerController.getMessages);
 
 // Dashboard Routes
 router.get('/dashboard/stats', employerController.getDashboardStats);
+router.get('/profile/completion', employerController.getProfileCompletion);
+router.get('/recent-activity', employerController.getRecentActivity);
 
 // Consultant Routes
 router.get('/consultant/companies', employerController.getConsultantCompanies);

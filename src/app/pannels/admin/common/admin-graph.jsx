@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -22,20 +22,60 @@ ChartJS.register(
 );
 
 function AdminDashboardActivityChart() {
+	const [chartData, setChartData] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		fetchChartData();
+	}, []);
+
+	const fetchChartData = async () => {
+		try {
+			const token = localStorage.getItem('adminToken');
+			const response = await fetch('http://localhost:5000/api/admin/dashboard/chart-data', {
+				headers: { 'Authorization': `Bearer ${token}` }
+			});
+			const data = await response.json();
+			if (data.success) {
+				setChartData(data.chartData);
+			}
+		} catch (error) {
+			console.error('Error fetching chart data:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const getMonthName = (monthNum) => {
+		const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		return months[monthNum - 1];
+	};
+
+	if (loading || !chartData) {
+		return <div className="text-center p-5">Loading charts...</div>;
+	}
+
+	// Process monthly data for bar chart
+	const monthLabels = chartData.monthlyApplications.map(item => 
+		`${getMonthName(item._id.month)} ${item._id.year}`
+	);
+	const applicationData = chartData.monthlyApplications.map(item => item.count);
+	const employerData = chartData.monthlyEmployers.map(item => item.count);
+
 	// Bar chart data
 	const barData = {
-		labels: ["January", "February", "March", "April", "May", "June"],
+		labels: monthLabels,
 		datasets: [
 			{
 				label: "Applications",
-				data: [120, 190, 300, 250, 320, 400],
+				data: applicationData,
 				backgroundColor: "rgba(78, 115, 223, 0.7)",
 				borderColor: "#4e73df",
 				borderWidth: 2,
 			},
 			{
-				label: "Active Employers",
-				data: [10, 18, 22, 19, 25, 30],
+				label: "New Employers",
+				data: employerData,
 				backgroundColor: "rgba(28, 200, 138, 0.7)",
 				borderColor: "#1cc88a",
 				borderWidth: 2,
@@ -45,10 +85,10 @@ function AdminDashboardActivityChart() {
 
 	// Pie chart data
 	const pieData = {
-		labels: ["Company A", "Company B", "Company C", "Company D", "Company E"],
+		labels: chartData.topEmployers.map(emp => emp.companyName || 'Unknown'),
 		datasets: [
 			{
-				data: [45, 25, 15, 10, 5],
+				data: chartData.topEmployers.map(emp => emp.jobCount),
 				backgroundColor: [
 					"#4e73df",
 					"#1cc88a",
@@ -90,7 +130,7 @@ function AdminDashboardActivityChart() {
 				<div className="panel panel-default site-bg-white">
 					<div className="panel-heading wt-panel-heading p-a25">
 						<h4 className="panel-tittle m-a0">
-							<i className="far fa-chart-bar" /> Application Trends
+							<i className="far fa-chart-bar" /> Monthly Trends (Last 6 Months)
 						</h4>
 					</div>
 
@@ -105,7 +145,7 @@ function AdminDashboardActivityChart() {
 				<div className="panel panel-default site-bg-white">
 					<div className="panel-heading wt-panel-heading p-a25">
 						<h4 className="panel-tittle m-a0">
-							<i className="fas fa-chart-pie" /> Most Active Employers
+							<i className="fas fa-chart-pie" /> Top Employers by Job Count
 						</h4>
 					</div>
 					

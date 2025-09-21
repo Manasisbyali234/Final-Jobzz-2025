@@ -30,7 +30,7 @@ const JobCard = ({ job }) => {
                 </div>
                 <span>{job.location}</span>
                 <div className="posted-by-info" style={{fontSize: '12px', color: '#666', marginTop: '4px'}}>
-                    Posted by: {(job.employerId?.employerType === 'consultant' || job.companyName) ? 'Consultancy' : 'Company'}
+                    Posted by: {job.employerId?.employerType === 'consultant' ? 'Consultancy' : 'Company'}
                 </div>
             </div>
             

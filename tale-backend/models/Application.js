@@ -26,6 +26,18 @@ const applicationSchema = new mongoose.Schema({
   },
   notes: { type: String },
   appliedAt: { type: Date, default: Date.now },
+  
+  // Interview review fields
+  interviewRounds: [{
+    round: { type: Number, required: true },
+    name: { type: String, required: true },
+    status: { type: String, enum: ['pending', 'passed', 'failed'], default: 'pending' },
+    feedback: { type: String, default: '' }
+  }],
+  employerRemarks: { type: String, default: '' },
+  isSelectedForProcess: { type: Boolean, default: false },
+  reviewedAt: { type: Date },
+  
   statusHistory: [{
     status: String,
     changedAt: { type: Date, default: Date.now },

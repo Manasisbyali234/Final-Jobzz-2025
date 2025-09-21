@@ -33,9 +33,6 @@ function EmpCandidateReviewPage () {
 				setCandidate(data.application.candidateId);
 				
 				// Load existing review data if available
-				if (data.application.interviewRounds) {
-					setInterviewRounds(data.application.interviewRounds);
-				}
 				if (data.application.employerRemarks) {
 					setRemarks(data.application.employerRemarks);
 				}
@@ -43,23 +40,14 @@ function EmpCandidateReviewPage () {
 					setIsSelected(data.application.isSelectedForProcess);
 				}
 				
-				// Initialize interview rounds
+				// Initialize interview rounds based on job configuration
 				const job = data.application.jobId;
-				console.log('Full application data:', data.application);
-				console.log('Job data:', job);
-				
-				let roundsCount = 1; // Default to 1 round
+				let roundsCount = 2;
 				if (job && job.interviewRoundsCount) {
 					roundsCount = job.interviewRoundsCount;
 				}
 				
-				console.log('Interview rounds count:', roundsCount);
-				
-				const rounds = [];
 				const roundNames = [];
-				
-				// Get actual round names from job data
-				console.log('interviewRoundTypes:', job?.interviewRoundTypes);
 				if (job && job.interviewRoundTypes) {
 					if (job.interviewRoundTypes.technical) roundNames.push('Technical Round');
 					if (job.interviewRoundTypes.managerial) roundNames.push('Managerial Round');
@@ -67,9 +55,7 @@ function EmpCandidateReviewPage () {
 					if (job.interviewRoundTypes.hr) roundNames.push('HR Round');
 					if (job.interviewRoundTypes.final) roundNames.push('Final Round');
 				}
-				console.log('Round names found:', roundNames);
 				
-				// If no specific round types, use common round names as fallback
 				if (roundNames.length === 0) {
 					const defaultRounds = ['Technical Round', 'HR Round', 'Final Round', 'Managerial Round', 'Non-Technical Round'];
 					for (let i = 0; i < roundsCount; i++) {
@@ -77,13 +63,20 @@ function EmpCandidateReviewPage () {
 					}
 				}
 				
-				// Create rounds with actual names
-				for (let i = 0; i < Math.min(roundsCount, roundNames.length); i++) {
-					rounds.push({ round: i + 1, name: roundNames[i], status: 'pending', feedback: '' });
+				// Create all rounds and merge with existing data
+				const allRounds = [];
+				for (let i = 0; i < roundsCount; i++) {
+					const existingRound = data.application.interviewRounds?.find(r => r.round === i + 1);
+					allRounds.push({
+						round: i + 1,
+						name: roundNames[i] || `Round ${i + 1}`,
+						status: existingRound?.status || 'pending',
+						feedback: existingRound?.feedback || ''
+					});
 				}
 				
-				setInterviewRounds(rounds);
-				console.log('Interview rounds set:', rounds);
+				setInterviewRounds(allRounds);
+
 			}
 		} catch (error) {
 			console.error('Error fetching application details:', error);

@@ -83,7 +83,8 @@ function JobDetail1Page() {
         return <div className="text-center p-5">Job not found</div>;
     }
 
-    const isEnded = (job?.status && job.status !== 'active') || (typeof job?.applicationLimit === 'number' && job.applicationLimit > 0 && (job?.applicationCount || 0) >= job.applicationLimit);
+    const limitReached = typeof job?.applicationLimit === 'number' && job.applicationLimit > 0 && (job?.applicationCount || 0) >= job.applicationLimit;
+    const isEnded = (job?.status && job.status !== 'active') || limitReached;
 
     const handleApplyClick = async () => {
         if (isEnded) return; // Guard
@@ -176,7 +177,7 @@ function JobDetail1Page() {
                                                     </div> */}
 														<div className="twm-job-self-bottom">
 															<button
-																className={`site-button ${hasApplied ? 'disabled' : ''}`}
+																className={`site-button ${(hasApplied || isEnded) ? 'disabled' : ''}`}
 																onClick={handleApplyClick}
 																disabled={hasApplied}
 															>
@@ -192,6 +193,35 @@ function JobDetail1Page() {
 											<>
 												<h4 className="twm-s-title">About Company:</h4>
 												<p>{job.companyDescription}</p>
+											</>
+										)}
+
+										{job.postedBy === 'Consultant' && job.employerProfile && (
+											<>
+												<h4 className="twm-s-title">About Consultant:</h4>
+												<div className="consultant-info" style={{background: '#f8f9fa', padding: '20px', borderRadius: '8px', marginBottom: '20px'}}>
+													<div className="row">
+														<div className="col-md-3">
+															{job.employerProfile.logo && (
+																<img 
+																	src={job.employerProfile.logo.startsWith('data:') ? job.employerProfile.logo : `data:image/jpeg;base64,${job.employerProfile.logo}`} 
+																	alt="Consultant Logo" 
+																	style={{width: '80px', height: '80px', objectFit: 'contain', borderRadius: '8px'}}
+																/>
+															)}
+														</div>
+														<div className="col-md-9">
+															<h5>{job.employerId?.companyName || 'Consultant'}</h5>
+															{job.employerProfile.description && <p>{job.employerProfile.description}</p>}
+															{job.employerProfile.website && (
+																<p><strong>Website:</strong> <a href={job.employerProfile.website} target="_blank" rel="noopener noreferrer">{job.employerProfile.website}</a></p>
+															)}
+															{job.employerProfile.location && (
+																<p><strong>Location:</strong> {job.employerProfile.location}</p>
+															)}
+														</div>
+													</div>
+												</div>
 											</>
 										)}
 										<h4 className="twm-s-title">Job Description:</h4>

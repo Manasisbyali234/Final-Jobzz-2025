@@ -17,6 +17,7 @@ router.use(auth(['admin']));
 
 // Dashboard Route
 router.get('/dashboard/stats', adminController.getDashboardStats);
+router.get('/dashboard/chart-data', adminController.getChartData);
 
 // User Management Routes
 router.get('/users', adminController.getUsers);

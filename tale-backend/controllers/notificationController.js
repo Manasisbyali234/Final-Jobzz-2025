@@ -19,18 +19,26 @@ exports.getNotificationsByRole = async (req, res) => {
     const { role } = req.params;
     const { page = 1, limit = 10 } = req.query;
     
-    const notifications = await Notification.find({ role })
+    // Build query - for general notifications by role or specific to user
+    const query = {
+      $or: [
+        { role, relatedId: { $exists: false } }, // General notifications for role
+        { role, relatedId: req.user.id } // Specific notifications for user
+      ]
+    };
+    
+    const notifications = await Notification.find(query)
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
     
-    const unreadCount = await Notification.countDocuments({ role, isRead: false });
+    const unreadCount = await Notification.countDocuments({ ...query, isRead: false });
     
     res.json({
       success: true,
       notifications,
       unreadCount,
-      total: await Notification.countDocuments({ role })
+      total: await Notification.countDocuments(query)
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -61,10 +69,14 @@ exports.markAllAsRead = async (req, res) => {
   try {
     const { role } = req.params;
     
-    await Notification.updateMany(
-      { role, isRead: false },
-      { isRead: true }
-    );
+    const query = {
+      $or: [
+        { role, relatedId: { $exists: false }, isRead: false },
+        { role, relatedId: req.user.id, isRead: false }
+      ]
+    };
+    
+    await Notification.updateMany(query, { isRead: true });
     
     res.json({ success: true, message: 'All notifications marked as read' });
   } catch (error) {

@@ -500,7 +500,7 @@ function Home16Page() {
                                         <div className="twm-jobs-grid-style1 m-b30 hover-card">
                                             <div className="twm-media">
                                                 {job.employerProfile?.logo ? (
-                                                    <img src={job.employerProfile.logo} alt="Company Logo" />
+                                                    <img src={job.companyLogo || (job.employerProfile.logo?.startsWith('data:') ? job.employerProfile.logo : `data:image/jpeg;base64,${job.employerProfile.logo}`)} alt="Company Logo" />
                                                 ) : (
                                                     <JobZImage src="images/jobs-company/pic1.jpg" alt="#" />
                                                 )}
@@ -526,7 +526,15 @@ function Home16Page() {
                                                     <div className="twm-jobs-amount">
                                                         <strong>Annual CTC:</strong> {job.ctc?.min && job.ctc?.max ?
                                                             `₹${(job.ctc.min/100000).toFixed(1)}L - ₹${(job.ctc.max/100000).toFixed(1)}L` :
-                                                            job.salary ? (typeof job.salary === 'string' && job.salary.includes('₹') ? job.salary : `₹${job.salary}`) : 'Not specified'
+                                                            job.salary ? (
+                                                                typeof job.salary === 'object' ? (
+                                                                    job.salary.min && job.salary.max ?
+                                                                        `₹${job.salary.min} - ₹${job.salary.max}` :
+                                                                        (job.salary.currency ? `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` : 'Not specified')
+                                                                ) : (
+                                                                    typeof job.salary === 'string' && job.salary.includes('₹') ? job.salary : `₹${job.salary}`
+                                                                )
+                                                            ) : 'Not specified'
                                                         }
                                                     </div>
                                                     {job.netSalary?.min && job.netSalary?.max && (
@@ -538,9 +546,14 @@ function Home16Page() {
                                                 </div>
 
                                                 <div className="d-flex align-items-center justify-content-between">
-                                                    <h6 className="twm-job-address posted-by-company mb-0">
-                                                        {job.employerId?.companyName || 'Company'}
-                                                    </h6>
+                                                    <div>
+                                                        <h6 className="twm-job-address posted-by-company mb-0">
+                                                            {job.employerId?.companyName || 'Company'}
+                                                        </h6>
+                                                        <div className="twm-posted-by" style={{ fontSize: '12px', color: '#666' }}>
+                                                            Posted by: <strong>{job.postedBy || (job.employerId?.employerType === 'consultant' ? 'Consultancy' : 'Company')}</strong>
+                                                        </div>
+                                                    </div>
 
                                                     <button
                                                         className="btn btn-sm apply-now-button"

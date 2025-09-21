@@ -60,6 +60,12 @@ exports.registerEmployer = async (req, res) => {
 exports.loginEmployer = async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+    
     console.log('Employer login attempt:', { email });
 
     const employer = await Employer.findOne({ email });
@@ -300,6 +306,17 @@ exports.getEmployerJobs = async (req, res) => {
   try {
     const jobs = await Job.find({ employerId: req.user._id })
       .sort({ createdAt: -1 });
+    res.json({ success: true, jobs });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getRecentJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({ employerId: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(5);
     res.json({ success: true, jobs });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -569,5 +586,69 @@ exports.saveInterviewReview = async (req, res) => {
     res.json({ success: true, message: 'Interview review saved successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getProfileCompletion = async (req, res) => {
+  try {
+    const profile = await EmployerProfile.findOne({ employerId: req.user._id });
+    
+    if (!profile) {
+      return res.json({ success: true, completion: 25, missingFields: ['All profile fields'] });
+    }
+    
+    const requiredFields = ['companyName', 'description', 'website', 'location', 'logo'];
+    const completedFields = requiredFields.filter(field => profile[field]);
+    const completion = Math.round((completedFields.length / requiredFields.length) * 100);
+    const missingFields = requiredFields.filter(field => !profile[field]);
+    
+    res.json({ success: true, completion, missingFields });
+  } catch (error) {
+    res.json({ success: true, completion: 25, missingFields: ['Profile data'] });
+  }
+};
+
+exports.getRecentActivity = async (req, res) => {
+  try {
+    const activities = [];
+    
+    // Recent applications
+    const recentApplications = await Application.find({ employerId: req.user._id })
+      .populate('jobId', 'title')
+      .sort({ createdAt: -1 })
+      .limit(3);
+    
+    recentApplications.forEach(app => {
+      activities.push({
+        type: 'application',
+        title: 'New application received',
+        description: `Application for ${app.jobId?.title || 'Unknown Job'}`,
+        time: app.createdAt,
+        icon: '👤'
+      });
+    });
+    
+    // Recent job posts
+    const recentJobs = await Job.find({ employerId: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(2);
+    
+    recentJobs.forEach(job => {
+      activities.push({
+        type: 'job',
+        title: 'Job post created',
+        description: `${job.title} position posted`,
+        time: job.createdAt,
+        icon: '💼'
+      });
+    });
+    
+    // Sort by time and limit to 5
+    activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+    const limitedActivities = activities.slice(0, 5);
+    
+    res.json({ success: true, activities: limitedActivities });
+  } catch (error) {
+    res.json({ success: true, activities: [] });
   }
 };

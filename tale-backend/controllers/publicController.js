@@ -9,7 +9,6 @@ const FAQ = require('../models/FAQ');
 exports.getJobs = async (req, res) => {
   try {
     const { location, jobType, category, search, title, employerId, employmentType, skills, page = 1, limit = 10 } = req.query;
-    console.log('Category filter:', category);
     
     let query = { status: { $in: ['active', 'pending'] } };
     
@@ -76,7 +75,8 @@ exports.getJobs = async (req, res) => {
     });
   } catch (error) {
     console.error('Error in getJobs:', error);
-    res.status(500).json({ success: false, message: error.message });
+    // Return empty jobs array when DB is unavailable
+    res.json({ success: true, jobs: [], total: 0 });
   }
 };
 
@@ -107,7 +107,7 @@ exports.getJobsByCategory = async (req, res) => {
 exports.getJobById = async (req, res) => {
   try {
     const job = await Job.findById(req.params.id)
-      .populate('employerId', 'companyName email phone');
+      .populate('employerId', 'companyName email phone employerType');
     
     if (!job) {
       return res.status(404).json({ success: false, message: 'Job not found' });
@@ -120,7 +120,8 @@ exports.getJobById = async (req, res) => {
     // Add profile data to job object
     const jobWithProfile = {
       ...job.toObject(),
-      employerProfile: employerProfile
+      employerProfile: employerProfile,
+      postedBy: job.employerId.employerType === 'consultant' ? 'Consultant' : 'Company'
     };
 
     res.json({ success: true, job: jobWithProfile });
@@ -272,7 +273,15 @@ exports.getPublicStats = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    // Return fallback stats when DB is unavailable
+    res.json({
+      success: true,
+      stats: {
+        totalJobs: 0,
+        totalEmployers: 0,
+        totalApplications: 0,
+      },
+    });
   }
 };
 

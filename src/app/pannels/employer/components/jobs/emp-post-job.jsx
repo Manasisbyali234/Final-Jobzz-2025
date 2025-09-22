@@ -496,6 +496,7 @@ export default function EmpPostJob({ onNext }) {
 							<option value="HR">HR</option>
 							<option value="Operations">Operations</option>
 							<option value="Design">Design</option>
+							<option value="Content">Content</option>
 							<option value="Healthcare">Healthcare</option>
 							<option value="Education">Education</option>
 							<option value="Other">Other</option>
@@ -516,6 +517,9 @@ export default function EmpPostJob({ onNext }) {
 							<option>Internship (Unpaid)</option>
 							<option>Work From Home</option>
 							<option>Contract</option>
+							<option>Design</option>
+							<option>Healthcare</option>
+							<option>Marketing</option>
 						</select>
 					</div>
 

@@ -55,6 +55,7 @@ router.post('/jobs/:jobId/apply', [
 router.post('/applications', candidateController.applyForJob);
 router.post('/apply/:jobId', candidateController.applyForJob);
 router.get('/applications', candidateController.getAppliedJobs);
+router.get('/applications/interviews', candidateController.getCandidateApplicationsWithInterviews);
 router.get('/applications/:applicationId/status', candidateController.getApplicationStatus);
 
 // Messaging Routes

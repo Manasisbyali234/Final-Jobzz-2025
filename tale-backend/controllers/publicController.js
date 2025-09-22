@@ -8,12 +8,12 @@ const FAQ = require('../models/FAQ');
 // Job Controllers
 exports.getJobs = async (req, res) => {
   try {
-    const { location, jobType, category, search, title, employerId, employmentType, skills, keyword, jobTitle, page = 1, limit = 10 } = req.query;
+    const { location, jobType, category, search, title, employerId, employmentType, skills, keyword, jobTitle, page = 1, limit = 10, sortBy } = req.query;
     
     let query = { status: { $in: ['active', 'pending'] } };
     
     if (employerId) query.employerId = employerId;
-    if (title || jobTitle) query.title = new RegExp(title || jobTitle, 'i');
+    if (title) query.title = new RegExp(title, 'i');
     if (location) query.location = new RegExp(location, 'i');
 
     // Handle both jobType and employmentType (employmentType takes priority)
@@ -27,20 +27,57 @@ exports.getJobs = async (req, res) => {
       }
     }
     
-    if (search || keyword) {
-      const searchTerm = search || keyword;
-      query.$or = [
-        { title: new RegExp(searchTerm, 'i') },
-        { description: new RegExp(searchTerm, 'i') },
-        { requiredSkills: { $in: [new RegExp(searchTerm, 'i')] } }
-      ];
+    // Combine all search terms
+    const searchTerms = [];
+    if (search) searchTerms.push(search);
+    if (keyword) searchTerms.push(keyword);
+    if (jobTitle) searchTerms.push(jobTitle);
+    
+    if (searchTerms.length > 0) {
+      const orConditions = [];
+      searchTerms.forEach(term => {
+        orConditions.push(
+          { title: new RegExp(term, 'i') },
+          { description: new RegExp(term, 'i') },
+          { requiredSkills: { $in: [new RegExp(term, 'i')] } }
+        );
+      });
+      query.$or = orConditions;
     }
     if (category) {
-      query.category = category;
+      query.category = new RegExp(category, 'i');
     }
     if (skills) {
       const skillsArray = Array.isArray(skills) ? skills : [skills];
       query.requiredSkills = { $in: skillsArray.map(skill => new RegExp(skill, 'i')) };
+    }
+
+    // Determine sort criteria
+    let sortCriteria = { createdAt: -1 }; // Default: Most Recent
+    
+    if (sortBy) {
+      switch (sortBy) {
+        case 'Most Recent':
+          sortCriteria = { createdAt: -1 };
+          break;
+        case 'Oldest':
+          sortCriteria = { createdAt: 1 };
+          break;
+        case 'Salary High to Low':
+          sortCriteria = { 'salary.max': -1, 'salary.min': -1 };
+          break;
+        case 'Salary Low to High':
+          sortCriteria = { 'salary.min': 1, 'salary.max': 1 };
+          break;
+        case 'A-Z':
+          sortCriteria = { title: 1 };
+          break;
+        case 'Z-A':
+          sortCriteria = { title: -1 };
+          break;
+        default:
+          sortCriteria = { createdAt: -1 };
+      }
     }
 
     const jobs = await Job.find(query)
@@ -49,7 +86,9 @@ exports.getJobs = async (req, res) => {
         select: 'companyName status isApproved employerType',
         match: { status: 'active', isApproved: true }
       })
-      .sort({ createdAt: -1 });
+      .sort(sortCriteria)
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
     
     const approvedJobs = jobs.filter(job => job.employerId);
     
@@ -70,10 +109,18 @@ exports.getJobs = async (req, res) => {
       })
     );
     
+    // Get total count for pagination
+    const totalJobs = await Job.countDocuments(query);
+    
     res.json({
       success: true,
       jobs: jobsWithProfiles,
-      total: jobsWithProfiles.length
+      total: jobsWithProfiles.length,
+      totalCount: totalJobs,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalJobs / parseInt(limit)),
+      hasNextPage: parseInt(page) < Math.ceil(totalJobs / parseInt(limit)),
+      hasPrevPage: parseInt(page) > 1
     });
   } catch (error) {
     console.error('Error in getJobs:', error);

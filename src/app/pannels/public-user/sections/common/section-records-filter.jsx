@@ -8,7 +8,7 @@ function SectionRecordsFilter({ _config, onSortChange, onItemsPerPageChange }) {
 
     const handleItemsPerPageChange = (e) => {
         if (onItemsPerPageChange) {
-            const value = parseInt(e.target.value.replace('Show ', ''));
+            const value = parseInt(e.target.value);
             onItemsPerPageChange(value);
         }
     };
@@ -31,12 +31,11 @@ function SectionRecordsFilter({ _config, onSortChange, onItemsPerPageChange }) {
                     <span className="woocommerce-result-count">Sort By</span>
                     <select className="wt-select-bar-2 form-select" onChange={handleSortChange}>
                         <option value="Most Recent">Most Recent</option>
-                        <option value="Freelance">Freelance</option>
-                        <option value="Full-time">Full Time</option>
-                        <option value="Internship">Internship</option>
-                        <option value="Part-time">Part Time</option>
-                        <option value="Temporary">Temporary</option>
-                        <option value="Contract">Contract</option>
+                        <option value="Oldest">Oldest First</option>
+                        <option value="A-Z">Title A-Z</option>
+                        <option value="Z-A">Title Z-A</option>
+                        <option value="Salary High to Low">Salary High to Low</option>
+                        <option value="Salary Low to High">Salary Low to High</option>
                     </select>
                     <select className="wt-select-bar-2 form-select" onChange={handleItemsPerPageChange}>
                         <option value="10">Show 10</option>

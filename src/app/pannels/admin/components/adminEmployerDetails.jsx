@@ -6,6 +6,8 @@ function EmployerDetails() {
     const { id } = useParams();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [currentImage, setCurrentImage] = useState('');
 
     useEffect(() => {
         fetchEmployerProfile();
@@ -130,8 +132,40 @@ function EmployerDetails() {
                         <div className="mt-2"><h6>CIN</h6><p>{profile.cin || 'N/A'}</p></div>
                         <div className="mt-2"><h6>GST Number</h6><p>{profile.gstNumber || 'N/A'}</p></div>
                         <div className="mt-2"><h6>PAN Number</h6><p>{profile.panNumber || 'N/A'}</p></div>
-                        <div className="mt-2"><h6>Logo</h6><p>{profile.logo || 'N/A'}</p></div>
-                        <div className="mt-2"><h6>Cover Image</h6><p>{profile.coverImage || 'N/A'}</p></div>
+                        <div className="mt-2">
+                            <h6>Logo</h6>
+                            {profile.logo ? (
+                                <button 
+                                    className="btn btn-sm btn-primary"
+                                    onClick={() => {
+                                        const imageUrl = profile.logo.startsWith('data:') ? profile.logo : `data:image/jpeg;base64,${profile.logo}`;
+                                        setCurrentImage(imageUrl);
+                                        setShowImageModal(true);
+                                    }}
+                                >
+                                    View Image
+                                </button>
+                            ) : (
+                                <p>N/A</p>
+                            )}
+                        </div>
+                        <div className="mt-2">
+                            <h6>Cover Image</h6>
+                            {profile.coverImage ? (
+                                <button 
+                                    className="btn btn-sm btn-primary"
+                                    onClick={() => {
+                                        const imageUrl = profile.coverImage.startsWith('data:') ? profile.coverImage : `data:image/jpeg;base64,${profile.coverImage}`;
+                                        setCurrentImage(imageUrl);
+                                        setShowImageModal(true);
+                                    }}
+                                >
+                                    View Image
+                                </button>
+                            ) : (
+                                <p>N/A</p>
+                            )}
+                        </div>
                         <div className="mt-2"><h6>Created At</h6><p>{formatDate(profile.createdAt)}</p></div>
                     </div>
                 </div>
@@ -249,6 +283,23 @@ function EmployerDetails() {
                     </div>
                 </div>
             </div>
+            
+            {/* Image Modal */}
+            {showImageModal && (
+                <div className="modal" style={{display: 'block', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Image Preview</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowImageModal(false)}></button>
+                            </div>
+                            <div className="modal-body text-center">
+                                <img src={currentImage} alt="Preview" style={{maxWidth: '100%', maxHeight: '500px'}} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

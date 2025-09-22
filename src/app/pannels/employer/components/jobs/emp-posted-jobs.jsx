@@ -12,6 +12,7 @@ export default function EmpPostedJobs() {
     const [isApproved, setIsApproved] = useState(false);
     const [employerType, setEmployerType] = useState('company');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [applicationCounts, setApplicationCounts] = useState({});
     
     useEffect(() => {
         loadScript("js/custom.js");
@@ -53,12 +54,43 @@ export default function EmpPostedJobs() {
                 const data = await response.json();
                 setJobs(data.jobs);
                 setFilteredJobs(data.jobs);
+                fetchApplicationCounts(data.jobs);
             }
         } catch (error) {
             console.error('Error fetching jobs:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const fetchApplicationCounts = async (jobsList) => {
+        try {
+            const token = localStorage.getItem('employerToken');
+            const counts = {};
+            
+            await Promise.all(jobsList.map(async (job) => {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/employer/jobs/${job._id}/applications`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        counts[job._id] = data.applications.length;
+                    }
+                } catch (error) {
+                    console.error(`Error fetching applications for job ${job._id}:`, error);
+                    counts[job._id] = 0;
+                }
+            }));
+            
+            setApplicationCounts(counts);
+        } catch (error) {
+            console.error('Error fetching application counts:', error);
+        }
+    };
+
+    const handleJobClick = (jobId) => {
+        navigate(`/employer/candidates-list/${jobId}`);
     };
 
     const formatDate = (dateString) => {
@@ -213,7 +245,7 @@ export default function EmpPostedJobs() {
 							) : (
 								filteredJobs.map((job) => (
 									<div className="col-lg-6 col-12" key={job._id}>
-										<div className="d-flex justify-content-between align-items-center p-3 border rounded mb-3 shadow-sm">
+										<div className="d-flex justify-content-between align-items-center p-3 border rounded mb-3 shadow-sm" style={{cursor: 'pointer'}} onClick={() => handleJobClick(job._id)}>
 											<div className="d-flex align-items-center gap-3">
 												<div>
 													<h5 className="mb-1">{job.title}</h5>
@@ -228,10 +260,13 @@ export default function EmpPostedJobs() {
 													</small><br/>
 													<small className="text-muted">
 														Posted {formatDate(job.createdAt)}
+													</small><br/>
+													<small className="text-primary fw-bold">
+														{applicationCounts[job._id] || 0} Applications
 													</small>
 												</div>
 											</div>
-											<div className="d-flex align-items-center gap-2">
+											<div className="d-flex align-items-center gap-2" onClick={(e) => e.stopPropagation()}>
 												<span className={`badge ${getStatusBadge(job.status)} text-capitalize`}>
 													{job.status}
 												</span>

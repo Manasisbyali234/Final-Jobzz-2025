@@ -2,15 +2,17 @@
 import React, { useEffect, useState } from "react";
 import JobZImage from "../../../common/jobz-img";
 import { loadScript } from "../../../../globals/constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function EmpCandidatesPage() {
 	const navigate = useNavigate();
+	const { jobId } = useParams();
 	const [applications, setApplications] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [employerType, setEmployerType] = useState('company');
 	const [companies, setCompanies] = useState([]);
 	const [selectedCompany, setSelectedCompany] = useState('');
+	const [currentJob, setCurrentJob] = useState(null);
 
 	useEffect(() => {
 		loadScript("js/custom.js");
@@ -20,17 +22,19 @@ function EmpCandidatesPage() {
 
 	useEffect(() => {
 		console.log('Employer type changed:', employerType);
-		if (employerType === 'consultant') {
-			fetchConsultantCompanies();
-		} else {
-			// For regular companies, fetch all unique company names from their jobs
-			fetchConsultantCompanies(); // This will get company names from jobs
+		if (!jobId) { // Only fetch companies when not viewing specific job
+			if (employerType === 'consultant') {
+				fetchConsultantCompanies();
+			} else {
+				// For regular companies, fetch all unique company names from their jobs
+				fetchConsultantCompanies(); // This will get company names from jobs
+			}
 		}
-	}, [employerType]);
+	}, [employerType, jobId]);
 
 	useEffect(() => {
 		fetchApplications();
-	}, [selectedCompany]);
+	}, [selectedCompany, jobId]);
 
 	const fetchEmployerType = async () => {
 		try {
@@ -69,9 +73,16 @@ function EmpCandidatesPage() {
 			const token = localStorage.getItem('employerToken');
 			if (!token) return;
 
-			let url = 'http://localhost:5000/api/employer/applications';
-			if (selectedCompany) {
-				url += `?companyName=${encodeURIComponent(selectedCompany)}`;
+			let url;
+			if (jobId) {
+				// Fetch applications for specific job
+				url = `http://localhost:5000/api/employer/jobs/${jobId}/applications`;
+			} else {
+				// Fetch all applications
+				url = 'http://localhost:5000/api/employer/applications';
+				if (selectedCompany) {
+					url += `?companyName=${encodeURIComponent(selectedCompany)}`;
+				}
 			}
 
 			const response = await fetch(url, {
@@ -81,6 +92,9 @@ function EmpCandidatesPage() {
 			if (response.ok) {
 				const data = await response.json();
 				setApplications(data.applications);
+				if (data.job) {
+					setCurrentJob(data.job);
+				}
 			}
 		} catch (error) {
 			console.error('Error fetching applications:', error);
@@ -111,7 +125,18 @@ function EmpCandidatesPage() {
 	return (
 		<>
 			<div className="wt-admin-right-page-header clearfix">
-				<h2>Applicants Details</h2>
+				<h2>{jobId && currentJob ? `Applicants for ${currentJob.title}` : 'Applicants Details'}</h2>
+				{jobId && currentJob && (
+					<div className="d-flex align-items-center gap-2 mt-2">
+						<button 
+							className="btn btn-outline-secondary btn-sm"
+							onClick={() => navigate('/employer/manage-jobs')}
+						>
+							<i className="fa fa-arrow-left me-1" /> Back to Jobs
+						</button>
+						<span className="text-muted">| {currentJob.location}</span>
+					</div>
+				)}
 			</div>
 
 			<div className="panel panel-default site-bg-white p-3">
@@ -131,18 +156,22 @@ function EmpCandidatesPage() {
 							placeholder="Search Applicants..."
 						/>
 						<div className="d-flex gap-2">
-							<select 
-								className="form-select"
-								value={selectedCompany}
-								onChange={(e) => setSelectedCompany(e.target.value)}
-								style={{width: '200px'}}
-							>
-								<option value="">All Companies</option>
-								{companies.map((company, index) => (
-									<option key={index} value={company}>{company}</option>
-								))}
-							</select>
-							<small className="text-muted">Type: {employerType}, Companies: {companies.length}</small>
+							{!jobId && (
+								<>
+									<select 
+										className="form-select"
+										value={selectedCompany}
+										onChange={(e) => setSelectedCompany(e.target.value)}
+										style={{width: '200px'}}
+									>
+										<option value="">All Companies</option>
+										{companies.map((company, index) => (
+											<option key={index} value={company}>{company}</option>
+										))}
+									</select>
+									<small className="text-muted">Type: {employerType}, Companies: {companies.length}</small>
+								</>
+							)}
 							<div className="dropdown">
 								<button
 									className="btn btn-outline-secondary dropdown-toggle"
@@ -191,7 +220,12 @@ function EmpCandidatesPage() {
 						<div className="row">
 							{applications.length === 0 ? (
 								<div className="col-12 text-center py-4">
-									<p className="text-muted">No applications received yet.</p>
+									<p className="text-muted">
+										{jobId && currentJob 
+											? `No applications received for ${currentJob.title} yet.` 
+											: 'No applications received yet.'
+										}
+									</p>
 								</div>
 							) : (
 								applications.map((application) => (

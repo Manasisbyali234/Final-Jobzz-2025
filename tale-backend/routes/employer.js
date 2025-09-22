@@ -58,6 +58,7 @@ router.delete('/jobs/:jobId', employerController.deleteJob);
 
 // Application Management Routes
 router.get('/applications', employerController.getEmployerApplications);
+router.get('/jobs/:jobId/applications', employerController.getJobApplications);
 router.put('/applications/:applicationId/review', employerController.saveInterviewReview);
 router.get('/applications/:applicationId', employerController.getApplicationDetails);
 router.put('/applications/:applicationId/status', [

@@ -48,7 +48,7 @@ function SectionJobsGrid({ filters, onTotalChange }) {
                 params.append('category', filters.category);
                 console.log('Category filter being sent:', filters.category);
             }
-            if (filters?.sortBy !== undefined && filters?.sortBy !== null) {
+            if (filters?.sortBy) {
                 params.append('sortBy', filters.sortBy);
             }
             if (filters?.itemsPerPage) {

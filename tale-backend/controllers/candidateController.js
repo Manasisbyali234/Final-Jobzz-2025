@@ -233,6 +233,7 @@ exports.getAppliedJobs = async (req, res) => {
     if (applications.length > 0) {
       console.log('First application jobId:', applications[0].jobId);
       console.log('Job interviewRoundTypes:', applications[0].jobId?.interviewRoundTypes);
+      console.log('Interview rounds data:', applications[0].interviewRounds);
     }
 
     res.json({ success: true, applications });
@@ -248,7 +249,7 @@ exports.getApplicationStatus = async (req, res) => {
       _id: req.params.applicationId,
       candidateId: req.user._id
     })
-    .populate('jobId', 'title')
+    .populate('jobId', 'title interviewRoundsCount interviewRoundTypes')
     .populate('employerId', 'companyName');
 
     if (!application) {
@@ -402,6 +403,19 @@ exports.getDashboardStats = async (req, res) => {
       stats: { applied, inProgress, shortlisted },
       candidate: { name: req.user.name }
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getCandidateApplicationsWithInterviews = async (req, res) => {
+  try {
+    const applications = await Application.find({ candidateId: req.user._id })
+      .populate('jobId', 'title location jobType status interviewRoundsCount interviewRoundTypes')
+      .populate('employerId', 'companyName')
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, applications });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

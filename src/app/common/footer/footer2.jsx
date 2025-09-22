@@ -5,7 +5,7 @@ import { publicUser } from "../../../globals/route-names";
 function Footer2() {
     return (
         <>
-            <footer className="footer-light">
+            <footer className="footer-light" style={{fontFamily: '"Plus Jakarta Sans", sans-serif'}}>
                 <div className="container">
                     {/* NEWS LETTER SECTION START */}
                     <div className="ftr-nw-content">

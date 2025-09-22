@@ -12,6 +12,7 @@ function EmpCompanyProfilePage() {
         website: '',
         establishedSince: '',
         teamSize: '',
+
         description: '',
         
         // Company Details
@@ -424,10 +425,15 @@ function EmpCompanyProfilePage() {
                                         <option value="10-20">10-20</option>
                                         <option value="20-50">20-50</option>
                                         <option value="50-100">50-100</option>
-                                        <option value="100+">100+</option>
+                                        <option value="100-200">100-200</option>
+                                        <option value="200-500">200-500</option>
+                                        <option value="500-1000">500-1000</option>
+                                        <option value="1000+">1000+</option>
                                     </select>
                                 </div>
                             </div>
+
+
 
                             <div className="col-md-12">
                                 <div className="form-group">

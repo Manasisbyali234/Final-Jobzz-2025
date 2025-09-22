@@ -99,6 +99,12 @@ export const api = {
     }).then((res) => res.json());
   },
 
+  getCandidateApplicationsWithInterviews: () => {
+    return fetch(`${API_BASE_URL}/candidate/applications/interviews`, {
+      headers: getAuthHeaders('candidate'),
+    }).then((res) => res.json());
+  },
+
   uploadResume: (formData) => {
     const token = localStorage.getItem('candidateToken');
     return fetch(`${API_BASE_URL}/candidate/upload-resume`, {

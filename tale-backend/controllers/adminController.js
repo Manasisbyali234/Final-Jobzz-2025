@@ -14,6 +14,7 @@ const SiteSettings = require('../models/SiteSettings');
 const EmployerProfile = require('../models/EmployerProfile');
 const { base64ToBuffer, generateFilename } = require('../utils/base64Helper');
 const { createNotification } = require('./notificationController');
+const mongoose = require('mongoose');
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
@@ -412,6 +413,37 @@ exports.updateEmployerProfile = async (req, res) => {
     
     if (!profile) {
       return res.status(404).json({ success: false, message: 'Employer profile not found' });
+    }
+
+    // Check if any document verification status was updated and create notification
+    try {
+      const verificationFields = {
+        panCardVerified: 'PAN Card',
+        cinVerified: 'CIN Document',
+        gstVerified: 'GST Certificate',
+        incorporationVerified: 'Certificate of Incorporation',
+        authorizationVerified: 'Authorization Letter'
+      };
+
+      for (const [field, documentName] of Object.entries(verificationFields)) {
+        if (req.body[field] && (req.body[field] === 'approved' || req.body[field] === 'rejected')) {
+          const notificationData = {
+            title: `Document ${req.body[field] === 'approved' ? 'Approved' : 'Rejected'}`,
+            message: `Your ${documentName} has been ${req.body[field]} by admin.`,
+            type: req.body[field] === 'approved' ? 'profile_approved' : 'profile_rejected',
+            role: 'employer',
+            relatedId: new mongoose.Types.ObjectId(req.params.id),
+            createdBy: new mongoose.Types.ObjectId(req.user.id)
+          };
+          
+          console.log('Creating notification:', notificationData);
+          const createdNotification = await createNotification(notificationData);
+          console.log('Notification created:', createdNotification);
+        }
+      }
+    } catch (notificationError) {
+      console.error('Error creating notification:', notificationError);
+      // Continue execution even if notification fails
     }
 
     res.json({ success: true, profile });

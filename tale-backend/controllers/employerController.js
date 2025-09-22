@@ -361,7 +361,8 @@ exports.updateApplicationStatus = async (req, res) => {
         }
       },
       { new: true }
-    );
+    ).populate('candidateId', 'name email')
+    .populate('jobId', 'title');
 
     if (!application) {
       return res.status(404).json({ success: false, message: 'Application not found' });
@@ -514,6 +515,42 @@ exports.getEmployerApplications = async (req, res) => {
   }
 };
 
+exports.getJobApplications = async (req, res) => {
+  try {
+    const CandidateProfile = require('../models/CandidateProfile');
+    const { jobId } = req.params;
+    
+    // Verify job belongs to employer
+    const job = await Job.findOne({ _id: jobId, employerId: req.user._id });
+    if (!job) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+    
+    const applications = await Application.find({ jobId, employerId: req.user._id })
+      .populate('candidateId', 'name email phone')
+      .populate('jobId', 'title location companyName')
+      .sort({ createdAt: -1 });
+
+    // Add profile pictures to applications
+    const applicationsWithProfiles = await Promise.all(
+      applications.map(async (application) => {
+        const candidateProfile = await CandidateProfile.findOne({ candidateId: application.candidateId._id });
+        return {
+          ...application.toObject(),
+          candidateId: {
+            ...application.candidateId.toObject(),
+            profilePicture: candidateProfile?.profilePicture
+          }
+        };
+      })
+    );
+
+    res.json({ success: true, applications: applicationsWithProfiles, job });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 exports.getApplicationDetails = async (req, res) => {
   try {
     const { applicationId } = req.params;
@@ -577,13 +614,14 @@ exports.saveInterviewReview = async (req, res) => {
         reviewedAt: new Date()
       },
       { new: true }
-    );
+    ).populate('candidateId', 'name email')
+    .populate('jobId', 'title');
     
     if (!application) {
       return res.status(404).json({ success: false, message: 'Application not found' });
     }
     
-    res.json({ success: true, message: 'Interview review saved successfully' });
+    res.json({ success: true, message: 'Interview review saved successfully', application });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -597,7 +635,7 @@ exports.getProfileCompletion = async (req, res) => {
       return res.json({ success: true, completion: 25, missingFields: ['All profile fields'] });
     }
     
-    const requiredFields = ['companyName', 'description', 'website', 'location', 'logo'];
+    const requiredFields = ['companyName', 'description', 'website', 'logo'];
     const completedFields = requiredFields.filter(field => profile[field]);
     const completion = Math.round((completedFields.length / requiredFields.length) * 100);
     const missingFields = requiredFields.filter(field => !profile[field]);

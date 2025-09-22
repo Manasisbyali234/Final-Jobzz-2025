@@ -11,7 +11,8 @@ import {
   BarChart3,
   AlertTriangle,
   Eye,
-  User
+  User,
+  MapPin
 } from 'lucide-react';
 
 
@@ -25,6 +26,7 @@ function EmpDashboardPage() {
     const [employer, setEmployer] = useState({ companyName: 'Company', logo: null });
     const [profileCompletion, setProfileCompletion] = useState({ completion: 75, missingFields: [] });
     const [recentActivity, setRecentActivity] = useState([]);
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         fetchDashboardData();
@@ -38,7 +40,7 @@ function EmpDashboardPage() {
                 return;
             }
 
-            const [statsResponse, profileResponse, completionResponse, activityResponse] = await Promise.all([
+            const [statsResponse, profileResponse, completionResponse, activityResponse, notificationResponse] = await Promise.all([
                 fetch('http://localhost:5000/api/employer/dashboard/stats', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
@@ -49,6 +51,9 @@ function EmpDashboardPage() {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
                 fetch('http://localhost:5000/api/employer/recent-activity', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }),
+                fetch('http://localhost:5000/api/notifications/employer', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
             ]);
@@ -91,6 +96,13 @@ function EmpDashboardPage() {
                     setRecentActivity(activityData.activities || []);
                 }
             }
+
+            if (notificationResponse.ok) {
+                const notificationData = await notificationResponse.json();
+                if (notificationData.success) {
+                    setNotifications(notificationData.notifications || []);
+                }
+            }
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
         }
@@ -104,6 +116,10 @@ function EmpDashboardPage() {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div>
                             <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', margin: '0 0 0.25rem 0' }}>Welcome back, {employer.companyName}</h2>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                                <MapPin size={16} style={{ color: '#f97316' }} />
+                                <span style={{ color: '#f97316', fontSize: '0.875rem', fontWeight: '500' }}>Bangalore</span>
+                            </div>
                             <p style={{ color: '#6b7280', margin: 0 }}>Here's an overview of your job postings and applications</p>
                         </div>
 
@@ -284,38 +300,41 @@ function EmpDashboardPage() {
                                 border: '1px solid #e5e7eb',
                                 padding: '1.5rem'
                             }}>
-                                <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>Recent Activity</h3>
+                                <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>Notifications</h3>
                                 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                    {recentActivity.length > 0 ? recentActivity.map((activity, index) => (
-                                        <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
-                                            <div style={{ width: '2rem', height: '2rem', background: activity.type === 'application' ? '#dbeafe' : '#dcfce7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <span style={{ fontSize: '1rem' }}>{activity.icon}</span>
+                                    {notifications.length > 0 ? notifications.slice(0, 5).map((notification, index) => (
+                                        <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: notification.isRead ? '#f9fafb' : '#fef3c7', borderRadius: '0.5rem' }}>
+                                            <div style={{ width: '2rem', height: '2rem', background: notification.type === 'profile_approved' ? '#dcfce7' : '#fecaca', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <span style={{ fontSize: '1rem' }}>{notification.type === 'profile_approved' ? '✅' : '❌'}</span>
                                             </div>
                                             <div style={{ flex: '1' }}>
-                                                <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', margin: 0 }}>{activity.title}</p>
-                                                <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>{activity.description}</p>
-                                                <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>{new Date(activity.time).toLocaleDateString()}</p>
+                                                <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', margin: 0 }}>{notification.title}</p>
+                                                <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>{notification.message}</p>
+                                                <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>{new Date(notification.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
                                     )) : (
                                         <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                                            <p>No recent activity</p>
+                                            <p>No notifications</p>
                                         </div>
                                     )}
                                 </div>
 
-                                <button style={{
-                                    width: '100%',
-                                    marginTop: '1rem',
-                                    padding: '0.5rem',
-                                    background: 'transparent',
-                                    color: '#f97316',
-                                    border: '1px solid #f97316',
-                                    borderRadius: '0.5rem',
-                                    fontWeight: '500',
-                                    cursor: 'pointer'
-                                }}>
+                                <button 
+                                    onClick={() => window.location.href = '/employer/manage-jobs'}
+                                    style={{
+                                        width: '100%',
+                                        marginTop: '1rem',
+                                        padding: '0.5rem',
+                                        background: 'transparent',
+                                        color: '#f97316',
+                                        border: '1px solid #f97316',
+                                        borderRadius: '0.5rem',
+                                        fontWeight: '500',
+                                        cursor: 'pointer'
+                                    }}
+                                >
                                     View All Activity
                                 </button>
                             </div>

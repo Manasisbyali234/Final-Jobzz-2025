@@ -10,6 +10,7 @@ function Footer3 () {
 					className="footer-light ftr-light-with-bg site-bg-cover"
 					style={{
 						backgroundImage: `url(${publicUrlFor("images/ftr-bg.jpg")})`,
+						fontFamily: '"Plus Jakarta Sans", sans-serif'
 					}}
 				>
 					<div className="container">

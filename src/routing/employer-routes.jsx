@@ -25,6 +25,7 @@ function EmployerRoutes() {
 					element={<AssessmentDashboard />}
 				/>
 				<Route path={employer.CANDIDATES} element={<EmpCandidatesPage />} />
+				<Route path="/candidates-list/:jobId" element={<EmpCandidatesPage />} />
 				<Route
 					path={`${employer.CAN_REVIEW}/:applicationId`}
 					element={<EmpCandidateReviewPage />}

@@ -3,6 +3,9 @@ const router = express.Router();
 const notificationController = require('../controllers/notificationController');
 const auth = require('../middlewares/auth');
 
+// Create notification
+router.post('/', auth(['admin']), notificationController.createNotificationRoute);
+
 // Get notifications by role
 router.get('/:role', auth(['admin', 'employer', 'candidate']), notificationController.getNotificationsByRole);
 

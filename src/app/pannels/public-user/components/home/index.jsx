@@ -5,6 +5,16 @@ import CountUp from "react-countup";
 import { publicUser } from "../../../../../globals/route-names";
 import { NavLink } from "react-router-dom";
 
+const popularCities = [
+    'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad',
+    'Jaipur', 'Surat', 'Lucknow', 'Kanpur', 'Nagpur', 'Indore', 'Thane', 'Bhopal',
+    'Visakhapatnam', 'Pimpri-Chinchwad', 'Patna', 'Vadodara', 'Ghaziabad', 'Ludhiana',
+    'Agra', 'Nashik', 'Faridabad', 'Meerut', 'Rajkot', 'Kalyan-Dombivli', 'Vasai-Virar',
+    'Varanasi', 'Srinagar', 'Aurangabad', 'Dhanbad', 'Amritsar', 'Navi Mumbai', 'Allahabad',
+    'Ranchi', 'Howrah', 'Coimbatore', 'Jabalpur', 'Gwalior', 'Vijayawada', 'Jodhpur',
+    'Madurai', 'Raipur', 'Kota', 'Guwahati', 'Chandigarh', 'Solapur', 'Hubli-Dharwad'
+];
+
 function HomeJobsList() {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -98,7 +108,7 @@ function Home1Page() {
     })
 
     return (
-        <>
+        <div style={{fontFamily: '"Plus Jakarta Sans", sans-serif'}}>
             {/*Banner Start*/}
             <div className="twm-home1-banner-section site-bg-gray bg-cover" style={{ backgroundImage: `url(${publicUrlFor("images/main-slider/slider1/bg1.jpg")})` }}>
                 <div className="row">
@@ -1078,7 +1088,7 @@ function Home1Page() {
                 </div>
             </div>
             {/* OUR BLOG END */}
-        </>
+        </div>
     )
 }
 

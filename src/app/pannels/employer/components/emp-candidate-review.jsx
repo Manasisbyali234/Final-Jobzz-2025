@@ -121,13 +121,16 @@ function EmpCandidateReviewPage () {
 			});
 			
 			if (response.ok) {
-				alert('Interview review saved successfully!');
+				const result = await response.json();
+				alert('Interview review saved successfully! Candidate will see the updated status.');
+				console.log('Review saved:', result);
 			} else {
-				alert('Failed to save review');
+				const errorData = await response.json();
+				alert(`Failed to save review: ${errorData.message || 'Unknown error'}`);
 			}
 		} catch (error) {
 			console.error('Error saving review:', error);
-			alert('Error saving review');
+			alert('Error saving review. Please try again.');
 		}
 	};
 
@@ -144,14 +147,40 @@ function EmpCandidateReviewPage () {
 			});
 			
 			if (response.ok) {
-				alert('Candidate shortlisted successfully!');
+				alert('Candidate shortlisted successfully! Status updated for candidate.');
 				setApplication(prev => ({ ...prev, status: 'shortlisted' }));
 			} else {
-				alert('Failed to shortlist candidate');
+				const errorData = await response.json();
+				alert(`Failed to shortlist candidate: ${errorData.message || 'Unknown error'}`);
 			}
 		} catch (error) {
 			console.error('Error shortlisting candidate:', error);
-			alert('Error shortlisting candidate');
+			alert('Error shortlisting candidate. Please try again.');
+		}
+	};
+
+	const rejectCandidate = async () => {
+		try {
+			const token = localStorage.getItem('employerToken');
+			const response = await fetch(`http://localhost:5000/api/employer/applications/${applicationId}/status`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({ status: 'rejected' })
+			});
+			
+			if (response.ok) {
+				alert('Candidate rejected. Status updated for candidate.');
+				setApplication(prev => ({ ...prev, status: 'rejected' }));
+			} else {
+				const errorData = await response.json();
+				alert(`Failed to reject candidate: ${errorData.message || 'Unknown error'}`);
+			}
+		} catch (error) {
+			console.error('Error rejecting candidate:', error);
+			alert('Error rejecting candidate. Please try again.');
 		}
 	};
 
@@ -503,7 +532,7 @@ function EmpCandidateReviewPage () {
                             <button className="btn btn-primary" onClick={shortlistCandidate}>
                                 <i className="fa fa-check me-1" />Shortlist
                             </button>
-                            <button className="btn btn-danger" onClick={() => console.log('Reject candidate')}>
+                            <button className="btn btn-danger" onClick={rejectCandidate}>
                                 <i className="fa fa-times me-1" />Reject
                             </button>
                         </div>

@@ -25,7 +25,7 @@ function JobsGridPage() {
                                  jobType === 'Full Time' && 
                                  location === 'Bangalore';
         
-        const newFilters = { sortBy, itemsPerPage };
+        const newFilters = {};
         
         if (isSpecificPattern) {
             // Override with IT category for the specific URL pattern
@@ -41,6 +41,10 @@ function JobsGridPage() {
                 newFilters.jobType = normalizedJobType;
             }
         }
+        
+        // Add sort and pagination parameters
+        newFilters.sortBy = sortBy;
+        newFilters.itemsPerPage = itemsPerPage;
         
         setFilters(newFilters);
     }, [searchParams, sortBy, itemsPerPage]);
@@ -68,7 +72,7 @@ function JobsGridPage() {
                                  jobType === 'Full Time' && 
                                  location === 'Bangalore';
         
-        const updatedFilters = { ...newFilters, sortBy, itemsPerPage };
+        const updatedFilters = { ...newFilters };
         
         if (isSpecificPattern) {
             // Override with IT category for the specific URL pattern
@@ -83,6 +87,10 @@ function JobsGridPage() {
                 updatedFilters.jobType = normalizedJobType;
             }
         }
+        
+        // Add sort and pagination parameters
+        updatedFilters.sortBy = sortBy;
+        updatedFilters.itemsPerPage = itemsPerPage;
         
         setFilters(updatedFilters);
     };

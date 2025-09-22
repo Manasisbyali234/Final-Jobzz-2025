@@ -60,7 +60,7 @@ function SectionCanAttachment({ profile }) {
                         >
                             {uploading ? 'Uploading...' : 'Submit Resume'}
                         </button>
-                        {profile?.resume && <p>Current resume: {profile.resume}</p>}
+                        {profile?.resume && <p>Current resume: <span style={{color: '#28a745', fontWeight: 'bold'}}>Resume uploaded successfully</span></p>}
                         {resumeFile && <p>Uploaded: {resumeFile}</p>}
                         <p>Upload Resume File size max 3 MB</p>
                     </div>

@@ -20,6 +20,7 @@ async function checkJobEmployer() {
     console.log('Company Name in Job:', job.companyName);
     console.log('Company Logo in Job:', job.companyLogo ? 'Present' : 'Not present');
     console.log('Company Description in Job:', job.companyDescription ? 'Present' : 'Not present');
+    console.log('Location:', job.location);
   } catch (error) {
     console.error('Error:', error);
   } finally {

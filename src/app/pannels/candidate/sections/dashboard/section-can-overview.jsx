@@ -203,6 +203,7 @@ function SectionCandidateOverview() {
 		shortlisted: 0
 	});
 	const [candidate, setCandidate] = useState({ name: 'Loading...' });
+	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
 		fetchDashboardData();
@@ -213,14 +214,26 @@ function SectionCandidateOverview() {
 			const token = localStorage.getItem('candidateToken');
 			if (!token) return;
 
-			const response = await fetch('http://localhost:5000/api/candidate/dashboard/stats', {
-				headers: { 'Authorization': `Bearer ${token}` }
-			});
+			const [statsResponse, notificationResponse] = await Promise.all([
+				fetch('http://localhost:5000/api/candidate/dashboard/stats', {
+					headers: { 'Authorization': `Bearer ${token}` }
+				}),
+				fetch('http://localhost:5000/api/notifications/candidate', {
+					headers: { 'Authorization': `Bearer ${token}` }
+				})
+			]);
 			
-			if (response.ok) {
-				const data = await response.json();
+			if (statsResponse.ok) {
+				const data = await statsResponse.json();
 				setStats(data.stats);
 				setCandidate(data.candidate);
+			}
+
+			if (notificationResponse.ok) {
+				const notificationData = await notificationResponse.json();
+				if (notificationData.success) {
+					setNotifications(notificationData.notifications || []);
+				}
 			}
 		} catch (error) {
 			console.error('Error fetching dashboard data:', error);
@@ -290,6 +303,24 @@ function SectionCandidateOverview() {
 					))}
 				</div>
 			</div>
+
+			{/* Notifications Section */}
+			{notifications.length > 0 && (
+				<div className="panel panel-default mb-4">
+					<div className="panel-heading">
+						<h4 className="panel-title">Recent Notifications</h4>
+					</div>
+					<div className="panel-body">
+						{notifications.slice(0, 3).map((notification, index) => (
+							<div key={index} className={`alert ${notification.type === 'profile_approved' ? 'alert-success' : 'alert-warning'} mb-2`}>
+								<strong>{notification.title}</strong><br/>
+								{notification.message}
+								<small className="d-block mt-1 text-muted">{new Date(notification.createdAt).toLocaleDateString()}</small>
+							</div>
+						))}
+					</div>
+				</div>
+			)}
 		</>
 	);
 }

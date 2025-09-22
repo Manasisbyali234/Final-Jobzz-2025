@@ -5383,6 +5383,40 @@ ol li {
   font-size: 16px;
   padding-top: 80px;
   background-size: cover;
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+}
+
+.footer-dark *,
+.footer-light *,
+.footer-top *,
+.footer-bottom * {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  color: #2c2c2c !important;
+}
+
+.footer-dark .widget-title,
+.footer-light .widget-title {
+  color: #1a1a1a !important;
+}
+
+.footer-dark .widget_services ul li a,
+.footer-light .widget_services ul li a {
+  color: #2c2c2c !important;
+}
+
+.footer-dark .footer-bottom .footer-copy-right .copyrights-text,
+.footer-light .footer-bottom .footer-copy-right .copyrights-text {
+  color: #2c2c2c !important;
+}
+
+.footer-dark p,
+.footer-light p {
+  color: #2c2c2c !important;
+}
+
+.footer-dark .ftr-list li p,
+.footer-light .ftr-list li p {
+  color: #2c2c2c !important;
 }
 @media (max-width: 991px) {
   .footer-dark {

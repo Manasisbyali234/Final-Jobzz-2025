@@ -15,10 +15,11 @@ function AdminEmployersRejected() {
     const fetchRejectedEmployers = async () => {
         try {
             setLoading(true);
-            const response = await api.getAllEmployers({ status: 'rejected' });
+            const response = await api.getAllEmployers();
             if (response.success) {
-                // Filter rejected employers on frontend if backend doesn't support status filtering
-                const rejectedEmployers = response.data.filter(emp => emp.status === 'rejected');
+                const rejectedEmployers = response.data.filter(emp => 
+                    emp.status === 'rejected' || (emp.isApproved === false && emp.status === 'inactive')
+                );
                 setEmployers(rejectedEmployers);
             } else {
                 setError(response.message || 'Failed to fetch rejected employers');

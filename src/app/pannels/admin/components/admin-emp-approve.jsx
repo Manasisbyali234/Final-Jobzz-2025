@@ -15,10 +15,11 @@ function AdminEmployersApproved() {
     const fetchApprovedEmployers = async () => {
         try {
             setLoading(true);
-            const response = await api.getAllEmployers({ status: 'approved' });
+            const response = await api.getAllEmployers();
             if (response.success) {
-                // Filter approved employers on frontend if backend doesn't support status filtering
-                const approvedEmployers = response.data.filter(emp => emp.status === 'approved');
+                const approvedEmployers = response.data.filter(emp => 
+                    emp.status === 'approved' || emp.isApproved === true
+                );
                 setEmployers(approvedEmployers);
             } else {
                 setError(response.message || 'Failed to fetch approved employers');

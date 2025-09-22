@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HeroBody.css';
 import { FaBriefcase, FaCalculator, FaCode, FaUsers } from 'react-icons/fa';
 
-const HeroBody = () => {
+const HeroBody = ({ onSearch }) => {
+  const navigate = useNavigate();
   const [searchData, setSearchData] = useState({
-    what: 'Job Title',
-    type: 'All Category',
-    location: 'Search...'
+    what: '',
+    type: '',
+    location: ''
   });
 
   const jobCategories = [
@@ -20,7 +22,19 @@ const HeroBody = () => {
   ];
 
   const handleSearch = () => {
-    console.log('Searching with:', searchData);
+    const filters = {};
+    if (searchData.what && searchData.what !== '') filters.search = searchData.what;
+    if (searchData.type && searchData.type !== '') filters.jobType = searchData.type;
+    if (searchData.location && searchData.location !== '') filters.location = searchData.location;
+    
+    console.log('Search filters:', filters);
+    
+    // Navigate to job grid page with filters
+    const queryString = Object.keys(filters)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(filters[key])}`)
+      .join('&');
+    
+    navigate(`/job-grid${queryString ? '?' + queryString : ''}`);
   };
 
   return (
@@ -46,10 +60,23 @@ const HeroBody = () => {
               value={searchData.what}
               onChange={(e) => setSearchData({...searchData, what: e.target.value})}
             >
-              <option value="Job Title">Job Title</option>
-              <option value="Developer">Developer</option>
-              <option value="Designer">Designer</option>
-              <option value="Manager">Manager</option>
+              <option value="">Job Title</option>
+              <option value="Software Developer">Software Developer</option>
+              <option value="Web Developer">Web Developer</option>
+              <option value="Frontend Developer">Frontend Developer</option>
+              <option value="Backend Developer">Backend Developer</option>
+              <option value="Full Stack Developer">Full Stack Developer</option>
+              <option value="Data Scientist">Data Scientist</option>
+              <option value="Product Manager">Product Manager</option>
+              <option value="UI/UX Designer">UI/UX Designer</option>
+              <option value="Business Analyst">Business Analyst</option>
+              <option value="DevOps Engineer">DevOps Engineer</option>
+              <option value="QA Engineer">QA Engineer</option>
+              <option value="Marketing Manager">Marketing Manager</option>
+              <option value="Sales Executive">Sales Executive</option>
+              <option value="HR Manager">HR Manager</option>
+              <option value="Accountant">Accountant</option>
+              <option value="Consultant">Consultant</option>
             </select>
           </div>
           
@@ -60,10 +87,14 @@ const HeroBody = () => {
               value={searchData.type}
               onChange={(e) => setSearchData({...searchData, type: e.target.value})}
             >
-              <option value="All Category">All Category</option>
+              <option value="">All Category</option>
               <option value="Full Time">Full Time</option>
               <option value="Part Time">Part Time</option>
               <option value="Contract">Contract</option>
+              <option value="Internship">Internship</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Remote">Remote</option>
+              <option value="Work From Home">Work From Home</option>
             </select>
           </div>
           
@@ -79,10 +110,16 @@ const HeroBody = () => {
                 value={searchData.location}
                 onChange={(e) => setSearchData({...searchData, location: e.target.value})}
               >
-                <option value="Search...">Search...</option>
-                <option value="New York">New York</option>
-                <option value="San Francisco">San Francisco</option>
-                <option value="London">London</option>
+                <option value="">Search...</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Pune">Pune</option>
+                <option value="Kolkata">Kolkata</option>
+                <option value="Ahmedabad">Ahmedabad</option>
+                <option value="Remote">Remote</option>
               </select>
             </div>
           </div>

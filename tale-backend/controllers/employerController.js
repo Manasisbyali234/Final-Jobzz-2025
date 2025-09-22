@@ -230,7 +230,7 @@ exports.createJob = async (req, res) => {
       });
     }
 
-    const jobData = { ...req.body, employerId: req.user._id };
+    const jobData = { ...req.body, employerId: req.user._id, status: 'active' };
     console.log('Creating job with data:', JSON.stringify(jobData, null, 2)); // Debug log
     console.log('Company fields:', {
       companyLogo: jobData.companyLogo ? 'Present' : 'Missing',

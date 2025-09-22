@@ -10,8 +10,12 @@ import { Container, Row, Col } from "react-bootstrap";
 
 function Home16Page() {
     const [jobs, setJobs] = useState([]);
+    const [allJobs, setAllJobs] = useState([]);
+    const [filteredJobs, setFilteredJobs] = useState([]);
     const [stats, setStats] = useState({ totalJobs: 0, totalEmployers: 0, totalApplications: 0 });
     const [loading, setLoading] = useState(true);
+    const [isFiltered, setIsFiltered] = useState(false);
+    const [showingCount, setShowingCount] = useState(6);
 
     useEffect(() => {
         updateSkinStyle("8", false, false)
@@ -43,7 +47,7 @@ function Home16Page() {
         try {
             const [jobsData, statsData] = await Promise.all([
                 (async () => {
-                    const res = await api.getJobs({ limit: 6 });
+                    const res = await api.getJobs({ limit: 50 }); // Get more jobs for filtering
                     return res;
                 })(),
                 (async () => {
@@ -55,13 +59,83 @@ function Home16Page() {
                 })(),
             ]);
 
-            if (jobsData.success) setJobs(jobsData.jobs);
+            if (jobsData.success) {
+                setAllJobs(jobsData.jobs);
+                setJobs(jobsData.jobs.slice(0, 6)); // Show first 6 initially
+            }
             if (statsData.success) setStats(statsData.stats);
         } catch (error) {
             console.error('Error fetching home data:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = (filters) => {
+        console.log('Received filters:', filters);
+        console.log('All jobs count:', allJobs.length);
+        
+        let filtered = [...allJobs];
+        
+        // Filter by search term (job title, company name, or description)
+        if (filters.search) {
+            const searchTerm = filters.search.toLowerCase();
+            console.log('Filtering by search term:', searchTerm);
+            filtered = filtered.filter(job => 
+                job.title?.toLowerCase().includes(searchTerm) ||
+                job.companyName?.toLowerCase().includes(searchTerm) ||
+                job.employerId?.companyName?.toLowerCase().includes(searchTerm) ||
+                job.description?.toLowerCase().includes(searchTerm) ||
+                job.category?.toLowerCase().includes(searchTerm)
+            );
+            console.log('After search filter:', filtered.length);
+        }
+        
+        // Filter by job type
+        if (filters.jobType) {
+            const jobType = filters.jobType.toLowerCase();
+            console.log('Filtering by job type:', jobType);
+            filtered = filtered.filter(job => 
+                job.jobType?.toLowerCase() === jobType ||
+                job.type?.toLowerCase() === jobType ||
+                job.jobType?.toLowerCase().includes(jobType) ||
+                job.type?.toLowerCase().includes(jobType)
+            );
+            console.log('After job type filter:', filtered.length);
+        }
+        
+        // Filter by location
+        if (filters.location) {
+            const location = filters.location.toLowerCase();
+            console.log('Filtering by location:', location);
+            filtered = filtered.filter(job => 
+                job.location?.toLowerCase().includes(location)
+            );
+            console.log('After location filter:', filtered.length);
+        }
+        
+        console.log('Final filtered jobs:', filtered.length);
+        
+        setFilteredJobs(filtered);
+        setJobs(filtered.slice(0, 6)); // Show first 6 filtered results
+        setShowingCount(6);
+        setIsFiltered(Object.keys(filters).length > 0);
+        
+        // Scroll to jobs section when search is performed
+        if (Object.keys(filters).length > 0) {
+            setTimeout(() => {
+                const jobsSection = document.querySelector('.twm-jobs-grid-wrap');
+                if (jobsSection) {
+                    jobsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+    };
+    
+    const handleShowMore = () => {
+        const newCount = showingCount + 6;
+        setJobs(isFiltered ? filteredJobs.slice(0, newCount) : allJobs.slice(0, newCount));
+        setShowingCount(newCount);
     };
 
     return (
@@ -474,17 +548,37 @@ function Home16Page() {
                                 {/* title="" START*/}
                                 <div className="section-head left wt-small-separator-outer">
                                     <div className="wt-small-separator site-text-primary">
-                                        <div>All Jobs Post</div>
+                                        <div>{isFiltered ? 'Filtered Jobs' : 'All Jobs Post'}</div>
                                     </div>
 
                                     <h2 className="wt-title">
-                                        Find Your Career You Deserve it
+                                        {isFiltered ? `Found ${filteredJobs.length} Job${filteredJobs.length !== 1 ? 's' : ''} Matching Your Search` : 'Find Your Career You Deserve it'}
                                     </h2>
                                 </div>
                                 {/* title="" END*/}
                             </Col>
 
                             <Col xl={6} lg={6} md={12} className="wt-separator-two-part-right text-right mb-4">
+                                {isFiltered && (
+                                    <button 
+                                        className="site-button me-3"
+                                        onClick={() => {
+                                            setJobs(allJobs.slice(0, 6));
+                                            setFilteredJobs([]);
+                                            setIsFiltered(false);
+                                            setShowingCount(6);
+                                            // Reset search form
+                                            const searchForm = document.querySelector('.search-container');
+                                            if (searchForm) {
+                                                const selects = searchForm.querySelectorAll('select');
+                                                selects.forEach(select => select.value = '');
+                                            }
+                                        }}
+                                        style={{ marginRight: '10px' }}
+                                    >
+                                        Clear Filters
+                                    </button>
+                                )}
                                 <NavLink to="/job-grid" className=" site-button">
                                     Browse All Jobs
                                 </NavLink>
@@ -495,7 +589,7 @@ function Home16Page() {
                     <div className="section-content">
                         <div className="twm-jobs-grid-wrap">
                             <Row>
-                                {jobs.length > 0 ? jobs.slice(0, 6).map((job) => (
+                                {jobs.length > 0 ? jobs.map((job) => (
                                     <Col lg={4} md={6} key={job._id} className="mb-4">
                                         <div className="twm-jobs-grid-style1 m-b30 hover-card">
                                             <div className="twm-media">
@@ -574,10 +668,41 @@ function Home16Page() {
                                     </Col>
                                 )) : (
                                     <Col xs={12} className="text-center">
-                                        <p>No jobs available at the moment.</p>
+                                        <p>{isFiltered ? 'No jobs found matching your search criteria.' : 'No jobs available at the moment.'}</p>
+                                        {isFiltered && (
+                                            <button 
+                                                className="site-button mt-3"
+                                                onClick={() => {
+                                                    setJobs(allJobs.slice(0, 6));
+                                                    setFilteredJobs([]);
+                                                    setIsFiltered(false);
+                                                    setShowingCount(6);
+                                                    // Reset search form
+                                                    const searchForm = document.querySelector('.search-container');
+                                                    if (searchForm) {
+                                                        const selects = searchForm.querySelectorAll('select');
+                                                        selects.forEach(select => select.value = '');
+                                                    }
+                                                }}
+                                            >
+                                                View All Jobs
+                                            </button>
+                                        )}
                                     </Col>
                                 )}
                             </Row>
+                            
+                            {/* Show More Button */}
+                            {((isFiltered && filteredJobs.length > showingCount) || (!isFiltered && allJobs.length > showingCount)) && (
+                                <div className="text-center mt-4">
+                                    <button 
+                                        className="site-button"
+                                        onClick={handleShowMore}
+                                    >
+                                        Show More Jobs ({isFiltered ? filteredJobs.length - showingCount : allJobs.length - showingCount} remaining)
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </Container>

@@ -16,11 +16,17 @@ function JobsGridPage() {
 
     useEffect(() => {
         const category = searchParams.get('category');
-        if (category) {
-            setFilters({ category, sortBy, itemsPerPage });
-        } else {
-            setFilters({ sortBy, itemsPerPage });
-        }
+        const location = searchParams.get('location');
+        const search = searchParams.get('search');
+        const jobType = searchParams.get('jobType');
+        
+        const newFilters = { sortBy, itemsPerPage };
+        if (category) newFilters.category = category;
+        if (location) newFilters.location = location;
+        if (search) newFilters.search = search;
+        if (jobType) newFilters.jobType = jobType;
+        
+        setFilters(newFilters);
     }, [searchParams, sortBy, itemsPerPage]);
 
     const _filterConfig = {
@@ -37,11 +43,17 @@ function JobsGridPage() {
 
     const handleFilterChange = (newFilters) => {
         const category = searchParams.get('category');
-        if (category) {
-            setFilters({ ...newFilters, category, sortBy, itemsPerPage });
-        } else {
-            setFilters({ ...newFilters, sortBy, itemsPerPage });
-        }
+        const location = searchParams.get('location');
+        const search = searchParams.get('search');
+        const jobType = searchParams.get('jobType');
+        
+        const updatedFilters = { ...newFilters, sortBy, itemsPerPage };
+        if (category) updatedFilters.category = category;
+        if (location) updatedFilters.location = location;
+        if (search) updatedFilters.search = search;
+        if (jobType) updatedFilters.jobType = jobType;
+        
+        setFilters(updatedFilters);
     };
 
     const handleSortChange = (value) => {

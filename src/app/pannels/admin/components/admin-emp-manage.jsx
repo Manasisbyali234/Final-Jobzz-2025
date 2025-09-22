@@ -17,7 +17,10 @@ function AdminEmployersAllRequest() {
             setLoading(true);
             const response = await api.getAllEmployers();
             if (response.success) {
-                setEmployers(response.data);
+                const pendingEmployers = response.data.filter(emp => 
+                    emp.status !== 'approved' && emp.status !== 'rejected' && !emp.isApproved
+                );
+                setEmployers(pendingEmployers);
             } else {
                 setError(response.message || 'Failed to fetch employers');
             }
@@ -33,9 +36,7 @@ function AdminEmployersAllRequest() {
         try {
             const response = await api.updateEmployerStatus(employerId, 'approved');
             if (response.success) {
-                setEmployers(employers.map(emp => 
-                    emp._id === employerId ? { ...emp, status: 'approved', isApproved: true } : emp
-                ));
+                setEmployers(employers.filter(emp => emp._id !== employerId));
                 alert('Employer approved successfully! Notification sent to employer.');
             } else {
                 alert('Failed to approve employer');
@@ -50,9 +51,7 @@ function AdminEmployersAllRequest() {
         try {
             const response = await api.updateEmployerStatus(employerId, 'rejected');
             if (response.success) {
-                setEmployers(employers.map(emp => 
-                    emp._id === employerId ? { ...emp, status: 'rejected', isApproved: false } : emp
-                ));
+                setEmployers(employers.filter(emp => emp._id !== employerId));
                 alert('Employer rejected successfully! Notification sent to employer.');
             } else {
                 alert('Failed to reject employer');
@@ -88,7 +87,7 @@ function AdminEmployersAllRequest() {
 
             <div className="panel panel-default site-bg-white">
                 <div className="panel-heading wt-panel-heading p-a20">
-                    <h4 className="panel-tittle m-a0">All Employers ({employers.length})</h4>
+                    <h4 className="panel-tittle m-a0">Pending Employers ({employers.length})</h4>
                 </div>
 
                 <div className="panel-body wt-panel-body">

@@ -18,13 +18,29 @@ function SectionJobsGrid({ filters, onTotalChange }) {
     const fetchJobs = async () => {
         try {
             const params = new URLSearchParams();
-            if (filters?.keyword) params.append('search', filters.keyword);
+            // Handle search parameter (from HeroBody or sidebar)
+            if (filters?.search) params.append('search', filters.search);
+            if (filters?.keyword) params.append('keyword', filters.keyword);
+            
+            // Handle location parameter
             if (filters?.location) params.append('location', filters.location);
-            if (filters?.jobTitle) params.append('title', filters.jobTitle);
-            if (filters?.employmentType) params.append('employmentType', filters.employmentType);
-            if (filters?.jobType?.length > 0) {
-                filters.jobType.forEach(type => params.append('jobType', type));
+            
+            // Handle job type parameter (from HeroBody or sidebar)
+            if (filters?.jobType) {
+                if (Array.isArray(filters.jobType)) {
+                    filters.jobType.forEach(type => {
+                        const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
+                        params.append('jobType', normalizedType);
+                    });
+                } else {
+                    const normalizedType = filters.jobType.toLowerCase().replace(/\s+/g, '-');
+                    params.append('jobType', normalizedType);
+                }
             }
+            if (filters?.employmentType) params.append('employmentType', filters.employmentType);
+            
+            // Handle other parameters
+            if (filters?.jobTitle) params.append('jobTitle', filters.jobTitle);
             if (filters?.skills?.length > 0) {
                 filters.skills.forEach(skill => params.append('skills', skill));
             }
@@ -41,21 +57,13 @@ function SectionJobsGrid({ filters, onTotalChange }) {
 
             const url = `http://localhost:5000/api/public/jobs?${params.toString()}`;
             console.log('API URL:', url);
+            console.log('Filters received:', filters);
             const response = await fetch(url);
             const data = await response.json();
             console.log('API Response:', data);
+            console.log('Jobs count:', data.jobs?.length || 0);
             if (data.success) {
                 let jobList = data.jobs || data.data || [];
-
-                // Frontend filtering fallback if backend doesn't support sortBy
-                if (filters?.sortBy && filters.sortBy !== 'Most Recent') {
-                    jobList = jobList.filter(job => {
-                        const jobType = job.employmentType || job.jobType || '';
-                        return jobType.toLowerCase() === filters.sortBy.toLowerCase();
-                    });
-                    console.log(`Filtered ${jobList.length} jobs for type: ${filters.sortBy}`);
-                }
-
                 setJobs(jobList);
                 if (onTotalChange) {
                     onTotalChange(jobList.length);
@@ -77,9 +85,7 @@ function SectionJobsGrid({ filters, onTotalChange }) {
         }
     };
 
-    if (loading) {
-        return <div className="text-center p-5">Loading jobs...</div>;
-    }
+
 
     return (
         <>

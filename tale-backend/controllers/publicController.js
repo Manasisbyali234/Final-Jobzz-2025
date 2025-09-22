@@ -8,12 +8,12 @@ const FAQ = require('../models/FAQ');
 // Job Controllers
 exports.getJobs = async (req, res) => {
   try {
-    const { location, jobType, category, search, title, employerId, employmentType, skills, page = 1, limit = 10 } = req.query;
+    const { location, jobType, category, search, title, employerId, employmentType, skills, keyword, jobTitle, page = 1, limit = 10 } = req.query;
     
     let query = { status: { $in: ['active', 'pending'] } };
     
     if (employerId) query.employerId = employerId;
-    if (title) query.title = new RegExp(title, 'i');
+    if (title || jobTitle) query.title = new RegExp(title || jobTitle, 'i');
     if (location) query.location = new RegExp(location, 'i');
     if (jobType) {
       if (Array.isArray(jobType)) {
@@ -22,19 +22,18 @@ exports.getJobs = async (req, res) => {
         query.jobType = jobType;
       }
     }
-    if (employmentType) query.employmentType = employmentType;
+    if (employmentType) query.jobType = employmentType;
     
-    if (search) {
+    if (search || keyword) {
+      const searchTerm = search || keyword;
       query.$or = [
-        { title: new RegExp(search, 'i') },
-        { description: new RegExp(search, 'i') },
-        { requiredSkills: { $in: [new RegExp(search, 'i')] } }
+        { title: new RegExp(searchTerm, 'i') },
+        { description: new RegExp(searchTerm, 'i') },
+        { requiredSkills: { $in: [new RegExp(searchTerm, 'i')] } }
       ];
     }
     if (category) {
       query.category = category;
-      console.log('Filtering by category:', category);
-      console.log('Query:', JSON.stringify(query, null, 2));
     }
     if (skills) {
       const skillsArray = Array.isArray(skills) ? skills : [skills];

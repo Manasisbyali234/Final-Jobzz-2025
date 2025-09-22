@@ -7,14 +7,26 @@ import { employer, empRoute } from "../../../../../globals/route-names";
 export default function EmpPostedJobs() {
 	const navigate = useNavigate();
     const [jobs, setJobs] = useState([]);
+    const [filteredJobs, setFilteredJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isApproved, setIsApproved] = useState(false);
     const [employerType, setEmployerType] = useState('company');
+    const [statusFilter, setStatusFilter] = useState('all');
     
     useEffect(() => {
         loadScript("js/custom.js");
         fetchJobs();
     }, []);
+
+    useEffect(() => {
+        if (statusFilter === 'all') {
+            setFilteredJobs(jobs);
+        } else if (statusFilter === 'active') {
+            setFilteredJobs(jobs.filter(job => job.status === 'active'));
+        } else if (statusFilter === 'inactive') {
+            setFilteredJobs(jobs.filter(job => job.status !== 'active'));
+        }
+    }, [jobs, statusFilter]);
 
     const fetchJobs = async () => {
         try {
@@ -40,6 +52,7 @@ export default function EmpPostedJobs() {
             if (response.ok) {
                 const data = await response.json();
                 setJobs(data.jobs);
+                setFilteredJobs(data.jobs);
             }
         } catch (error) {
             console.error('Error fetching jobs:', error);
@@ -72,7 +85,7 @@ export default function EmpPostedJobs() {
             
             if (response.ok) {
                 alert('Job deleted successfully!');
-                fetchJobs(); // Refresh the list
+                fetchJobs();
             } else {
                 alert('Failed to delete job');
             }
@@ -98,7 +111,7 @@ export default function EmpPostedJobs() {
             
             if (response.ok) {
                 alert(`Job ${newStatus === 'active' ? 'activated' : 'closed'} successfully!`);
-                fetchJobs(); // Refresh the list
+                fetchJobs();
             } else {
                 alert('Failed to update job status');
             }
@@ -143,34 +156,35 @@ export default function EmpPostedJobs() {
 				</div>
 
 				<div className="panel-body wt-panel-body">
-					<div className="mb-3 d-flex justify-content-between align-items-center">
+					<div className="mb-4 d-flex justify-content-between align-items-center">
 						<input
 							type="text"
-							className="form-control w-25"
+							className="form-control"
+							style={{maxWidth: '300px'}}
 							placeholder="Search jobs..."
 						/>
-						<div className="dropdown">
-							<button
-								className="btn btn-outline-secondary dropdown-toggle"
-								type="button"
-								data-bs-toggle="dropdown"
+						<div className="btn-group" role="group">
+							<button 
+								type="button" 
+								className={`btn ${statusFilter === 'all' ? 'btn-primary' : 'btn-outline-primary'}`}
+								onClick={() => setStatusFilter('all')}
 							>
-								Job Post Status
+								All
 							</button>
-
-							<ul className="dropdown-menu">
-								<li>
-									<a className="dropdown-item" href="#">
-										Active
-									</a>
-								</li>
-
-								<li>
-									<a className="dropdown-item" href="#">
-										Inactive
-									</a>
-								</li>
-							</ul>
+							<button 
+								type="button" 
+								className={`btn ${statusFilter === 'active' ? 'btn-success' : 'btn-outline-success'}`}
+								onClick={() => setStatusFilter('active')}
+							>
+								Active
+							</button>
+							<button 
+								type="button" 
+								className={`btn ${statusFilter === 'inactive' ? 'btn-secondary' : 'btn-outline-secondary'}`}
+								onClick={() => setStatusFilter('inactive')}
+							>
+								Inactive
+							</button>
 						</div>
 					</div>
 
@@ -182,7 +196,7 @@ export default function EmpPostedJobs() {
 						</div>
 					) : (
 						<div className="row">
-							{jobs.length === 0 ? (
+							{filteredJobs.length === 0 ? (
 								<div className="col-12 text-center py-4">
 									<p className="text-muted">No jobs posted yet.</p>
 									{isApproved ? (
@@ -197,7 +211,7 @@ export default function EmpPostedJobs() {
 									)}
 								</div>
 							) : (
-								jobs.map((job) => (
+								filteredJobs.map((job) => (
 									<div className="col-lg-6 col-12" key={job._id}>
 										<div className="d-flex justify-content-between align-items-center p-3 border rounded mb-3 shadow-sm">
 											<div className="d-flex align-items-center gap-3">

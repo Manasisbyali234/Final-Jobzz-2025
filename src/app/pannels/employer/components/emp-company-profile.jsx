@@ -149,11 +149,11 @@ function EmpCompanyProfilePage() {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validate cover: <=1MB, jpg/png, min 770x310
+        // Validate cover: <=2MB, jpg/png, no minimum size restriction
         const result = await validateImageFile(file, {
-            maxSizeMB: 1,
-            minWidth: 770,
-            minHeight: 310,
+            maxSizeMB: 2,
+            minWidth: 1,
+            minHeight: 1,
             allowedTypes: ['image/jpeg', 'image/png']
         });
         if (!result.ok) {
@@ -305,7 +305,7 @@ function EmpCompanyProfilePage() {
                                         <img 
                                             src={formData.coverImage} 
                                             alt="Cover" 
-                                            style={{maxWidth: '300px', maxHeight: '150px', objectFit: 'cover', border: '1px solid #ddd'}} 
+                                            style={{width: '100%', maxWidth: '400px', height: 'auto', maxHeight: '200px', objectFit: 'contain', border: '1px solid #ddd', borderRadius: '4px'}} 
                                             onError={(e) => {
                                                 console.log('Cover load error'); 
                                                 e.target.src = '/images/default-cover.png';
@@ -315,7 +315,7 @@ function EmpCompanyProfilePage() {
                                     </div>
                                 )}
                                 <p className="text-muted mt-2">
-                                    <b>Background Banner Image:</b> Max file size is 1MB, Minimum dimension: 770 x 310 And Suitable files are .jpg & .png
+                                    <b>Background Banner Image:</b> Max file size is 2MB. Any image size is supported. Suitable files are .jpg & .png
                                 </p>
                             </div>
                         </div>

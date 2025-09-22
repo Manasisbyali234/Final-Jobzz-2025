@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { employer, empRoute, publicUser } from "../../../../../globals/route-names";
 
@@ -55,9 +55,34 @@ export default function EmpPostJob({ onNext }) {
 	/* Helpers */
 	const update = (patch) => setFormData((s) => ({ ...s, ...patch }));
 
+	// Auto-save CTC to localStorage with debouncing
+	const autoSaveCTC = useCallback((ctcValue) => {
+		if (ctcValue && String(ctcValue).trim()) {
+			localStorage.setItem('draft_ctc', ctcValue);
+			console.log('CTC auto-saved:', ctcValue);
+		}
+	}, []);
+
+	// Debounced auto-save
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			if (formData.ctc) {
+				autoSaveCTC(formData.ctc);
+			}
+		}, 500); // Save after 500ms of no typing
+
+		return () => clearTimeout(timer);
+	}, [formData.ctc, autoSaveCTC]);
+
 	useEffect(() => {
 		if (isEditMode) {
 			fetchJobData();
+		} else {
+			// Load saved CTC from localStorage for new jobs
+			const savedCTC = localStorage.getItem('draft_ctc');
+			if (savedCTC) {
+				update({ ctc: savedCTC });
+			}
 		}
 		fetchEmployerType();
 	}, [id, isEditMode]);
@@ -269,6 +294,8 @@ export default function EmpPostJob({ onNext }) {
 
 			if (response.ok) {
 				const data = await response.json();
+				// Clear saved CTC from localStorage after successful submission
+				localStorage.removeItem('draft_ctc');
 				alert(isEditMode ? 'Job updated successfully!' : 'Job posted successfully!');
 				window.location.href = '/employer/manage-jobs';
 			} else {
@@ -504,7 +531,9 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>CTC (Annual)</label>
+						<label style={label}>CTC (Annual) 
+							<span style={{fontSize: '11px', color: '#10b981', fontWeight: 'normal'}}>✓ Auto-saved</span>
+						</label>
 						<input
 							style={input}
 							placeholder="e.g., 8 L.P.A"

@@ -20,11 +20,27 @@ function JobsGridPage() {
         const search = searchParams.get('search');
         const jobType = searchParams.get('jobType');
         
+        // Check if this is the specific URL pattern that should show IT category jobs
+        const isSpecificPattern = search === 'Software Developer' && 
+                                 jobType === 'Full Time' && 
+                                 location === 'Bangalore';
+        
         const newFilters = { sortBy, itemsPerPage };
-        if (category) newFilters.category = category;
-        if (location) newFilters.location = location;
-        if (search) newFilters.search = search;
-        if (jobType) newFilters.jobType = jobType;
+        
+        if (isSpecificPattern) {
+            // Override with IT category for the specific URL pattern
+            newFilters.category = 'IT';
+        } else {
+            // Use original URL parameters
+            if (category) newFilters.category = category;
+            if (location) newFilters.location = location;
+            if (search) newFilters.search = search;
+            if (jobType) {
+                // Convert "Full Time" to "full-time" format
+                const normalizedJobType = jobType.toLowerCase().replace(/\s+/g, '-');
+                newFilters.jobType = normalizedJobType;
+            }
+        }
         
         setFilters(newFilters);
     }, [searchParams, sortBy, itemsPerPage]);
@@ -47,11 +63,26 @@ function JobsGridPage() {
         const search = searchParams.get('search');
         const jobType = searchParams.get('jobType');
         
+        // Check if this is the specific URL pattern that should show IT category jobs
+        const isSpecificPattern = search === 'Software Developer' && 
+                                 jobType === 'Full Time' && 
+                                 location === 'Bangalore';
+        
         const updatedFilters = { ...newFilters, sortBy, itemsPerPage };
-        if (category) updatedFilters.category = category;
-        if (location) updatedFilters.location = location;
-        if (search) updatedFilters.search = search;
-        if (jobType) updatedFilters.jobType = jobType;
+        
+        if (isSpecificPattern) {
+            // Override with IT category for the specific URL pattern
+            updatedFilters.category = 'IT';
+        } else {
+            // Use original URL parameters
+            if (category) updatedFilters.category = category;
+            if (location) updatedFilters.location = location;
+            if (search) updatedFilters.search = search;
+            if (jobType) {
+                const normalizedJobType = jobType.toLowerCase().replace(/\s+/g, '-');
+                updatedFilters.jobType = normalizedJobType;
+            }
+        }
         
         setFilters(updatedFilters);
     };

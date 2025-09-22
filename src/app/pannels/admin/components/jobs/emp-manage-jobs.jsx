@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import JobZImage from "../../../../common/jobz-img";
 import { api } from '../../../../utils/api';
+import './emp-manage-jobs.css';
 
 function EmpManageJobsPage() {
     const [jobs, setJobs] = useState([]);
@@ -30,23 +31,15 @@ function EmpManageJobsPage() {
 
     const getStatusBadge = (status) => {
         const statusConfig = {
-            'active': { color: '#28a745', text: 'Active' },
-            'pending': { color: '#ffc107', text: 'Pending' },
-            'closed': { color: '#dc3545', text: 'Closed' },
-            'expired': { color: '#6c757d', text: 'Expired' }
+            'active': { className: 'status-active', text: 'Active', icon: 'fa-check-circle' },
+            'pending': { className: 'status-pending', text: 'Pending', icon: 'fa-clock' },
+            'closed': { className: 'status-closed', text: 'Closed', icon: 'fa-times-circle' },
+            'expired': { className: 'status-expired', text: 'Expired', icon: 'fa-calendar-times' }
         };
-        const config = statusConfig[status] || { color: '#6c757d', text: 'Unknown' };
+        const config = statusConfig[status] || { className: 'status-unknown', text: 'Unknown', icon: 'fa-question-circle' };
         return (
-            <span 
-                style={{
-                    backgroundColor: config.color,
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                }}
-            >
+            <span className={`status-badge ${config.className}`}>
+                <i className={`fa ${config.icon}`}></i>
                 {config.text}
             </span>
         );
@@ -75,11 +68,14 @@ function EmpManageJobsPage() {
 
     if (loading) {
         return (
-            <div className="wt-admin-right-page-header clearfix">
-                <h2>Manage Jobs</h2>
-                <div className="panel panel-default">
-                    <div className="panel-body wt-panel-body p-a20">
-                        <div className="text-center">Loading jobs...</div>
+            <div className="manage-jobs-container">
+                <div className="page-header">
+                    <h2><i className="fa fa-briefcase"></i> Manage Jobs</h2>
+                </div>
+                <div className="loading-container">
+                    <div className="loading-spinner">
+                        <i className="fa fa-spinner fa-spin"></i>
+                        <p>Loading your jobs...</p>
                     </div>
                 </div>
             </div>
@@ -87,118 +83,153 @@ function EmpManageJobsPage() {
     }
 
     return (
-        <>
-            <div className="wt-admin-right-page-header clearfix">
-                <h2>Manage Jobs</h2>
-                <div className="breadcrumbs"><a href="#">Home</a><a href="#">Dashboard</a><span>My Job Listing</span></div>
-            </div>
-            {/*Basic Information*/}
-            <div className="panel panel-default">
-                <div className="panel-heading wt-panel-heading p-a20">
-                    <h4 className="panel-tittle m-a0"><i className="fa fa-suitcase" /> Job Details ({jobs.length})</h4>
+        <div className="manage-jobs-container">
+            <div className="page-header">
+                <div className="header-content">
+                    <h2><i className="fa fa-briefcase"></i> Manage Jobs</h2>
+                    <div className="breadcrumbs">
+                        <span><i className="fa fa-home"></i> Home</span>
+                        <span><i className="fa fa-angle-right"></i> Dashboard</span>
+                        <span><i className="fa fa-angle-right"></i> My Job Listings</span>
+                    </div>
                 </div>
-                <div className="panel-body wt-panel-body p-a20 m-b30 ">
-                    {error && (
-                        <div className="alert alert-danger m-b20">{error}</div>
-                    )}
-                    <div className="twm-D_table p-a20 table-responsive">
-                        <table id="jobs_bookmark_table" className="table table-bordered twm-bookmark-list-wrap">
-                            <thead>
-                                <tr>
-                                    <th>Job Title</th>
-                                    <th>Category</th>
-                                    <th>Status</th>
-                                    <th>Applications</th>
-                                    <th>Created & Expires</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {jobs.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="6" className="text-center">No jobs found</td>
-                                    </tr>
-                                ) : (
-                                    jobs.map((job) => (
-                                        <tr key={job._id}>
-                                            <td>
-                                                <div className="twm-bookmark-list">
-                                                    <div className="twm-media">
-                                                        <div className="twm-media-pic">
-                                                            <JobZImage src="images/jobs-company/pic1.jpg" alt="#" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="twm-mid-content">
-                                                        <div className="twm-job-title">
-                                                            <h4>{job.title}</h4>
-                                                            <p className="twm-bookmark-address">
-                                                                <i className="feather-map-pin" />{job.location || 'Location not specified'}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>{job.category || 'N/A'}</td>
-                                            <td>
-                                                <div className="twm-jobs-category">
-                                                    {getStatusBadge(job.status)}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span className="site-text-primary">
-                                                    {job.applicationCount || 0} Applied
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div>{formatDate(job.createdAt)}</div>
-                                                <div>{job.expiryDate ? formatDate(job.expiryDate) : 'No expiry'}</div>
-                                            </td>
-                                            <td>
-                                                <div className="twm-table-controls">
-                                                    <ul className="twm-DT-controls-icon list-unstyled">
-                                                        <li>
-                                                            <button 
-                                                                title="View Applications" 
-                                                                data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"
-                                                                onClick={() => window.location.href = `/employer/job-applications/${job._id}`}
-                                                            >
-                                                                <span className="fa fa-eye" />
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button 
-                                                                title="Edit" 
-                                                                data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"
-                                                                onClick={() => window.location.href = `/employer/edit-job/${job._id}`}
-                                                            >
-                                                                <span className="far fa-edit" />
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button 
-                                                                title="Delete" 
-                                                                data-bs-toggle="tooltip" 
-                                                                data-bs-placement="top"
-                                                                onClick={() => handleDelete(job._id)}
-                                                            >
-                                                                <span className="far fa-trash-alt" />
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-
-                        </table>
+                <div className="header-stats">
+                    <div className="stat-card">
+                        <div className="stat-number">{jobs.length}</div>
+                        <div className="stat-label">Total Jobs</div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-number">{jobs.filter(job => job.status === 'active').length}</div>
+                        <div className="stat-label">Active</div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-number">{jobs.reduce((sum, job) => sum + (job.applicationCount || 0), 0)}</div>
+                        <div className="stat-label">Applications</div>
                     </div>
                 </div>
             </div>
-        </>
+
+            {error && (
+                <div className="error-alert">
+                    <i className="fa fa-exclamation-triangle"></i>
+                    {error}
+                </div>
+            )}
+
+            <div className="jobs-panel">
+                <div className="panel-header">
+                    <h4><i className="fa fa-list"></i> Job Listings ({jobs.length})</h4>
+                    <button className="btn-add-job" onClick={() => window.location.href = '/employer/post-job'}>
+                        <i className="fa fa-plus"></i> Post New Job
+                    </button>
+                </div>
+                
+                <div className="jobs-table-container">
+                    {jobs.length === 0 ? (
+                        <div className="empty-state">
+                            <div className="empty-icon">
+                                <i className="fa fa-briefcase"></i>
+                            </div>
+                            <h3>No Jobs Posted Yet</h3>
+                            <p>Start by posting your first job to attract talented candidates.</p>
+                            <button className="btn-primary" onClick={() => window.location.href = '/employer/post-job'}>
+                                <i className="fa fa-plus"></i> Post Your First Job
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="table-responsive">
+                            <table className="jobs-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Details</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th>Applications</th>
+                                        <th>Dates</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {jobs.map((job) => (
+                                        <tr key={job._id} className="job-row">
+                                            <td>
+                                                <div className="job-info">
+                                                    <div className="job-avatar">
+                                                        <i className="fa fa-briefcase"></i>
+                                                    </div>
+                                                    <div className="job-details">
+                                                        <h5 className="job-title">{job.title}</h5>
+                                                        <p className="job-location">
+                                                            <i className="fa fa-map-marker-alt"></i>
+                                                            {job.location || 'Remote'}
+                                                        </p>
+                                                        {job.salary && (
+                                                            <p className="job-salary">
+                                                                <i className="fa fa-dollar-sign"></i>
+                                                                {job.salary}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className="category-tag">
+                                                    {job.category || 'General'}
+                                                </span>
+                                            </td>
+                                            <td>{getStatusBadge(job.status)}</td>
+                                            <td>
+                                                <div className="applications-count">
+                                                    <span className="count">{job.applicationCount || 0}</span>
+                                                    <span className="label">Applications</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="date-info">
+                                                    <div className="created-date">
+                                                        <small>Created:</small>
+                                                        <span>{formatDate(job.createdAt)}</span>
+                                                    </div>
+                                                    <div className="expiry-date">
+                                                        <small>Expires:</small>
+                                                        <span>{job.expiryDate ? formatDate(job.expiryDate) : 'No expiry'}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button 
+                                                        className="btn-action btn-view"
+                                                        title="View Applications"
+                                                        onClick={() => window.location.href = `/employer/job-applications/${job._id}`}
+                                                    >
+                                                        <i className="fa fa-eye"></i>
+                                                    </button>
+                                                    <button 
+                                                        className="btn-action btn-edit"
+                                                        title="Edit Job"
+                                                        onClick={() => window.location.href = `/employer/edit-job/${job._id}`}
+                                                    >
+                                                        <i className="fa fa-edit"></i>
+                                                    </button>
+                                                    <button 
+                                                        className="btn-action btn-delete"
+                                                        title="Delete Job"
+                                                        onClick={() => handleDelete(job._id)}
+                                                    >
+                                                        <i className="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
     )
 }
 export default EmpManageJobsPage;

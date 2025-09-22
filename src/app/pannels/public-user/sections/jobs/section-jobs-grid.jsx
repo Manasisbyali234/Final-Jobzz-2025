@@ -29,19 +29,19 @@ function SectionJobsGrid({ filters, onTotalChange }) {
             if (filters?.jobType) {
                 if (Array.isArray(filters.jobType)) {
                     filters.jobType.forEach(type => {
-                        const normalizedType = type.toLowerCase().replace(/\s+/g, '-');
-                        params.append('jobType', normalizedType);
+                        params.append('jobType', type);
                     });
                 } else {
-                    const normalizedType = filters.jobType.toLowerCase().replace(/\s+/g, '-');
-                    params.append('jobType', normalizedType);
+                    params.append('jobType', filters.jobType);
                 }
             }
-            if (filters?.employmentType) params.append('employmentType', filters.employmentType);
+            if (filters?.employmentType) {
+                params.append('employmentType', filters.employmentType);
+            }
             
             // Handle other parameters
             if (filters?.jobTitle) params.append('jobTitle', filters.jobTitle);
-            if (filters?.skills?.length > 0) {
+            if (filters?.skills && filters.skills.length > 0) {
                 filters.skills.forEach(skill => params.append('skills', skill));
             }
             if (filters?.category) {

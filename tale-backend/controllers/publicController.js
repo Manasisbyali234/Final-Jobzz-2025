@@ -15,14 +15,17 @@ exports.getJobs = async (req, res) => {
     if (employerId) query.employerId = employerId;
     if (title || jobTitle) query.title = new RegExp(title || jobTitle, 'i');
     if (location) query.location = new RegExp(location, 'i');
-    if (jobType) {
+
+    // Handle both jobType and employmentType (employmentType takes priority)
+    if (employmentType) {
+      query.jobType = employmentType;
+    } else if (jobType) {
       if (Array.isArray(jobType)) {
         query.jobType = { $in: jobType };
       } else {
         query.jobType = jobType;
       }
     }
-    if (employmentType) query.jobType = employmentType;
     
     if (search || keyword) {
       const searchTerm = search || keyword;

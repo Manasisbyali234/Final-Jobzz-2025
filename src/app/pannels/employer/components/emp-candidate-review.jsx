@@ -337,7 +337,7 @@ function EmpCandidateReviewPage () {
                                         <h5 className="mb-1">10th Educational Details</h5>
                                         <h6>School Name <p className="mb-0 text-muted">{candidate.education[0].collegeName || 'Not provided'}</p></h6>
                                         <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[0].passYear || 'Not provided'}</p></h6>
-                                        <h6>Percentage / CGPA / SGPA <p className="mb-0 text-muted">{candidate.education[0].percentage || 'Not provided'}</p></h6>
+                                        <h6>{candidate.education[0].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[0].scoreValue || candidate.education[0].percentage || 'Not provided'}{candidate.education[0].scoreType === 'percentage' ? '%' : ''}</p></h6>
                                         {candidate.education[0].marksheet && (
                                             <div className="d-flex gap-2">
                                                 <button
@@ -364,7 +364,7 @@ function EmpCandidateReviewPage () {
                                         <h5 className="mb-1">12th Educational Details</h5>
                                         <h6>School Name <p className="mb-0 text-muted">{candidate.education[1].collegeName || 'Not provided'}</p></h6>
                                         <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[1].passYear || 'Not provided'}</p></h6>
-                                        <h6>Percentage / CGPA / SGPA <p className="mb-0 text-muted">{candidate.education[1].percentage || 'Not provided'}</p></h6>
+                                        <h6>{candidate.education[1].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[1].scoreValue || candidate.education[1].percentage || 'Not provided'}{candidate.education[1].scoreType === 'percentage' ? '%' : ''}</p></h6>
                                         {candidate.education[1].marksheet && (
                                             <div className="d-flex gap-2">
                                                 <button
@@ -392,7 +392,7 @@ function EmpCandidateReviewPage () {
                                         <h6>Degree Name <p className="mb-0 text-muted">{candidate.education[2].degreeName || 'Not provided'}</p></h6>
                                         <h6>School Name <p className="mb-0 text-muted">{candidate.education[2].collegeName || 'Not provided'}</p></h6>
                                         <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[2].passYear || 'Not provided'}</p></h6>
-                                        <h6>Percentage / CGPA / SGPA <p className="mb-0 text-muted">{candidate.education[2].percentage || 'Not provided'}</p></h6>
+                                        <h6>{candidate.education[2].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[2].scoreValue || candidate.education[2].percentage || 'Not provided'}{candidate.education[2].scoreType === 'percentage' ? '%' : ''}</p></h6>
                                         {candidate.education[2].marksheet && (
                                             <div className="d-flex gap-2">
                                                 <button

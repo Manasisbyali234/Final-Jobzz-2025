@@ -27,6 +27,7 @@ function SectionCanAttachment({ profile }) {
                 alert('Resume uploaded successfully!');
                 setResumeFile(selectedFile.name);
                 setSelectedFile(null);
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             alert('Failed to upload resume');
@@ -60,7 +61,7 @@ function SectionCanAttachment({ profile }) {
                         >
                             {uploading ? 'Uploading...' : 'Submit Resume'}
                         </button>
-                        {profile?.resume && <p>Current resume: <span style={{color: '#28a745', fontWeight: 'bold'}}>Resume uploaded successfully</span></p>}
+                        {resumeFile && <p>Current resume: <span style={{color: '#28a745', fontWeight: 'bold'}}>Resume uploaded successfully</span></p>}
                         {resumeFile && <p>Uploaded: {resumeFile}</p>}
                         <p>Upload Resume File size max 3 MB</p>
                     </div>

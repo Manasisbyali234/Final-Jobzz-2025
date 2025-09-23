@@ -29,6 +29,14 @@ export default function EmpPostJob({ onNext }) {
 			final: false,
 			hr: false,
 		},
+		interviewRoundOrder: [],
+		interviewRoundDetails: {
+			technical: { description: '', date: '', time: '' },
+			nonTechnical: { description: '', date: '', time: '' },
+			managerial: { description: '', date: '', time: '' },
+			final: { description: '', date: '', time: '' },
+			hr: { description: '', date: '', time: '' }
+		},
 		offerLetterDate: "",
 		joiningDate: "",
 		transportation: {
@@ -150,6 +158,14 @@ export default function EmpPostJob({ onNext }) {
 							final: false,
 							hr: false,
 						},
+						interviewRoundOrder: job.interviewRoundOrder || [],
+						interviewRoundDetails: job.interviewRoundDetails || {
+							technical: { description: '', date: '', time: '' },
+							nonTechnical: { description: '', date: '', time: '' },
+							managerial: { description: '', date: '', time: '' },
+							final: { description: '', date: '', time: '' },
+							hr: { description: '', date: '', time: '' }
+						},
 						offerLetterDate: job.offerLetterDate ? job.offerLetterDate.split('T')[0] : '',
 						transportation: job.transportation || {
 							oneWay: false,
@@ -196,11 +212,47 @@ export default function EmpPostJob({ onNext }) {
 		});
 
 	/* Toggle nested checkbox groups */
-	const toggleNested = (group, key) =>
-		setFormData((s) => ({
+	const toggleNested = (group, key) => {
+		if (group === 'interviewRoundTypes') {
+			setFormData((s) => {
+				const isCurrentlyChecked = s[group][key];
+				let newOrder = [...s.interviewRoundOrder];
+				
+				if (isCurrentlyChecked) {
+					// Remove from order if unchecking
+					newOrder = newOrder.filter(item => item !== key);
+				} else {
+					// Add to order if checking
+					newOrder.push(key);
+				}
+				
+				return {
+					...s,
+					[group]: { ...s[group], [key]: !s[group][key] },
+					interviewRoundOrder: newOrder
+				};
+			});
+		} else {
+			setFormData((s) => ({
+				...s,
+				[group]: { ...s[group], [key]: !s[group][key] },
+			}));
+		}
+	};
+
+	/* Update interview round details */
+	const updateRoundDetails = (roundType, field, value) => {
+		setFormData(s => ({
 			...s,
-			[group]: { ...s[group], [key]: !s[group][key] },
+			interviewRoundDetails: {
+				...s.interviewRoundDetails,
+				[roundType]: {
+					...s.interviewRoundDetails[roundType],
+					[field]: value
+				}
+			}
 		}));
+	};
 
 	const handleLogoUpload = (e) => {
 		const file = e.target.files[0];
@@ -253,6 +305,7 @@ export default function EmpPostJob({ onNext }) {
 				backlogsAllowed: formData.backlogsAllowed,
 				interviewRoundsCount: parseInt(formData.interviewRoundsCount) || 0,
 				interviewRoundTypes: formData.interviewRoundTypes,
+				interviewRoundDetails: formData.interviewRoundDetails,
 				offerLetterDate: formData.offerLetterDate || null,
 				transportation: formData.transportation,
 				category: formData.category,
@@ -723,7 +776,11 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Interview Round Types - full row */}
 					<div style={fullRow}>
-						<label style={label}>Interview Round Types</label>
+						<label style={label}>Interview Round Types 
+							<span style={{fontSize: '11px', color: '#6b7280', fontWeight: 'normal'}}>
+								({Object.values(formData.interviewRoundTypes).filter(Boolean).length} selected)
+							</span>
+						</label>
 						<div
 							style={{
 								display: "grid",
@@ -732,6 +789,9 @@ export default function EmpPostJob({ onNext }) {
 							}}
 						>
 							<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+								<span style={{fontSize: '11px', color: '#6b7280', minWidth: '15px'}}>
+									{formData.interviewRoundTypes.technical ? (formData.interviewRoundOrder || []).indexOf('technical') + 1 : ''}
+								</span>
 								<input
 									type="checkbox"
 									checked={formData.interviewRoundTypes.technical}
@@ -743,6 +803,9 @@ export default function EmpPostJob({ onNext }) {
 							</label>
 
 							<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+								<span style={{fontSize: '11px', color: '#6b7280', minWidth: '15px'}}>
+									{formData.interviewRoundTypes.nonTechnical ? (formData.interviewRoundOrder || []).indexOf('nonTechnical') + 1 : ''}
+								</span>
 								<input
 									type="checkbox"
 									checked={formData.interviewRoundTypes.nonTechnical}
@@ -754,6 +817,9 @@ export default function EmpPostJob({ onNext }) {
 							</label>
 
 							<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+								<span style={{fontSize: '11px', color: '#6b7280', minWidth: '15px'}}>
+									{formData.interviewRoundTypes.managerial ? (formData.interviewRoundOrder || []).indexOf('managerial') + 1 : ''}
+								</span>
 								<input
 									type="checkbox"
 									checked={formData.interviewRoundTypes.managerial}
@@ -765,6 +831,9 @@ export default function EmpPostJob({ onNext }) {
 							</label>
 
 							<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+								<span style={{fontSize: '11px', color: '#6b7280', minWidth: '15px'}}>
+									{formData.interviewRoundTypes.final ? (formData.interviewRoundOrder || []).indexOf('final') + 1 : ''}
+								</span>
 								<input
 									type="checkbox"
 									checked={formData.interviewRoundTypes.final}
@@ -774,6 +843,9 @@ export default function EmpPostJob({ onNext }) {
 							</label>
 
 							<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+								<span style={{fontSize: '11px', color: '#6b7280', minWidth: '15px'}}>
+									{formData.interviewRoundTypes.hr ? (formData.interviewRoundOrder || []).indexOf('hr') + 1 : ''}
+								</span>
 								<input
 									type="checkbox"
 									checked={formData.interviewRoundTypes.hr}
@@ -783,6 +855,69 @@ export default function EmpPostJob({ onNext }) {
 							</label>
 						</div>
 					</div>
+
+					{/* Interview Round Details */}
+					{Object.entries(formData.interviewRoundTypes).some(([key, value]) => value) && (
+						<div style={fullRow}>
+							<h4 style={{ margin: "16px 0 12px 0", fontSize: 15, color: "#0f172a" }}>
+								Interview Round Details
+							</h4>
+							{Object.entries(formData.interviewRoundTypes)
+								.filter(([key, value]) => value)
+								.map(([roundType]) => {
+									const roundNames = {
+										technical: 'Technical Round',
+										nonTechnical: 'Non-Technical Round',
+										managerial: 'Managerial Round',
+										final: 'Final Round',
+										hr: 'HR Round'
+									};
+									return (
+										<div key={roundType} style={{ 
+											marginBottom: 16, 
+											padding: 12, 
+											border: '1px solid #e5e7eb', 
+											borderRadius: 8,
+											background: '#f9fafb'
+										}}>
+											<h5 style={{ margin: '0 0 8px 0', fontSize: 14, color: '#374151' }}>
+												{roundNames[roundType]}
+											</h5>
+											<div style={{ display: 'grid', gridTemplateColumns: '1fr 150px 120px', gap: 12, alignItems: 'end' }}>
+												<div>
+													<label style={{...label, marginBottom: 4}}>Description</label>
+													<textarea
+														style={{...input, minHeight: '60px', fontSize: 13}}
+														placeholder={`Describe the ${roundNames[roundType].toLowerCase()}...`}
+														value={formData.interviewRoundDetails[roundType].description}
+														onChange={(e) => updateRoundDetails(roundType, 'description', e.target.value)}
+													/>
+												</div>
+												<div>
+													<label style={{...label, marginBottom: 4}}>Date</label>
+													<input
+														style={{...input, fontSize: 13}}
+														type="date"
+														value={formData.interviewRoundDetails[roundType].date}
+														onChange={(e) => updateRoundDetails(roundType, 'date', e.target.value)}
+													/>
+												</div>
+												<div>
+													<label style={{...label, marginBottom: 4}}>Time</label>
+													<input
+														style={{...input, fontSize: 13}}
+														type="time"
+														value={formData.interviewRoundDetails[roundType].time}
+														onChange={(e) => updateRoundDetails(roundType, 'time', e.target.value)}
+													/>
+												</div>
+											</div>
+										</div>
+									);
+								})
+							}
+						</div>
+					)}
 
 					{/* Dates */}
 					<div>

@@ -15,6 +15,7 @@ function SectionCanProfileSummary({ profile }) {
             const response = await api.updateCandidateProfile({ profileSummary: summary });
             if (response.success) {
                 alert('Profile summary updated successfully!');
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             alert('Failed to update profile summary');

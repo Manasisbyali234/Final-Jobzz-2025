@@ -41,6 +41,7 @@ router.delete('/employers/:id', adminController.deleteEmployer);
 // Candidate Management Routes
 router.get('/candidates', adminController.getAllCandidates);
 router.get('/registered-candidates', adminController.getRegisteredCandidates);
+router.get('/candidates/:candidateId', adminController.getCandidateDetails);
 router.delete('/candidates/:id', adminController.deleteCandidate);
 
 // Content Management Routes

@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
 const Job = require('./models/Job');
 
-mongoose.connect('mongodb://127.0.0.1:27017/tale_jobportal', {
+mongoose.connect('mongodb://localhost:27017/jobportal', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 async function checkJobTypes() {
   try {
-    const jobs = await Job.find({}).select('title jobType employmentType location status');
-    console.log('Job Types and Locations:');
-    jobs.forEach((job, index) => {
-      console.log(`${index + 1}. ${job.title} - Type: ${job.jobType || job.employmentType || 'Not set'} - Location: ${job.location || 'Not set'} - Status: ${job.status}`);
+    const jobs = await Job.find({}, 'title jobType status');
+    console.log('Jobs with jobType:');
+    jobs.forEach(job => {
+      console.log(`- ${job.title} | JobType: ${job.jobType || 'NOT SET'} | Status: ${job.status}`);
     });
+    
+    process.exit(0);
   } catch (error) {
     console.error('Error:', error);
-  } finally {
-    mongoose.connection.close();
+    process.exit(1);
   }
 }
 

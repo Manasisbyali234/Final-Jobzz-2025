@@ -38,10 +38,14 @@ function EmpCompanyProfilePage() {
         
         // Images
         logo: '',
-        coverImage: ''
+        coverImage: '',
+        
+        // Authorization Letters
+        authorizationLetters: []
     });
 
     const [loading, setLoading] = useState(false);
+    const [authSections, setAuthSections] = useState([{ id: 1 }]);
 
     useEffect(() => {
         loadScript("js/custom.js");
@@ -218,6 +222,87 @@ function EmpCompanyProfilePage() {
         } catch (error) {
             console.error('Document upload failed:', error);
             alert('Document upload failed. Please try again.');
+        }
+    };
+
+    const handleAuthorizationLetterUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate documents: <=5MB, allow images (jpg/png/jpeg) and PDF
+        const maxBytes = 5 * 1024 * 1024;
+        const allowed = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (file.size > maxBytes) {
+            alert('Document is too large. Max size is 5MB.');
+            return;
+        }
+        if (!allowed.includes(file.type)) {
+            alert('Invalid document type. Allowed: JPEG, PNG, PDF.');
+            return;
+        }
+
+        const body = new FormData();
+        body.append('document', file);
+        try {
+            const token = localStorage.getItem('employerToken');
+            const response = await fetch('http://localhost:5000/api/employer/profile/authorization-letter', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: body
+            });
+            const data = await response.json();
+            if (data.success) {
+                setFormData(prev => ({
+                    ...prev,
+                    authorizationLetters: data.profile.authorizationLetters || []
+                }));
+                alert('Authorization letter uploaded successfully!');
+                // Clear the file input
+                e.target.value = '';
+            } else {
+                alert(data.message || 'Document upload failed');
+            }
+        } catch (error) {
+            console.error('Document upload failed:', error);
+            alert('Document upload failed. Please try again.');
+        }
+    };
+
+    const handleDeleteAuthorizationLetter = async (documentId) => {
+        if (!window.confirm('Are you sure you want to delete this authorization letter?')) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('employerToken');
+            const response = await fetch(`http://localhost:5000/api/employer/profile/authorization-letter/${documentId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setFormData(prev => ({
+                    ...prev,
+                    authorizationLetters: data.profile.authorizationLetters || []
+                }));
+                alert('Authorization letter deleted successfully!');
+            } else {
+                alert(data.message || 'Failed to delete document');
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+            alert('Failed to delete document. Please try again.');
+        }
+    };
+
+    const addNewAuthSection = () => {
+        const newId = Math.max(...authSections.map(s => s.id)) + 1;
+        setAuthSections(prev => [...prev, { id: newId }]);
+    };
+
+    const removeAuthSection = (id) => {
+        if (authSections.length > 1) {
+            setAuthSections(prev => prev.filter(section => section.id !== id));
         }
     };
 
@@ -663,17 +748,85 @@ function EmpCompanyProfilePage() {
                                 </div>
                             </div>
 
-                            <div className="col-md-6">
+                            <div className="col-md-12">
                                 <div className="form-group">
-                                    <label>Authorization Letter (if registering on behalf of someone else)</label>
-                                    <input
-                                        className="form-control"
-                                        type="file"
-                                        accept=".jpg,.jpeg,.png,.pdf"
-                                        onChange={(e) => handleDocumentUpload(e, 'authorizationLetter')}
-                                    />
-                                    {formData.authorizationLetter && (
-                                        <p className="text-success mt-1">✓ Authorization Letter uploaded</p>
+                                    <label className="mb-3">Authorization Letters (if registering on behalf of someone else)</label>
+                                    
+                                    <div className="row">
+                                    {/* Dynamic Authorization Letter Sections */}
+                                    {authSections.map((section, index) => (
+                                        <div key={section.id} className="col-md-6 mb-3">
+                                            <div className="form-group">
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                    <label>Authorization Letter #{index + 1}</label>
+                                                    {authSections.length > 1 && (
+                                                        <button 
+                                                            type="button" 
+                                                            className="btn btn-outline-danger btn-sm"
+                                                            onClick={() => removeAuthSection(section.id)}
+                                                        >
+                                                            <i className="fas fa-times"></i>
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <input
+                                                    className="form-control"
+                                                    type="file"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onChange={handleAuthorizationLetterUpload}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    
+                                    </div>
+                                    
+                                    <div className="mt-2">
+                                        <button 
+                                            type="button" 
+                                            className="btn btn-success btn-sm"
+                                            onClick={addNewAuthSection}
+                                        >
+                                            <i className="fas fa-plus me-1"></i> Add New Authorization Letter
+                                        </button>
+                                    </div>
+                                    
+                                    {/* Display uploaded authorization letters */}
+                                    {formData.authorizationLetters && formData.authorizationLetters.length > 0 && (
+                                        <div className="uploaded-documents mt-4">
+                                            <h6 className="text-success">
+                                                <i className="fas fa-check-circle me-2"></i>
+                                                Uploaded Authorization Letters
+                                            </h6>
+                                            <div className="row">
+                                                {formData.authorizationLetters.map((doc, index) => (
+                                                    <div key={doc._id || index} className="col-md-6 mb-2">
+                                                        <div className="document-card p-3 border rounded shadow-sm" style={{backgroundColor: '#fff'}}>
+                                                            <div className="d-flex justify-content-between align-items-start">
+                                                                <div className="flex-grow-1">
+                                                                    <div className="d-flex align-items-center mb-1">
+                                                                        <i className="fas fa-file-alt text-primary me-2"></i>
+                                                                        <span className="fw-bold">{doc.fileName}</span>
+                                                                    </div>
+                                                                    <small className="text-muted">
+                                                                        <i className="fas fa-calendar me-1"></i>
+                                                                        {new Date(doc.uploadedAt).toLocaleDateString()}
+                                                                    </small>
+                                                                </div>
+                                                                <button 
+                                                                    type="button" 
+                                                                    className="btn btn-outline-danger btn-sm"
+                                                                    onClick={() => handleDeleteAuthorizationLetter(doc._id)}
+                                                                    title="Delete document"
+                                                                >
+                                                                    <i className="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             </div>

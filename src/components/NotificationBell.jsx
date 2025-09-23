@@ -159,8 +159,8 @@ const NotificationBell = ({ userRole }) => {
                   <h5 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 600 }}>
                     {notification.title}
                   </h5>
-                  <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#666' }}>
-                    {notification.message}
+                  <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#666', whiteSpace: 'pre-line' }}>
+                    {notification.message.length > 150 ? notification.message.substring(0, 150) + '...' : notification.message}
                   </p>
                   <small style={{ color: '#999', fontSize: '11px' }}>
                     {new Date(notification.createdAt).toLocaleDateString()}

@@ -21,7 +21,9 @@ const candidateProfileSchema = new mongoose.Schema({
     degreeName: String,
     collegeName: String,
     passYear: String,
-    percentage: String,
+    scoreType: { type: String, enum: ['percentage', 'cgpa', 'sgpa', 'grade'], default: 'percentage' },
+    scoreValue: String,
+    percentage: String, // Keep for backward compatibility
     marksheet: String // Base64 encoded document
   }],
   experience: [{

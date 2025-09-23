@@ -11,9 +11,7 @@ function SectionCanPersonalDetail({ profile }) {
         permanentAddress: '',
         correspondenceAddress: ''
     });
-    const [educationList, setEducationList] = useState([
-        { degreeName: "", collegeName: "", passYear: "", percentage: "", marksheet: null },
-    ]);
+    const [educationList, setEducationList] = useState([]);
     
     const getEducationLevelLabel = (index) => {
         const levels = ['10th School Name', 'PUC/Diploma College Name', 'Degree', 'Masters', 'PhD/Doctorate'];
@@ -32,8 +30,10 @@ function SectionCanPersonalDetail({ profile }) {
                 permanentAddress: profile.permanentAddress || '',
                 correspondenceAddress: profile.correspondenceAddress || ''
             });
-            if (profile.education) {
+            if (profile.education && profile.education.length > 0) {
                 setEducationList(profile.education);
+            } else {
+                setEducationList([]);
             }
         }
     }, [profile]);
@@ -53,13 +53,20 @@ function SectionCanPersonalDetail({ profile }) {
                 residentialAddress: formData.residentialAddress,
                 permanentAddress: formData.permanentAddress,
                 correspondenceAddress: formData.correspondenceAddress,
-                education: educationList
+                education: educationList.map(edu => ({
+                    degreeName: edu.degreeName,
+                    collegeName: edu.collegeName,
+                    passYear: edu.passYear,
+                    scoreType: edu.scoreType || 'percentage',
+                    scoreValue: edu.scoreValue || edu.percentage,
+                    marksheet: edu.marksheet
+                }))
             };
             console.log('Sending data:', updateData);
             const response = await api.updateCandidateProfile(updateData);
             if (response.success) {
                 alert('Profile updated successfully!');
-                window.location.reload();
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             alert('Failed to update profile');
@@ -71,7 +78,7 @@ function SectionCanPersonalDetail({ profile }) {
     const handleAddEducation = () => {
         setEducationList([
             ...educationList,
-            { degreeName: "", collegeName: "", passYear: "", percentage: "", marksheet: null },
+            { degreeName: "", collegeName: "", passYear: "", scoreType: "percentage", scoreValue: "", percentage: "", marksheet: null },
         ]);
     };
 
@@ -177,91 +184,131 @@ function SectionCanPersonalDetail({ profile }) {
                         <h5 className="mt-3">Educational Qualification Details</h5>
 
                         {educationList.map((edu, index) => (
-                            <div className="row mt-3" key={index}>
-                                <div className="col-md-2">
-                                    <label>{getEducationLevelLabel(index)}</label>
-                                    <input
-                                        className="form-control"
-                                        type="text"
-                                        value={edu.degreeName}
-                                        onChange={(e) =>
-                                            handleEducationChange(index, "degreeName", e.target.value)
+                            <div className="border rounded p-3 mb-3 position-relative" key={index}>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-danger position-absolute"
+                                    style={{ top: '10px', right: '10px', zIndex: 10 }}
+                                    onClick={() => {
+                                        if (educationList.length > 1) {
+                                            const updated = educationList.filter((_, i) => i !== index);
+                                            setEducationList(updated);
                                         }
-                                        placeholder={`Enter ${getEducationLevelLabel(index)}`}
-                                    />
-                                </div>
+                                    }}
+                                    title="Remove this education entry"
+                                >
+                                    ×
+                                </button>
+                                <div className="row">
+                                    <div className="col-md-3">
+                                        <label className="form-label fw-bold">{getEducationLevelLabel(index)}</label>
+                                        <input
+                                            className="form-control"
+                                            type="text"
+                                            value={edu.degreeName}
+                                            onChange={(e) =>
+                                                handleEducationChange(index, "degreeName", e.target.value)
+                                            }
+                                            placeholder={`Enter ${getEducationLevelLabel(index)}`}
+                                        />
+                                    </div>
 
-                                <div className="col-md-3">
-                                    <label>{index === 0 ? 'School Name' : (index === 1 ? 'College Name' : 'Institution Name')}</label>
-                                    <input
-                                        className="form-control"
-                                        type="text"
-                                        value={edu.collegeName}
-                                        onChange={(e) =>
-                                            handleEducationChange(index, "collegeName", e.target.value)
-                                        }
-                                        placeholder={`Enter ${index === 0 ? 'School Name' : (index === 1 ? 'College Name' : 'Institution Name')}`}
-                                    />
-                                </div>
+                                    <div className="col-md-3">
+                                        <label className="form-label fw-bold">{index === 0 ? 'School Name' : (index === 1 ? 'College Name' : 'Institution Name')}</label>
+                                        <input
+                                            className="form-control"
+                                            type="text"
+                                            value={edu.collegeName}
+                                            onChange={(e) =>
+                                                handleEducationChange(index, "collegeName", e.target.value)
+                                            }
+                                            placeholder={`Enter ${index === 0 ? 'School Name' : (index === 1 ? 'College Name' : 'Institution Name')}`}
+                                        />
+                                    </div>
 
-                                <div className="col-md-2">
-                                    <label>Passout Year</label>
-                                    <input
-                                        className="form-control"
-                                        type="text"
-                                        value={edu.passYear}
-                                        onChange={(e) =>
-                                            handleEducationChange(index, "passYear", e.target.value)
-                                        }
-                                        placeholder="Enter Passout Year"
-                                    />
-                                </div>
+                                    <div className="col-md-2">
+                                        <label className="form-label fw-bold">Passout Year</label>
+                                        <input
+                                            className="form-control"
+                                            type="text"
+                                            value={edu.passYear}
+                                            onChange={(e) =>
+                                                handleEducationChange(index, "passYear", e.target.value)
+                                            }
+                                            placeholder="Enter Year"
+                                        />
+                                    </div>
 
-                                <div className="col-md-2">
-                                    <label>Percentage / CGPA / SGPA</label>
-                                    <input
-                                        className="form-control"
-                                        type="text"
-                                        value={edu.percentage}
-                                        onChange={(e) =>
-                                            handleEducationChange(index, "percentage", e.target.value)
-                                        }
-                                        placeholder="Enter score"
-                                    />
+                                    <div className="col-md-2">
+                                        <label className="form-label fw-bold">Score Type</label>
+                                        <select
+                                            className="form-control"
+                                            value={edu.scoreType || 'percentage'}
+                                            onChange={(e) =>
+                                                handleEducationChange(index, "scoreType", e.target.value)
+                                            }
+                                        >
+                                            <option value="percentage">Percentage</option>
+                                            <option value="cgpa">CGPA</option>
+                                            <option value="sgpa">SGPA</option>
+                                            <option value="grade">Grade</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div className="col-md-2">
+                                        <label className="form-label fw-bold">Score Value</label>
+                                        <div className="input-group">
+                                            <input
+                                                className="form-control"
+                                                type="text"
+                                                value={edu.scoreValue || edu.percentage}
+                                                onChange={(e) =>
+                                                    handleEducationChange(index, "scoreValue", e.target.value)
+                                                }
+                                                placeholder="Enter score"
+                                            />
+                                            {(edu.scoreType || 'percentage') === 'percentage' && (
+                                                <span className="input-group-text">%</span>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                                 
-                                <div className="col-md-3">
-                                    <label>Upload Marksheet</label>
-                                    <input
-                                        className="form-control"
-                                        type="file"
-                                        accept=".pdf,.jpg,.jpeg,.png"
-                                        onChange={async (e) => {
-                                            const file = e.target.files[0];
-                                            if (file) {
-                                                const formData = new FormData();
-                                                formData.append('marksheet', file);
+                                <div className="row mt-2">
+                                    <div className="col-md-6">
+                                        <label className="form-label fw-bold">Upload Marksheet</label>
+                                        <input
+                                            className="form-control"
+                                            type="file"
+                                            accept=".pdf,.jpg,.jpeg,.png"
+                                            onChange={async (e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    const formData = new FormData();
+                                                    formData.append('marksheet', file);
 
-                                                try {
-                                                    const response = await fetch('http://localhost:5000/api/candidate/upload-marksheet', {
-                                                        method: 'POST',
-                                                        headers: {
-                                                            'Authorization': `Bearer ${localStorage.getItem('candidateToken')}`
-                                                        },
-                                                        body: formData
-                                                    });
-                                                    const data = await response.json();
-                                                    if (data.success) {
-                                                        handleEducationChange(index, "marksheet", data.filePath);
+                                                    try {
+                                                        const response = await fetch('http://localhost:5000/api/candidate/upload-marksheet', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                'Authorization': `Bearer ${localStorage.getItem('candidateToken')}`
+                                                            },
+                                                            body: formData
+                                                        });
+                                                        const data = await response.json();
+                                                        if (data.success) {
+                                                            handleEducationChange(index, "marksheet", data.filePath);
+                                                        }
+                                                    } catch (error) {
+                                                        console.error('Upload failed:', error);
                                                     }
-                                                } catch (error) {
-                                                    console.error('Upload failed:', error);
                                                 }
-                                            }
-                                        }}
-                                    />
-                                    {edu.marksheet && <small>Uploaded: {edu.marksheet}</small>}
+                                            }}
+                                        />
+                                        {edu.marksheet && <small className="text-success">✓ Uploaded: {edu.marksheet}</small>}
+                                    </div>
                                 </div>
+
                             </div>
                         ))}
 

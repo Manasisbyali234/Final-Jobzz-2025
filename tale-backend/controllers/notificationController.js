@@ -32,12 +32,23 @@ exports.getNotificationsByRole = async (req, res) => {
     
     // Build query - for general notifications by role or specific to user
     const userId = new mongoose.Types.ObjectId(req.user.id);
-    const query = {
-      $or: [
-        { role, relatedId: { $exists: false } }, // General notifications for role
-        { role, relatedId: userId } // Specific notifications for user
-      ]
-    };
+    let query;
+    
+    if (role === 'candidate') {
+      query = {
+        $or: [
+          { role, candidateId: { $exists: false } }, // General notifications for all candidates
+          { role, candidateId: userId } // Specific notifications for this candidate
+        ]
+      };
+    } else {
+      query = {
+        $or: [
+          { role, relatedId: { $exists: false } }, // General notifications for role
+          { role, relatedId: userId } // Specific notifications for user
+        ]
+      };
+    }
     
     console.log('Notification query:', JSON.stringify(query));
     console.log('User ID:', req.user.id);
@@ -87,13 +98,25 @@ exports.markAsRead = async (req, res) => {
 exports.markAllAsRead = async (req, res) => {
   try {
     const { role } = req.params;
+    const userId = new mongoose.Types.ObjectId(req.user.id);
     
-    const query = {
-      $or: [
-        { role, relatedId: { $exists: false }, isRead: false },
-        { role, relatedId: req.user.id, isRead: false }
-      ]
-    };
+    let query;
+    
+    if (role === 'candidate') {
+      query = {
+        $or: [
+          { role, candidateId: { $exists: false }, isRead: false },
+          { role, candidateId: userId, isRead: false }
+        ]
+      };
+    } else {
+      query = {
+        $or: [
+          { role, relatedId: { $exists: false }, isRead: false },
+          { role, relatedId: userId, isRead: false }
+        ]
+      };
+    }
     
     await Notification.updateMany(query, { isRead: true });
     

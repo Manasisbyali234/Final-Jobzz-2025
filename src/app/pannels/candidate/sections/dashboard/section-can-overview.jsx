@@ -304,23 +304,7 @@ function SectionCandidateOverview() {
 				</div>
 			</div>
 
-			{/* Notifications Section */}
-			{notifications.length > 0 && (
-				<div className="panel panel-default mb-4">
-					<div className="panel-heading">
-						<h4 className="panel-title">Recent Notifications</h4>
-					</div>
-					<div className="panel-body">
-						{notifications.slice(0, 3).map((notification, index) => (
-							<div key={index} className={`alert ${notification.type === 'profile_approved' ? 'alert-success' : 'alert-warning'} mb-2`}>
-								<strong>{notification.title}</strong><br/>
-								{notification.message}
-								<small className="d-block mt-1 text-muted">{new Date(notification.createdAt).toLocaleDateString()}</small>
-							</div>
-						))}
-					</div>
-				</div>
-			)}
+
 		</>
 	);
 }

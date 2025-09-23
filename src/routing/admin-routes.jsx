@@ -14,6 +14,7 @@ import AdminEmployersRejected from "../app/pannels/admin/components/admin-emp-re
 import EmployerDetails from "../app/pannels/admin/components/adminEmployerDetails";
 
 import RegisteredCandidatesPage from "../app/pannels/admin/components/registered-candidates";
+import AdminCandidateReviewPage from "../app/pannels/admin/components/admin-candidate-review";
 
 function AdminRoutes() {
     return (
@@ -37,6 +38,7 @@ function AdminRoutes() {
 				/>
 
 				<Route path={admin.REGISTERED_CANDIDATES} element={<RegisteredCandidatesPage />} />
+				<Route path={admin.CANDIDATE_REVIEW} element={<AdminCandidateReviewPage />} />
 			</Routes>
 		);
 }

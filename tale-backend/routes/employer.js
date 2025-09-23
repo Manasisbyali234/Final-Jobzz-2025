@@ -42,6 +42,8 @@ router.put('/profile', employerController.updateProfile);
 router.post('/profile/logo', upload.single('logo'), employerController.uploadLogo);
 router.post('/profile/cover', upload.single('cover'), employerController.uploadCover);
 router.post('/profile/document', upload.single('document'), employerController.uploadDocument);
+router.post('/profile/authorization-letter', upload.single('document'), employerController.uploadAuthorizationLetter);
+router.delete('/profile/authorization-letter/:documentId', employerController.deleteAuthorizationLetter);
 
 // Job Management Routes
 router.get('/jobs', employerController.getEmployerJobs);

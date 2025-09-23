@@ -20,6 +20,7 @@ function SectionCanKeySkills({ profile }) {
             if (response.success) {
                 setSkills(skillsArray);
                 alert('Skills updated successfully!');
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             alert('Failed to update skills');

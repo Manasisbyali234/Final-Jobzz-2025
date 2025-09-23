@@ -92,6 +92,7 @@ export const admin = {
     DASHBOARD:      "/dashboard",
     CANDIDATES:     "/candidates-list",
     REGISTERED_CANDIDATES: "/registered-candidates",
+    CANDIDATE_REVIEW: "/candidate-review/:candidateId",
     CANDIDATE_ADD_EDIT: "/can-add-edit",
     EMPLOYER_JOBS:  "/employers-jobs",
     CREDITS:        "/admin-credit",

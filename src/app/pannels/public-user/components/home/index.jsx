@@ -28,6 +28,7 @@ function HomeJobsList() {
             const response = await fetch('http://localhost:5000/api/public/jobs?limit=5');
             const data = await response.json();
             if (data.success) {
+                console.log('First job:', data.jobs[0]?.title, 'JobType:', data.jobs[0]?.jobType);
                 setJobs(data.jobs.slice(0, 5));
             }
         } catch (error) {
@@ -73,12 +74,18 @@ function HomeJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green">
-                                        <span className={`twm-bg-${job.status === 'active' ? 'green' : 'gray'}`}>
-                                            {job.status === 'active' ? 'Active' : 'Closed'}
+                                        <span className="twm-bg-green">
+                                            {job.jobType || 'Full-time'}
                                         </span>
                                     </div>
                                     <div className="twm-jobs-amount">
-                                        {job.salary ? (typeof job.salary === 'string' && job.salary.includes('₹') ? job.salary : `₹${job.salary}`) : '$2500'} <span>/ Month</span>
+                                        {job.salary ? (
+                                            typeof job.salary === 'object' && job.salary.currency ? 
+                                                `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` :
+                                                typeof job.salary === 'string' && job.salary.includes('₹') ? 
+                                                    job.salary : 
+                                                    `₹${job.salary}`
+                                        ) : '₹4.25-5.5'} <span>LPA</span>
                                     </div>
                                     <NavLink to={`${publicUser.jobs.DETAIL1}/${job._id}`} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
@@ -102,10 +109,60 @@ function HomeJobsList() {
 }
 
 function Home1Page() {
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         loadScript("js/custom.js");
-    })
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/public/jobs');
+            const data = await response.json();
+            console.log('Categories data:', data);
+            if (data.success) {
+                const categoryCount = {};
+                data.jobs.forEach(job => {
+                    const category = job.category || 'Other';
+                    categoryCount[category] = (categoryCount[category] || 0) + 1;
+                });
+                
+                const categoryList = Object.entries(categoryCount).map(([name, count]) => ({
+                    name,
+                    count,
+                    icon: getCategoryIcon(name)
+                }));
+                
+                console.log('Category list:', categoryList);
+                setCategories(categoryList);
+            }
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            // Fallback categories
+            setCategories([
+                {name: 'IT', count: 5, icon: 'flaticon-coding'},
+                {name: 'Design', count: 2, icon: 'flaticon-computer'},
+                {name: 'Marketing', count: 1, icon: 'flaticon-user'}
+            ]);
+        }
+    };
+
+    const getCategoryIcon = (category) => {
+        const icons = {
+            'IT': 'flaticon-coding',
+            'Design': 'flaticon-computer',
+            'Marketing': 'flaticon-user',
+            'Content': 'flaticon-note',
+            'Finance': 'flaticon-bars',
+            'HR': 'flaticon-hr',
+            'Healthcare': 'flaticon-healthcare',
+            'Other': 'flaticon-dashboard'
+        };
+        return icons[category] || 'flaticon-dashboard';
+    };
+
+
 
     return (
         <div style={{fontFamily: '"Plus Jakarta Sans", sans-serif'}}>
@@ -328,259 +385,20 @@ function Home1Page() {
                     </div>
                     <div className="twm-job-categories-section">
                         <div className="job-categories-style1 m-b30">
-                            <div className="owl-carousel job-categories-carousel owl-btn-left-bottom ">
-                                {/* COLUMNS 1 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-dashboard" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Business Development</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 2 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-project-management" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">3,205 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Project Management</NavLink>
+                            <div className="owl-carousel job-categories-carousel owl-btn-left-bottom">
+                                {categories.map((category, index) => (
+                                    <div key={index} className="item">
+                                        <div className="job-categories-block">
+                                            <div className="twm-media">
+                                                <div className={category.icon} />
+                                            </div>
+                                            <div className="twm-content">
+                                                <div className="twm-jobs-available">{category.count}+ Posted new jobs</div>
+                                                <NavLink to={`${publicUser.jobs.GRID}?category=${category.name}`}>{category.name}</NavLink>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                {/* COLUMNS 3 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-note" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">2,100 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Content Writer</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 4 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-customer-support" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">1,500 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Costomer Services</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 5 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-bars" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Accounting / Finance</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 6 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-user" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">3,205 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Marketing</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 7 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-computer" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">2,100 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Design &amp; Art</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 8 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-coding" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">1,500 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Web Development</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 9 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-hr" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Human Resource</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 10 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-healthcare" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">3,205 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Health and Care </NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 11 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-repair" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">2,100 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Automotive Jobs</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 12 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-teacher" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">1,500 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Teaching / Education</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 13 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-bank" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Banking</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 14 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-deal" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">3,205 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Sales Marketing</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 15 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-tray" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">2,100 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Restaurant / Food</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 16 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-tower" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">1,500 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Telecommunications</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 17 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-lotus" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Fitness Trainer</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 18 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-camera-tripod" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">3,205 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Photography</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 19 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-multimedia" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">2,100 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Audio + Music</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 20 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-contract" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">1,500 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Real estate</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* COLUMNS 21 */}
-                                <div className="item ">
-                                    <div className="job-categories-block">
-                                        <div className="twm-media">
-                                            <div className="flaticon-engineer" />
-                                        </div>
-                                        <div className="twm-content">
-                                            <div className="twm-jobs-available">9,185 Jobs</div>
-                                            <NavLink to={publicUser.jobs.DETAIL1}>Construction</NavLink>
-                                        </div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                         <div className="text-right job-categories-btn">

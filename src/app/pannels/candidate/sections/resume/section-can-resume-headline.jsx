@@ -15,7 +15,7 @@ function SectionCanResumeHeadline({ profile }) {
             const response = await api.updateCandidateProfile({ resumeHeadline: headline });
             if (response.success) {
                 alert('Resume headline updated successfully!');
-                window.location.reload();
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             alert('Failed to update resume headline');

@@ -120,23 +120,50 @@ function SectionJobsGrid({ filters, onTotalChange }) {
                             <div className="twm-right-content twm-job-right-group">
                                 <div className="twm-salary-and-apply mb-2">
                                     <div className="twm-jobs-amount">
-                                        {job.salary ? (
-                                            typeof job.salary === 'object' && job.salary.currency ? 
-                                                `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` :
-                                                typeof job.salary === 'string' && job.salary.includes('₹') ? 
-                                                    job.salary : 
-                                                    `₹${job.salary}`
-                                        ) : '₹4.25-5.5'} <span>L.P.A</span>
+                                        <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1967d2', marginBottom: '4px' }}>
+                                            Annual CTC : ₹600000 - ₹1000000 LPA
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
+                                            Net Salary: ₹329K - ₹710K
+                                        </div>
                                     </div>
-                                    <span className="vacancy-text">Vacancies: 4</span>
+                                    <span className="vacancy-text">Vacancies: {job.vacancies || 'N/A'}</span>
                                 </div>
                                 <div className="d-flex align-items-center justify-content-between">
                                     <h6 className="twm-job-address posted-by-company mb-0">
                                         Posted by {job.employerId?.employerType === 'consultant' || job.companyName ? 'Consultancy' : 'Company'}
                                     </h6>
-                                    <NavLink to={`${publicUser.jobs.DETAIL1}/${job._id}`} className="btn btn-sm apply-now-button">
+                                    <button 
+                                        className="btn btn-sm apply-now-button"
+                                        onClick={async (e) => {
+                                            e.preventDefault();
+                                            const token = localStorage.getItem('candidateToken');
+                                            if (!token) {
+                                                window.location.href = '/login';
+                                            } else {
+                                                try {
+                                                    const profileResponse = await fetch('http://localhost:5000/api/candidate/profile', {
+                                                        headers: { 'Authorization': `Bearer ${token}` }
+                                                    });
+                                                    const profileData = await profileResponse.json();
+                                                    
+                                                    if (!profileData.success || !profileData.profile?.resume) {
+                                                        alert('Please upload your resume first before applying for jobs. Go to My Resume section to upload.');
+                                                        window.location.href = '/candidate/my-resume';
+                                                        return;
+                                                    }
+                                                    
+                                                    // Navigate to job detail if resume exists
+                                                    window.location.href = `${publicUser.jobs.DETAIL1}/${job._id}`;
+                                                } catch (error) {
+                                                    console.error('Error checking profile:', error);
+                                                    alert('Please upload your resume first.');
+                                                }
+                                            }
+                                        }}
+                                    >
                                         Apply Now
-                                    </NavLink>
+                                    </button>
                                 </div>
                             </div>
                         </div>

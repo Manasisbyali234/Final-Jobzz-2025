@@ -204,6 +204,62 @@ exports.applyForJob = async (req, res) => {
     // Update job application count
     await Job.findByIdAndUpdate(jobId, { $inc: { applicationCount: 1 } });
 
+    // Create notification for candidate if job has scheduled interviews
+    if (job.interviewScheduled && job.interviewRoundDetails) {
+      try {
+        const { createNotification } = require('./notificationController');
+        
+        // Get scheduled rounds with details
+        const scheduledRounds = [];
+        Object.entries(job.interviewRoundTypes).forEach(([roundType, isSelected]) => {
+          if (isSelected && job.interviewRoundDetails[roundType]) {
+            const details = job.interviewRoundDetails[roundType];
+            if (details.date && details.time) {
+              const roundNames = {
+                technical: 'Technical Round',
+                nonTechnical: 'Non-Technical Round', 
+                managerial: 'Managerial Round',
+                final: 'Final Round',
+                hr: 'HR Round'
+              };
+              scheduledRounds.push({
+                name: roundNames[roundType],
+                date: new Date(details.date).toLocaleDateString(),
+                time: details.time,
+                description: details.description
+              });
+            }
+          }
+        });
+        
+        if (scheduledRounds.length > 0) {
+          let message = `Your application for ${job.title} has been received. Interview rounds scheduled:\n\n`;
+          scheduledRounds.forEach((round, index) => {
+            message += `${index + 1}. ${round.name}\n`;
+            message += `   Date: ${round.date}\n`;
+            message += `   Time: ${round.time}\n`;
+            if (round.description) {
+              message += `   Details: ${round.description}\n`;
+            }
+            message += '\n';
+          });
+          message += 'Please be prepared and arrive on time. Good luck!';
+          
+          await createNotification({
+            title: 'Interview Schedule - Application Received',
+            message: message,
+            type: 'interview_scheduled',
+            role: 'candidate',
+            relatedId: application._id,
+            createdBy: job.employerId,
+            candidateId: req.user._id
+          });
+        }
+      } catch (notifError) {
+        console.error('Notification creation failed:', notifError);
+      }
+    }
+
     // If we just hit the limit, mark job as closed
     const updatedJob = await Job.findById(jobId).select('applicationCount applicationLimit status');
     if (

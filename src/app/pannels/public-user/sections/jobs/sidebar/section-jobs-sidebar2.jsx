@@ -94,8 +94,8 @@ function SectionJobsSidebar2 ({ _config, job }) {
 											<div className="twm-s-info-discription">
 											{job?.salary ? (
 												typeof job.salary === 'object' && job.salary.currency ? 
-													`${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || 'Not specified'}` :
-													typeof job.salary === 'string' ? job.salary : `₹${job.salary}`
+													`${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || 'Not specified'} LPA` :
+													typeof job.salary === 'string' ? `${job.salary} LPA` : `₹${job.salary} LPA`
 											) : 'Not specified'}
 										</div>
 									</div>

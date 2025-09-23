@@ -27,12 +27,18 @@ function CanMyResumePage() {
             console.log('Resume profile response:', response);
             if (response.success) {
                 setProfile(response.profile);
+                // Trigger dashboard refresh by dispatching custom event
+                window.dispatchEvent(new CustomEvent('profileUpdated'));
             }
         } catch (error) {
             console.error('Error fetching profile:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleProfileUpdate = () => {
+        fetchProfile();
     };
 
     return (
@@ -56,6 +62,8 @@ function CanMyResumePage() {
 							<div className="panel panel-default mb-3">
 								<SectionCanPersonalDetail profile={profile} />
 							</div>
+
+
 
 							<div className="panel panel-default mb-3">
 								<SectionCanAttachment profile={profile} />

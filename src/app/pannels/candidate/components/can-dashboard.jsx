@@ -2,6 +2,7 @@
 
 import SectionCandidateOverview from "../sections/dashboard/section-can-overview";
 import CompleteProfileCard from "../sections/dashboard/section-can-profile";
+import SectionNotifications from "../sections/dashboard/section-notifications";
 import { useEffect } from "react";
 import { loadScript } from "../../../../globals/constants";
 
@@ -17,8 +18,11 @@ function CanDashboardPage() {
 
         <div className="twm-pro-view-chart-wrap">
           <div className="row">
-            <div className="col-xl-12 col-lg-12 col-md-12 mb-4">
+            <div className="col-xl-6 col-lg-6 col-md-12 mb-4">
               <CompleteProfileCard />
+            </div>
+            <div className="col-xl-6 col-lg-6 col-md-12 mb-4">
+              <SectionNotifications />
             </div>
           </div>
         </div>

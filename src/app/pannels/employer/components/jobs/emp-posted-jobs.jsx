@@ -253,8 +253,8 @@ export default function EmpPostedJobs() {
 													<small className="text-muted">
 														{job.salary ? 
 															(typeof job.salary === 'object' ? 
-																`₹ ${job.salary.min || 0} - ${job.salary.max || 0}` : 
-																`₹ ${job.salary}`
+																`₹ ${job.salary.min || 0} - ${job.salary.max || 0} LPA` : 
+																`₹ ${job.salary} LPA`
 															) : 'Salary not specified'
 														}
 													</small><br/>

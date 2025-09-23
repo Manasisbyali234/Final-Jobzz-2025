@@ -81,6 +81,7 @@ exports.getJobs = async (req, res) => {
     }
 
     const jobs = await Job.find(query)
+      .select('title location jobType salary vacancies description requiredSkills status createdAt employerId companyName category ctc netSalary')
       .populate({
         path: 'employerId',
         select: 'companyName status isApproved employerType',

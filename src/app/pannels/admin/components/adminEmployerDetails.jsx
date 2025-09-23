@@ -261,7 +261,7 @@ function EmployerDetails() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Authorization Letter</td>
+                                    <td>Authorization Letter (Legacy)</td>
                                     <td>{profile.authorizationLetter ? <span className="badge bg-success">Uploaded</span> : <span className="badge bg-warning">Not Uploaded</span>}</td>
                                     <td>
                                         <span className={`badge ${profile.authorizationVerified === 'approved' ? 'bg-success' : profile.authorizationVerified === 'rejected' ? 'bg-danger' : 'bg-secondary'}`}>
@@ -282,6 +282,59 @@ function EmployerDetails() {
                         </table>
                     </div>
                 </div>
+
+                {/* Multiple Authorization Letters Section */}
+                {profile.authorizationLetters && profile.authorizationLetters.length > 0 && (
+                    <div className="mt-4">
+                        <h5>Authorization Letters</h5>
+                        <div className="table-responsive">
+                            <table className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Upload Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {profile.authorizationLetters.map((doc, index) => (
+                                        <tr key={doc._id || index}>
+                                            <td>{doc.fileName}</td>
+                                            <td>{formatDate(doc.uploadedAt)}</td>
+                                            <td>
+                                                <button 
+                                                    className="btn btn-sm btn-primary me-1" 
+                                                    onClick={() => {
+                                                        // Create a download link for the base64 data
+                                                        const link = document.createElement('a');
+                                                        link.href = doc.fileData;
+                                                        link.download = doc.fileName;
+                                                        document.body.appendChild(link);
+                                                        link.click();
+                                                        document.body.removeChild(link);
+                                                    }}
+                                                >
+                                                    Download
+                                                </button>
+                                                {doc.fileData.startsWith('data:image') && (
+                                                    <button 
+                                                        className="btn btn-sm btn-info"
+                                                        onClick={() => {
+                                                            setCurrentImage(doc.fileData);
+                                                            setShowImageModal(true);
+                                                        }}
+                                                    >
+                                                        View
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
             
             {/* Image Modal */}

@@ -28,7 +28,12 @@ const employerProfileSchema = new mongoose.Schema({
   cinImage: { type: String }, // Base64 encoded image
   gstImage: { type: String }, // Base64 encoded image
   certificateOfIncorporation: { type: String }, // Base64 encoded document
-  authorizationLetter: { type: String }, // Base64 encoded document
+  authorizationLetter: { type: String }, // Base64 encoded document (legacy)
+  authorizationLetters: [{
+    fileName: { type: String },
+    fileData: { type: String }, // Base64 encoded document
+    uploadedAt: { type: Date, default: Date.now }
+  }], // Multiple authorization letters
   
   // Document verification status
   panCardVerified: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },

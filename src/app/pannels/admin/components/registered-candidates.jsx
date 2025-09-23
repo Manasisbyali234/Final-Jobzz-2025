@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../../../../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 function RegisteredCandidatesPage() {
+    const navigate = useNavigate();
     const [candidates, setCandidates] = useState([]);
     const [shortlistedApplications, setShortlistedApplications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -220,18 +222,7 @@ function RegisteredCandidatesPage() {
     );
 
     function viewCandidateDetails(candidate) {
-        setSelectedCandidate(candidate);
-        try {
-            // Use Bootstrap's JS API to show the modal
-            const modalEl = document.getElementById('candidateDetailsModal');
-            if (modalEl) {
-                const modal = window.bootstrap ? new window.bootstrap.Modal(modalEl) : null;
-                if (modal) modal.show();
-                else modalEl.classList.add('show');
-            }
-        } catch (e) {
-            console.error('Failed to open modal', e);
-        }
+        navigate(`/admin/candidate-review/${candidate._id}`);
     }
 }
 

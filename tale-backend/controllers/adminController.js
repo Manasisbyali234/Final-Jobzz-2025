@@ -661,3 +661,26 @@ exports.getRegisteredCandidates = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.getCandidateDetails = async (req, res) => {
+  try {
+    const { candidateId } = req.params;
+
+    const candidate = await Candidate.findById(candidateId).select('-password');
+    if (!candidate) {
+      return res.status(404).json({ success: false, message: 'Candidate not found' });
+    }
+
+    const profile = await CandidateProfile.findOne({ candidateId });
+    
+    const candidateWithProfile = {
+      ...candidate.toObject(),
+      ...profile?.toObject(),
+      hasProfile: !!profile
+    };
+
+    res.json({ success: true, candidate: candidateWithProfile });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -219,6 +219,53 @@ exports.uploadDocument = async (req, res) => {
   }
 };
 
+exports.uploadAuthorizationLetter = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    const { fileToBase64 } = require('../middlewares/upload');
+    const documentBase64 = fileToBase64(req.file);
+    
+    const newDocument = {
+      fileName: req.file.originalname,
+      fileData: documentBase64,
+      uploadedAt: new Date()
+    };
+
+    const profile = await EmployerProfile.findOneAndUpdate(
+      { employerId: req.user._id },
+      { $push: { authorizationLetters: newDocument } },
+      { new: true, upsert: true }
+    );
+
+    res.json({ success: true, document: newDocument, profile });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.deleteAuthorizationLetter = async (req, res) => {
+  try {
+    const { documentId } = req.params;
+    
+    const profile = await EmployerProfile.findOneAndUpdate(
+      { employerId: req.user._id },
+      { $pull: { authorizationLetters: { _id: documentId } } },
+      { new: true }
+    );
+
+    if (!profile) {
+      return res.status(404).json({ success: false, message: 'Profile not found' });
+    }
+
+    res.json({ success: true, message: 'Authorization letter deleted successfully', profile });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Job Management Controllers
 exports.createJob = async (req, res) => {
   try {
@@ -238,6 +285,17 @@ exports.createJob = async (req, res) => {
       companyDescription: jobData.companyDescription ? 'Present' : 'Missing',
       category: jobData.category
     });
+    
+    // Check if interview rounds are scheduled
+    const hasScheduledRounds = jobData.interviewRoundDetails && 
+      Object.values(jobData.interviewRoundDetails).some(round => 
+        round.date && round.time && round.description
+      );
+    
+    if (hasScheduledRounds) {
+      jobData.interviewScheduled = true;
+    }
+    
     const job = await Job.create(jobData);
     console.log('Job created:', JSON.stringify(job, null, 2));
 
@@ -252,6 +310,18 @@ exports.createJob = async (req, res) => {
         relatedId: job._id,
         createdBy: req.user._id
       });
+      
+      // Create interview scheduled notification if rounds are scheduled
+      if (hasScheduledRounds) {
+        await createNotification({
+          title: 'Interview Rounds Scheduled',
+          message: `Interview rounds have been scheduled for ${job.title} position at ${req.user.companyName}`,
+          type: 'interview_scheduled',
+          role: 'candidate',
+          relatedId: job._id,
+          createdBy: req.user._id
+        });
+      }
     } catch (notifError) {
       console.error('Notification creation failed:', notifError);
     }
@@ -267,14 +337,58 @@ exports.updateJob = async (req, res) => {
     console.log('Update job request body:', req.body);
     console.log('Job ID:', req.params.jobId);
     
+    const oldJob = await Job.findOne({ _id: req.params.jobId, employerId: req.user._id });
+    if (!oldJob) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+    
+    // Check if interview rounds are being scheduled/updated
+    const hasScheduledRounds = req.body.interviewRoundDetails && 
+      Object.values(req.body.interviewRoundDetails).some(round => 
+        round.date && round.time && round.description
+      );
+    
+    const wasScheduled = oldJob.interviewScheduled;
+    
+    if (hasScheduledRounds) {
+      req.body.interviewScheduled = true;
+    }
+    
     const job = await Job.findOneAndUpdate(
       { _id: req.params.jobId, employerId: req.user._id },
       req.body,
       { new: true }
     );
-    
-    if (!job) {
-      return res.status(404).json({ success: false, message: 'Job not found' });
+
+    // Create notification if interview rounds are newly scheduled or updated
+    if (hasScheduledRounds && !wasScheduled) {
+      try {
+        const { createNotification } = require('./notificationController');
+        await createNotification({
+          title: 'Interview Rounds Scheduled',
+          message: `Interview rounds have been scheduled for ${job.title} position at ${req.user.companyName}`,
+          type: 'interview_scheduled',
+          role: 'candidate',
+          relatedId: job._id,
+          createdBy: req.user._id
+        });
+      } catch (notifError) {
+        console.error('Notification creation failed:', notifError);
+      }
+    } else if (hasScheduledRounds && wasScheduled) {
+      try {
+        const { createNotification } = require('./notificationController');
+        await createNotification({
+          title: 'Interview Schedule Updated',
+          message: `Interview schedule has been updated for ${job.title} position at ${req.user.companyName}`,
+          type: 'interview_updated',
+          role: 'candidate',
+          relatedId: job._id,
+          createdBy: req.user._id
+        });
+      } catch (notifError) {
+        console.error('Notification creation failed:', notifError);
+      }
     }
 
     console.log('Updated job:', job);

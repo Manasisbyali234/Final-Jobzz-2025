@@ -516,6 +516,10 @@ All JavaScript fuctions Start
 
 	// Vertical slider function by = swiper-bundle.min.js
 	function v_testimonial_slider() {
+		if (typeof Swiper === 'undefined') {
+			console.warn('Swiper is not loaded');
+			return;
+		}
 		const swiper = new Swiper('.v-testimonial-slider', {
 			slidesPerView: 2,
 			spaceBetween: 20,
@@ -545,6 +549,10 @@ All JavaScript fuctions Start
 
 	// Vertical slider function by = swiper-bundle.min.js
 	function v_jobSwiper() {
+		if (typeof Swiper === 'undefined') {
+			console.warn('Swiper is not loaded');
+			return;
+		}
 		var swiper = new Swiper(".v-jobSwiper", {
 			direction: 'vertical',
 			slidesPerView: 6,
@@ -585,6 +593,10 @@ All JavaScript fuctions Start
 
 	// Testimonial Thumb slider function by = swiper-bundle.min.js
 	function thumb_testimonial_slider() {
+		if (typeof Swiper === 'undefined') {
+			console.warn('Swiper is not loaded');
+			return;
+		}
 		var swiper = new Swiper(".testimonial-thumbpic-1", {
 			loop: true,
 			spaceBetween: 10,
@@ -695,6 +707,10 @@ All JavaScript fuctions Start
 
 	//________ h-page7-jobs-slider carousel  function by = owl.carousel.js________//
 	function h_page7_jobs_slider() {
+		if (typeof Swiper === 'undefined') {
+			console.warn('Swiper is not loaded');
+			return;
+		}
 		var swiper = new Swiper(".h-page7-jobs-slider", {
 			slidesPerView: 8,
 			spaceBetween: 30,
@@ -926,6 +942,10 @@ All JavaScript fuctions Start
 
 	// Category slider function by = swiper-bundle.min.js
 	function category_5_slider() {
+		if (typeof Swiper === 'undefined') {
+			console.warn('Swiper is not loaded');
+			return;
+		}
 		const swiper = new Swiper('.category-5-slider', {
 			slidesPerView: 6,
 			spaceBetween: 30,

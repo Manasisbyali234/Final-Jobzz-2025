@@ -1,50 +1,47 @@
-// function CompleteProfileCard({ profileCompletion = 85 }) {
-//   return (
-//     <div className="panel panel-default">
-//       <div className="panel-body wt-panel-body">
-//         <h2 className="text-primary">Complete Your Profile</h2>
-//         <p className="m-b10">A complete profile increases your chances of getting hired</p>
+import { useState, useEffect } from 'react';
+import { api } from '../../../../../utils/api';
+import { calculateProfileCompletion } from '../../../../../utils/profileCompletion';
 
-//         <div className="m-b10">
-//           <strong>Profile Completion</strong>
-//           <span>{profileCompletion}%</span>
-//         </div>
+function CompleteProfileCard() {
+	const [profileCompletion, setProfileCompletion] = useState(0);
+	const [loading, setLoading] = useState(true);
 
-//         <div className="progress wt-progress mb-3" style={{ height: '10px', borderRadius: '10px' }}>
-//           <div
-//             className="progress-bar"
-//             role="progressbar"
-//             style={{
-//               width: `${profileCompletion}%`,
-//               backgroundColor: '#2563eb', // Blue color
-//               height: '100%',
-//               borderRadius: '10px',
-//             }}
-//           />
-//         </div>
+	useEffect(() => {
+		fetchProfileCompletion();
+		
+		// Listen for profile updates
+		const handleProfileUpdate = () => {
+			fetchProfileCompletion();
+		};
+		
+		window.addEventListener('profileUpdated', handleProfileUpdate);
+		
+		return () => {
+			window.removeEventListener('profileUpdated', handleProfileUpdate);
+		};
+	}, []);
 
-//         <div className="d-flex gap-2">
-//           <button
-//             className="btn btn-primary btn-sm"
-//             onClick={() => (window.location.href = '/candidate/profile')}
-//           >
-//             Update Profile
-//           </button>
-//           <button
-//             className="btn btn-outline-secondary btn-sm"
-//             onClick={() => (window.location.href = '/candidate/my-resume')}
-//           >
-//             Upload Documents
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+	const fetchProfileCompletion = async () => {
+		try {
+			const response = await api.getCandidateProfile();
+			if (response.success && response.profile) {
+				const completion = calculateProfileCompletion(response.profile);
+				setProfileCompletion(completion);
+			}
+		} catch (error) {
+			console.error('Error fetching profile:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-// export default CompleteProfileCard;
-
-function CompleteProfileCard({ profileCompletion = 85 }) {
+	if (loading) {
+		return (
+			<div className="bg-white p-4 rounded shadow-sm mb-4">
+				<div className="text-center">Loading profile...</div>
+			</div>
+		);
+	}
 	return (
 		<div className="bg-white p-4 rounded shadow-sm mb-4">
 			<h4 className="text-primary mb-2">Complete Your Profile</h4>
@@ -68,7 +65,7 @@ function CompleteProfileCard({ profileCompletion = 85 }) {
 					role="progressbar"
 					style={{
 						width: `${profileCompletion}%`,
-						backgroundColor: "#2563eb", // consistent blue
+						backgroundColor: "#2563eb",
 						borderRadius: "10px",
 					}}
 				/>
@@ -78,16 +75,10 @@ function CompleteProfileCard({ profileCompletion = 85 }) {
 			<div className="mt-3 d-flex flex-wrap gap-2">
 				<button
 					className="btn btn-primary btn-sm"
-					onClick={() => (window.location.href = "/candidate/profile")}
-				>
-					Update Profile
-				</button>
-				{/* <button
-					className="btn btn-outline-secondary btn-sm"
 					onClick={() => (window.location.href = "/candidate/my-resume")}
 				>
-					Upload Documents
-				</button> */}
+					Complete Profile
+				</button>
 			</div>
 		</div>
 	);

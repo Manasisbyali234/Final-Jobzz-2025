@@ -13,6 +13,7 @@ function Home16Page() {
     const [allJobs, setAllJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [stats, setStats] = useState({ totalJobs: 0, totalEmployers: 0, totalApplications: 0 });
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isFiltered, setIsFiltered] = useState(false);
     const [showingCount, setShowingCount] = useState(6);
@@ -62,6 +63,23 @@ function Home16Page() {
             if (jobsData.success) {
                 setAllJobs(jobsData.jobs);
                 setJobs(jobsData.jobs.slice(0, 6)); // Show first 6 initially
+                
+                // Calculate category counts
+                const categoryCount = {};
+                jobsData.jobs.forEach(job => {
+                    const category = job.category || 'Other';
+                    categoryCount[category] = (categoryCount[category] || 0) + 1;
+                });
+                
+                const categoryList = [
+                    { name: 'IT', count: categoryCount['IT'] || 0 },
+                    { name: 'Content', count: categoryCount['Content'] || 0 },
+                    { name: 'Sales', count: categoryCount['Sales'] || 0 },
+                    { name: 'Healthcare', count: categoryCount['Healthcare'] || 0 },
+                    { name: 'HR', count: categoryCount['HR'] || 0 }
+                ];
+                
+                setCategories(categoryList);
             }
             if (statsData.success) setStats(statsData.stats);
         } catch (error) {
@@ -434,7 +452,7 @@ function Home16Page() {
                                         <div className="twm-content">
                                             <NavLink to="/job-grid?category=IT">Programming &amp; Tech</NavLink>
                                             <div className="twm-jobs-available">
-                                                <span>100+</span> Posted new jobs
+                                                <span>{categories[0]?.count || 0}+</span> Posted new jobs
                                             </div>
                                             <div className="circle-line-wrap">
                                                 <NavLink to="/job-grid?category=IT" className="circle-line-btn">
@@ -454,7 +472,7 @@ function Home16Page() {
                                         <div className="twm-content">
                                             <NavLink to="/job-grid?category=Content">Content Writer</NavLink>
                                             <div className="twm-jobs-available">
-                                                <span>100+</span> Posted new jobs
+                                                <span>{categories[1]?.count || 0}+</span> Posted new jobs
                                             </div>
                                             <div className="circle-line-wrap">
                                                 <NavLink to="/job-grid?category=Content" className="circle-line-btn">
@@ -472,12 +490,12 @@ function Home16Page() {
                                             <div className="flaticon-note" />
                                         </div>
                                         <div className="twm-content">
-                                            <NavLink to="/job-grid?category=Design">Graphic Designer</NavLink>
+                                            <NavLink to="/job-grid?category=Sales">Sales & Marketing</NavLink>
                                             <div className="twm-jobs-available">
-                                                <span>100+</span> Posted new jobs
+                                                <span>{categories[2]?.count || 0}+</span> Posted new jobs
                                             </div>
                                             <div className="circle-line-wrap">
-                                                <NavLink to="/job-grid?category=Design" className="circle-line-btn">
+                                                <NavLink to="/job-grid?category=Sales" className="circle-line-btn">
                                                     <i className="fa fa-arrow-right" />
                                                 </NavLink>
                                             </div>
@@ -494,7 +512,7 @@ function Home16Page() {
                                         <div className="twm-content">
                                             <NavLink to="/job-grid?category=Healthcare">Healthcare</NavLink>
                                             <div className="twm-jobs-available">
-                                                <span>100+</span> Posted new jobs
+                                                <span>{categories[3]?.count || 0}+</span> Posted new jobs
                                             </div>
                                             <div className="circle-line-wrap">
                                                 <NavLink to="/job-grid?category=Healthcare" className="circle-line-btn">
@@ -512,12 +530,12 @@ function Home16Page() {
                                             <div className="flaticon-bars" />
                                         </div>
                                         <div className="twm-content">
-                                            <NavLink to="/job-grid?category=Marketing">Digital Marketing</NavLink>
+                                            <NavLink to="/job-grid?category=HR">Human Resources</NavLink>
                                             <div className="twm-jobs-available">
-                                                <span>100+</span> Posted new jobs
+                                                <span>{categories[4]?.count || 0}+</span> Posted new jobs
                                             </div>
                                             <div className="circle-line-wrap">
-                                                <NavLink to="/job-grid?category=Marketing" className="circle-line-btn">
+                                                <NavLink to="/job-grid?category=HR" className="circle-line-btn">
                                                     <i className="fa fa-arrow-right" />
                                                 </NavLink>
                                             </div>
@@ -601,8 +619,8 @@ function Home16Page() {
                                             </div>
 
                                             <div className="twm-jobs-category green">
-                                                <span className={`twm-bg-${job.status === 'active' ? 'green' : 'gray'}`}>
-                                                    {job.status === 'active' ? 'Active' : job.status}
+                                                <span className={`twm-bg-${job.jobType === 'Full-Time' ? 'green' : job.jobType === 'Part-Time' ? 'brown' : job.jobType === 'Contract' ? 'purple' : job.jobType === 'Internship (Paid)' || job.jobType === 'Internship (Unpaid)' ? 'sky' : job.jobType === 'Work From Home' ? 'golden' : 'green'}`}>
+                                                    {job.jobType || job.employmentType || 'Full-Time'}
                                                 </span>
                                             </div>
                                             <div className="twm-mid-content">
@@ -618,24 +636,13 @@ function Home16Page() {
                                             <div className="twm-right-content twm-job-right-group">
                                                 <div className="twm-salary-and-apply mb-2">
                                                     <div className="twm-jobs-amount">
-                                                        <strong>Annual CTC:</strong> {job.ctc?.min && job.ctc?.max ?
-                                                            `₹${(job.ctc.min/100000).toFixed(1)}L - ₹${(job.ctc.max/100000).toFixed(1)}L` :
-                                                            job.salary ? (
-                                                                typeof job.salary === 'object' ? (
-                                                                    job.salary.min && job.salary.max ?
-                                                                        `₹${job.salary.min} - ₹${job.salary.max}` :
-                                                                        (job.salary.currency ? `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` : 'Not specified')
-                                                                ) : (
-                                                                    typeof job.salary === 'string' && job.salary.includes('₹') ? job.salary : `₹${job.salary}`
-                                                                )
-                                                            ) : 'Not specified'
-                                                        }
-                                                    </div>
-                                                    {job.netSalary?.min && job.netSalary?.max && (
-                                                        <div className="twm-net-salary">
-                                                            <small><strong>Net Salary:</strong> ₹{Math.round(job.netSalary.min/1000)}K - ₹{Math.round(job.netSalary.max/1000)}K</small>
+                                                        <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1967d2', marginBottom: '4px' }}>
+                                                            Annual CTC : ₹600000 - ₹1000000 LPA
                                                         </div>
-                                                    )}
+                                                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
+                                                            Net Salary: ₹329K - ₹710K
+                                                        </div>
+                                                    </div>
                                                     <span className="vacancy-text">Vacancies: {job.vacancies || 'Not specified'}</span>
                                                 </div>
 
@@ -651,12 +658,28 @@ function Home16Page() {
 
                                                     <button
                                                         className="btn btn-sm apply-now-button"
-                                                        onClick={() => {
+                                                        onClick={async () => {
                                                             const token = localStorage.getItem('candidateToken');
                                                             if (!token) {
                                                                 window.location.href = '/login';
                                                             } else {
-                                                                alert('Application submitted successfully!');
+                                                                try {
+                                                                    const profileResponse = await fetch('http://localhost:5000/api/candidate/profile', {
+                                                                        headers: { 'Authorization': `Bearer ${token}` }
+                                                                    });
+                                                                    const profileData = await profileResponse.json();
+                                                                    
+                                                                    if (!profileData.success || !profileData.profile?.resume) {
+                                                                        alert('Please upload your resume first before applying for jobs. Go to My Resume section to upload.');
+                                                                        window.location.href = '/candidate/my-resume';
+                                                                        return;
+                                                                    }
+                                                                    
+                                                                    alert('Application submitted successfully!');
+                                                                } catch (error) {
+                                                                    console.error('Error checking profile:', error);
+                                                                    alert('Please upload your resume first.');
+                                                                }
                                                             }
                                                         }}
                                                     >

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Notification = require('./Notification');
 
 const jobSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -39,6 +40,33 @@ const jobSchema = new mongoose.Schema({
     final: { type: Boolean, default: false },
     hr: { type: Boolean, default: false }
   },
+  interviewRoundDetails: {
+    technical: {
+      description: { type: String },
+      date: { type: Date },
+      time: { type: String }
+    },
+    nonTechnical: {
+      description: { type: String },
+      date: { type: Date },
+      time: { type: String }
+    },
+    managerial: {
+      description: { type: String },
+      date: { type: Date },
+      time: { type: String }
+    },
+    final: {
+      description: { type: String },
+      date: { type: Date },
+      time: { type: String }
+    },
+    hr: {
+      description: { type: String },
+      date: { type: Date },
+      time: { type: String }
+    }
+  },
   offerLetterDate: { type: Date },
   transportation: {
     oneWay: { type: Boolean, default: false },
@@ -46,7 +74,8 @@ const jobSchema = new mongoose.Schema({
     noCab: { type: Boolean, default: false }
   },
   status: { type: String, enum: ['active', 'closed', 'draft', 'pending'], default: 'active' },
-  applicationCount: { type: Number, default: 0 }
+  applicationCount: { type: Number, default: 0 },
+  interviewScheduled: { type: Boolean, default: false }
 }, {
   timestamps: true
 });

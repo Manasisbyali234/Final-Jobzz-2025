@@ -94,8 +94,20 @@ function JobDetail1Page() {
         } else if (hasApplied) {
             alert('You have already applied for this job!');
         } else {
+            // Check if candidate has uploaded resume
             try {
                 const token = localStorage.getItem('candidateToken');
+                const profileResponse = await fetch('http://localhost:5000/api/candidate/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const profileData = await profileResponse.json();
+                
+                if (!profileData.success || !profileData.profile?.resume) {
+                    alert('Please upload your resume first before applying for jobs. Go to My Resume section to upload.');
+                    navigate('/candidate/my-resume');
+                    return;
+                }
+                
                 const response = await fetch('http://localhost:5000/api/candidate/applications', {
                     method: 'POST',
                     headers: {

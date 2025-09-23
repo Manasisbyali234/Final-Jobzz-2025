@@ -92,10 +92,8 @@ function SectionJobsSidebar2 ({ _config, job }) {
 										<i className="fas fa-money-bill-wave" />
 										<span className="twm-title">Offered Salary</span>
 											<div className="twm-s-info-discription">
-											{job?.salary ? (
-												typeof job.salary === 'object' && job.salary.currency ? 
-													`${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || 'Not specified'} LPA` :
-													typeof job.salary === 'string' ? `${job.salary} LPA` : `₹${job.salary} LPA`
+											{job?.ctc && typeof job.ctc === 'object' && job.ctc.min > 0 && job.ctc.max > 0 ? (
+												job.ctc.min === job.ctc.max ? `₹${Math.floor(job.ctc.min/100000)}LPA` : `₹${Math.floor(job.ctc.min/100000)} - ${Math.floor(job.ctc.max/100000)} LPA`
 											) : 'Not specified'}
 										</div>
 									</div>

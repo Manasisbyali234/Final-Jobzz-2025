@@ -126,6 +126,45 @@ exports.markAllAsRead = async (req, res) => {
   }
 };
 
+// Create profile completion notification
+exports.createProfileCompletionNotification = async (candidateId, completionPercentage) => {
+  try {
+    let title, message, type;
+    
+    if (completionPercentage === 100) {
+      title = '🎉 Profile Complete!';
+      message = 'Congratulations! Your profile is now 100% complete. You\'re ready to apply for jobs!';
+      type = 'profile_approved';
+    } else if (completionPercentage >= 80) {
+      title = '⭐ Almost There!';
+      message = `Your profile is ${completionPercentage}% complete. Just a few more steps to go!`;
+      type = 'profile_submitted';
+    } else if (completionPercentage >= 50) {
+      title = '📝 Keep Going!';
+      message = `Your profile is ${completionPercentage}% complete. Add more details to increase your chances!`;
+      type = 'profile_submitted';
+    } else {
+      title = '🚀 Start Building!';
+      message = `Your profile is ${completionPercentage}% complete. Complete your profile to get noticed by employers!`;
+      type = 'profile_submitted';
+    }
+    
+    const notification = await exports.createNotification({
+      title,
+      message,
+      type,
+      role: 'candidate',
+      candidateId: new mongoose.Types.ObjectId(candidateId),
+      createdBy: new mongoose.Types.ObjectId(candidateId)
+    });
+    
+    return notification;
+  } catch (error) {
+    console.error('Error creating profile completion notification:', error);
+    throw error;
+  }
+};
+
 // Test notification creation
 exports.testNotification = async (req, res) => {
   try {

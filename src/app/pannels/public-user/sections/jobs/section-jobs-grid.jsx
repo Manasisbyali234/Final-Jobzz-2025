@@ -120,12 +120,15 @@ function SectionJobsGrid({ filters, onTotalChange }) {
                             <div className="twm-right-content twm-job-right-group">
                                 <div className="twm-salary-and-apply mb-2">
                                     <div className="twm-jobs-amount">
-                                        <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1967d2', marginBottom: '4px' }}>
-                                            Annual CTC : ₹600000 - ₹1000000 LPA
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>
-                                            Net Salary: ₹329K - ₹710K
-                                        </div>
+                                        {job.ctc && job.ctc.min && job.ctc.max ? (
+                                            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1967d2', marginBottom: '4px' }}>
+                                                Annual CTC: {job.ctc.min === job.ctc.max ? `₹${Math.floor(job.ctc.min/100000)}LPA` : `₹${Math.floor(job.ctc.min/100000)} - ${Math.floor(job.ctc.max/100000)} LPA`}
+                                            </div>
+                                        ) : (
+                                            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#1967d2', marginBottom: '4px' }}>
+                                                CTC: Not specified
+                                            </div>
+                                        )}
                                     </div>
                                     <span className="vacancy-text">Vacancies: {job.vacancies || 'N/A'}</span>
                                 </div>

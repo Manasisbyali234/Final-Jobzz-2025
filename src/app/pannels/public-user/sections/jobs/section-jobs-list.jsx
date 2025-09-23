@@ -65,13 +65,11 @@ function SectionJobsList() {
                                             </span>
                                         </div>
                                         <div className="twm-jobs-amount">
-                                            {job.salary ? (
-                                                typeof job.salary === 'object' && job.salary.currency ? 
-                                                    `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` :
-                                                    job.salary?.min && job.salary?.max ? 
-                                                        `₹${job.salary.min} - ₹${job.salary.max}` : 
-                                                        typeof job.salary === 'string' ? job.salary : `₹${job.salary}`
-                                            ) : 'Salary not specified'}
+                                            {job.ctc && job.ctc.min && job.ctc.max ? (
+                                                job.ctc.min === job.ctc.max ? `₹${Math.floor(job.ctc.min/100000)}LPA` : `₹${Math.floor(job.ctc.min/100000)} - ${Math.floor(job.ctc.max/100000)} LPA`
+                                            ) : (
+                                                'CTC not specified'
+                                            )}
                                         </div>
                                         <NavLink to={`${publicUser.jobs.DETAIL1}/${job._id}`} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                     </div>

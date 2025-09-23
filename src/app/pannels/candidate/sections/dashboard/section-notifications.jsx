@@ -2,10 +2,22 @@ import React, { useState, useEffect } from 'react';
 
 function SectionNotifications() {
 	const [notifications, setNotifications] = useState([]);
+	const [unreadCount, setUnreadCount] = useState(0);
 	const [showAll, setShowAll] = useState(false);
 
 	useEffect(() => {
 		fetchNotifications();
+		
+		// Listen for notification refresh events
+		const handleRefresh = () => {
+			fetchNotifications();
+		};
+		
+		window.addEventListener('refreshNotifications', handleRefresh);
+		
+		return () => {
+			window.removeEventListener('refreshNotifications', handleRefresh);
+		};
 	}, []);
 
 	const fetchNotifications = async () => {
@@ -21,6 +33,7 @@ function SectionNotifications() {
 				const data = await response.json();
 				if (data.success) {
 					setNotifications(data.notifications || []);
+					setUnreadCount(data.unreadCount || 0);
 				}
 			}
 		} catch (error) {
@@ -47,6 +60,7 @@ function SectionNotifications() {
 							const getNotificationIcon = (type) => {
 								switch(type) {
 									case 'profile_approved': return { icon: 'feather-check-circle', color: '#10b981' };
+									case 'profile_submitted': return { icon: 'feather-user', color: '#8b5cf6' };
 									case 'application_status': return { icon: 'feather-briefcase', color: '#3b82f6' };
 									case 'interview_scheduled': return { icon: 'feather-calendar', color: '#f59e0b' };
 									default: return { icon: 'feather-info', color: '#6b7280' };
@@ -87,7 +101,7 @@ function SectionNotifications() {
 												})}
 											</small>
 										</div>
-										{!notification.read && (
+										{!notification.isRead && (
 											<div className="notification-dot" style={{
 												width: '6px',
 												height: '6px',

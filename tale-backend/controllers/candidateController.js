@@ -4,6 +4,7 @@ const CandidateProfile = require('../models/CandidateProfile');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
 const Message = require('../models/Message');
+const { createProfileCompletionNotification } = require('./notificationController');
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
@@ -115,6 +116,19 @@ exports.updateProfile = async (req, res) => {
       { new: true, upsert: true }
     ).populate('candidateId', 'name email phone');
     
+    // Calculate profile completion and create notification
+    try {
+      const { calculateProfileCompletion } = require('../utils/profileCompletion');
+      const completionPercentage = calculateProfileCompletion(profile);
+      
+      // Create notification for significant completion milestones
+      if (completionPercentage === 100 || completionPercentage >= 50) {
+        await createProfileCompletionNotification(req.user._id, completionPercentage);
+      }
+    } catch (notifError) {
+      console.error('Profile completion notification error:', notifError);
+    }
+    
     console.log('Updated profile:', profile);
     res.json({ success: true, profile });
   } catch (error) {
@@ -137,6 +151,18 @@ exports.uploadResume = async (req, res) => {
       { resume: resumeBase64 },
       { new: true, upsert: true }
     );
+
+    // Calculate profile completion and create notification
+    try {
+      const { calculateProfileCompletion } = require('../utils/profileCompletion');
+      const completionPercentage = calculateProfileCompletion(profile);
+      
+      if (completionPercentage === 100 || completionPercentage >= 50) {
+        await createProfileCompletionNotification(req.user._id, completionPercentage);
+      }
+    } catch (notifError) {
+      console.error('Profile completion notification error:', notifError);
+    }
 
     res.json({ success: true, resume: resumeBase64, profile });
   } catch (error) {

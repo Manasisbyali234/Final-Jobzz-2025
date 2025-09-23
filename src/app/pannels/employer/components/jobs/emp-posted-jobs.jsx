@@ -251,11 +251,11 @@ export default function EmpPostedJobs() {
 													<h5 className="mb-1">{job.title}</h5>
 													<p className="mb-0 text-muted">{job.location}</p>
 													<small className="text-muted">
-														{job.salary ? 
-															(typeof job.salary === 'object' ? 
-																`₹ ${job.salary.min || 0} - ${job.salary.max || 0} LPA` : 
-																`₹ ${job.salary} LPA`
-															) : 'Salary not specified'
+														{job.ctc && job.ctc.min > 0 ? 
+															(job.ctc.min === job.ctc.max ? 
+																`₹${(job.ctc.min/100000).toFixed(0)}LPA` : 
+																`₹${(job.ctc.min/100000).toFixed(0)} - ${(job.ctc.max/100000).toFixed(0)} LPA`
+															) : 'CTC not specified'
 														}
 													</small><br/>
 													<small className="text-muted">

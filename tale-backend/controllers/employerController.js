@@ -278,6 +278,37 @@ exports.createJob = async (req, res) => {
     }
 
     const jobData = { ...req.body, employerId: req.user._id, status: 'active' };
+    
+    // Parse CTC from string format to proper structure
+    if (jobData.ctc && typeof jobData.ctc === 'string') {
+      const ctcStr = jobData.ctc.trim();
+      const rangeMatch = ctcStr.match(/(\d+(?:\.\d+)?)\s*[-–—]\s*(\d+(?:\.\d+)?)/i);
+      if (rangeMatch) {
+        jobData.ctc = {
+          min: parseFloat(rangeMatch[1]) * 100000,
+          max: parseFloat(rangeMatch[2]) * 100000
+        };
+      } else {
+        const singleValue = parseFloat(ctcStr.replace(/[^\d.]/g, ''));
+        if (singleValue && singleValue > 0) {
+          jobData.ctc = {
+            min: singleValue * 100000,
+            max: singleValue * 100000
+          };
+        }
+      }
+    }
+    
+    if (jobData.netSalary && typeof jobData.netSalary === 'string') {
+      const netMatch = jobData.netSalary.match(/(\d+(?:,\d+)*)\s*(?:-|to)?\s*(\d+(?:,\d+)*)?/i);
+      if (netMatch) {
+        jobData.netSalary = {
+          min: parseInt(netMatch[1].replace(/,/g, '')),
+          max: parseInt((netMatch[2] || netMatch[1]).replace(/,/g, ''))
+        };
+      }
+    }
+    
     console.log('Creating job with data:', JSON.stringify(jobData, null, 2)); // Debug log
     console.log('Company fields:', {
       companyLogo: jobData.companyLogo ? 'Present' : 'Missing',
@@ -285,6 +316,8 @@ exports.createJob = async (req, res) => {
       companyDescription: jobData.companyDescription ? 'Present' : 'Missing',
       category: jobData.category
     });
+    console.log('Parsed CTC:', jobData.ctc);
+    console.log('Parsed Net Salary:', jobData.netSalary);
     
     // Check if interview rounds are scheduled
     const hasScheduledRounds = jobData.interviewRoundDetails && 
@@ -340,6 +373,36 @@ exports.updateJob = async (req, res) => {
     const oldJob = await Job.findOne({ _id: req.params.jobId, employerId: req.user._id });
     if (!oldJob) {
       return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+    
+    // Parse CTC from string format to proper structure
+    if (req.body.ctc && typeof req.body.ctc === 'string') {
+      const ctcStr = req.body.ctc.trim();
+      const rangeMatch = ctcStr.match(/(\d+(?:\.\d+)?)\s*[-–—]\s*(\d+(?:\.\d+)?)/i);
+      if (rangeMatch) {
+        req.body.ctc = {
+          min: parseFloat(rangeMatch[1]) * 100000,
+          max: parseFloat(rangeMatch[2]) * 100000
+        };
+      } else {
+        const singleValue = parseFloat(ctcStr.replace(/[^\d.]/g, ''));
+        if (singleValue && singleValue > 0) {
+          req.body.ctc = {
+            min: singleValue * 100000,
+            max: singleValue * 100000
+          };
+        }
+      }
+    }
+    
+    if (req.body.netSalary && typeof req.body.netSalary === 'string') {
+      const netMatch = req.body.netSalary.match(/(\d+(?:,\d+)*)\s*(?:-|to)?\s*(\d+(?:,\d+)*)?/i);
+      if (netMatch) {
+        req.body.netSalary = {
+          min: parseInt(netMatch[1].replace(/,/g, '')),
+          max: parseInt((netMatch[2] || netMatch[1]).replace(/,/g, ''))
+        };
+      }
     }
     
     // Check if interview rounds are being scheduled/updated

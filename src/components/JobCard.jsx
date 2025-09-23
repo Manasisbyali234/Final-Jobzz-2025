@@ -37,9 +37,9 @@ const JobCard = ({ job }) => {
             <div className="job-details">
                 <p>{job.description}</p>
                 <div className="job-meta">
-                    <span>Salary: {typeof job.salary === 'object' && job.salary.currency ? 
-                        `${job.salary.currency === 'USD' ? '$' : '₹'}${job.salary.min || job.salary.max || ''}` :
-                        job.salary || 'Not specified'}</span>
+                    <span>CTC: {job.ctc && job.ctc.min && job.ctc.max ? 
+                        job.ctc.min === job.ctc.max ? `₹${Math.floor(job.ctc.min/100000)}LPA` : `₹${Math.floor(job.ctc.min/100000)} - ${Math.floor(job.ctc.max/100000)} LPA` : 
+                        'Not specified'}</span>
                     <span>Type: {job.jobType || job.type}</span>
                     {job.category && <span>Category: {job.category}</span>}
                 </div>

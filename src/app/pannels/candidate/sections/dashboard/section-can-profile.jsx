@@ -12,6 +12,8 @@ function CompleteProfileCard() {
 		// Listen for profile updates
 		const handleProfileUpdate = () => {
 			fetchProfileCompletion();
+			// Trigger notification refresh
+			window.dispatchEvent(new CustomEvent('refreshNotifications'));
 		};
 		
 		window.addEventListener('profileUpdated', handleProfileUpdate);
@@ -27,6 +29,8 @@ function CompleteProfileCard() {
 			if (response.success && response.profile) {
 				const completion = calculateProfileCompletion(response.profile);
 				setProfileCompletion(completion);
+				// Trigger notification refresh when completion changes
+				window.dispatchEvent(new CustomEvent('refreshNotifications'));
 			}
 		} catch (error) {
 			console.error('Error fetching profile:', error);

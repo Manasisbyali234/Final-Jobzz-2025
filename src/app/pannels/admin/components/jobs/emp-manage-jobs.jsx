@@ -163,10 +163,15 @@ function EmpManageJobsPage() {
                                                             <i className="fa fa-map-marker-alt"></i>
                                                             {job.location || 'Remote'}
                                                         </p>
-                                                        {job.salary && (
+                                                        {job.ctc && typeof job.ctc === 'object' && job.ctc.min > 0 && job.ctc.max > 0 ? (
                                                             <p className="job-salary">
                                                                 <i className="fa fa-dollar-sign"></i>
-                                                                {job.salary}
+                                                                {job.ctc.min === job.ctc.max ? `₹${Math.floor(job.ctc.min/100000)}LPA` : `₹${Math.floor(job.ctc.min/100000)} - ${Math.floor(job.ctc.max/100000)} LPA`}
+                                                            </p>
+                                                        ) : (
+                                                            <p className="job-salary">
+                                                                <i className="fa fa-dollar-sign"></i>
+                                                                CTC: Not specified
                                                             </p>
                                                         )}
                                                     </div>

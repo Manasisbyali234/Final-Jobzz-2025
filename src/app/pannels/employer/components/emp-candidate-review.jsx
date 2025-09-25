@@ -1,7 +1,8 @@
+import { ArrowLeft, Award, Briefcase, Calendar, Check, Download, Eye, FileText, GraduationCap, Mail, MapPin, Phone, Save, User, UserCircle2, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import JobZImage from "../../../common/jobz-img";
+import { useNavigate, useParams } from "react-router-dom";
 import { loadScript } from "../../../../globals/constants";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+
 
 function EmpCandidateReviewPage () {
 	const navigate = useNavigate();
@@ -233,313 +234,312 @@ function EmpCandidateReviewPage () {
 	}
 
 	return (
-		<>
-            <div className="panel panel-default site-bg-white p-3">
-                <div className="panel-heading d-flex justify-content-between align-items-center">
-                    <h4 className="panel-tittle">
-                        <i className="far fa-user-circle" /> Applicant Details
-                    </h4>
-
-                    <span className={`badge ${getStatusBadge(application.status)} text-capitalize`}>
-                        {application.status}
-                    </span>
-                </div>
-
-                <div className="panel-body">
-                    <button
-                        className="btn btn-outline-secondary mb-3"
-                        onClick={() => navigate(-1)}
-                    >
-                        ← Back to Applicants List
-                    </button>
-
-                    <div className="border rounded p-4 shadow-sm">
-                        <div className="row">
-                            <div className="col-lg-6 col-12">
-                                <div
-								className="twm-media-pic rounded-circle overflow-hidden"
-								style={{ width: "50px", height: "50px" }}
+		<div className="container-fluid py-3 emp-candidate-review">
+			{/* Header Section */}
+			<div className="row mb-4">
+				<div className="col-12">
+					<div className="d-flex justify-content-between align-items-center bg-white p-4 rounded shadow-sm">
+						<div className="d-flex align-items-center gap-3">
+							<button
+								className="btn btn-outline-secondary"
+								onClick={() => navigate(-1)}
 							>
-								{candidate.profilePicture ? (
-									<img
-										src={candidate.profilePicture}
-										alt={candidate.name}
-										style={{ width: "50px", height: "50px", objectFit: "cover" }}
-									/>
-								) : (
-									<JobZImage
-										src="images/candidates/pic1.jpg"
-										alt={candidate.name}
-									/>
-								)}
+								<ArrowLeft size={16} />
+							</button>
+							<div>
+								<h3 className="mb-0 d-flex align-items-center gap-2">
+									<UserCircle2 size={24} style={{ color: "#f97316" }} />
+									Candidate Review
+								</h3>
+								<p className="text-muted mb-0">Comprehensive candidate evaluation</p>
+							</div>
+						</div>
+						<span className={`badge ${getStatusBadge(application.status)} text-capitalize fs-6 px-3 py-2`}>
+							{application.status}
+						</span>
+					</div>
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<div className="row">
+				{/* Left Column - Candidate Profile */}
+				<div className="col-lg-8">
+					{/* Personal Information Card */}
+					<div className="card shadow-sm mb-4">
+						<div className="card-header bg-light">
+							<h5 className="mb-0 d-flex align-items-center gap-2">
+								<User size={20} style={{ color: "#f97316" }} />
+								Personal Information
+							</h5>
+						</div>
+						<div className="card-body">
+							<div className="row align-items-center mb-4">
+								<div className="col-auto">
+									<div
+										className="rounded-circle overflow-hidden border"
+										style={{ width: "80px", height: "80px" }}
+									>
+										{candidate.profilePicture ? (
+											<img
+												src={candidate.profilePicture}
+												alt={candidate.name}
+												style={{ width: "80px", height: "80px", objectFit: "cover" }}
+											/>
+										) : (
+											<div className="d-flex align-items-center justify-content-center h-100 bg-light">
+												<User size={40} className="text-muted" />
+											</div>
+										)}
+									</div>
+								</div>
+								<div className="col">
+									<h4 className="mb-1">{candidate.name}</h4>
+									<p className="text-muted mb-2 d-flex align-items-center gap-1">
+										<Briefcase size={16} />
+										Applied for: {application.jobId?.title || 'Unknown Job'}
+									</p>
+									<p className="text-muted mb-0 d-flex align-items-center gap-1">
+										<Calendar size={16} />
+										Applied on: {formatDate(application.createdAt)}
+									</p>
+								</div>
 							</div>
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Full Name</h5>
-                                    <p className="mb-0 text-muted">{candidate.name}</p>
-                                </div>
+							<div className="row">
+								<div className="col-md-6">
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<Mail size={16} style={{ color: "#f97316" }} />
+											<strong>Email</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.email}</p>
+									</div>
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<Phone size={16} style={{ color: "#f97316" }} />
+											<strong>Mobile</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.phone || 'Not provided'}</p>
+									</div>
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<Calendar size={16} style={{ color: "#f97316" }} />
+											<strong>Date of Birth</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.dateOfBirth ? formatDate(candidate.dateOfBirth) : 'Not provided'}</p>
+									</div>
+								</div>
+								<div className="col-md-6">
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<User size={16} style={{ color: "#f97316" }} />
+											<strong>Gender</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.gender || 'Not provided'}</p>
+									</div>
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<User size={16} style={{ color: "#f97316" }} />
+											<strong>Father's Name</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.fatherName || 'Not provided'}</p>
+									</div>
+									<div className="info-item mb-3">
+										<div className="d-flex align-items-center gap-2 mb-1">
+											<MapPin size={16} style={{ color: "#f97316" }} />
+											<strong>Address</strong>
+										</div>
+										<p className="text-muted mb-0 ms-4">{candidate.residentialAddress || 'Not provided'}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Email</h5>
-                                    <p className="mb-0 text-muted">{candidate.email}</p>
-                                </div>
+					{/* Education Card */}
+					{candidate.education && candidate.education.length > 0 && (
+						<div className="card shadow-sm mb-4">
+							<div className="card-header bg-light">
+								<h5 className="mb-0 d-flex align-items-center gap-2">
+									<GraduationCap size={20} style={{ color: "#f97316" }} />
+									Education Details
+								</h5>
+							</div>
+							<div className="card-body">
+								<div className="row">
+									{candidate.education.map((edu, index) => (
+										<div key={index} className="col-md-6 mb-3">
+											<div className="border rounded p-3">
+												<h6 className="text-primary mb-2">
+													{index === 0 ? '10th Grade' : index === 1 ? '12th Grade' : 'Degree'}
+												</h6>
+												<p className="mb-1"><strong>Institution:</strong> {edu.collegeName || 'Not provided'}</p>
+												<p className="mb-1"><strong>Year:</strong> {edu.passYear || 'Not provided'}</p>
+												<p className="mb-2"><strong>Score:</strong> {edu.scoreValue || edu.percentage || 'Not provided'}{edu.scoreType === 'percentage' ? '%' : ''}</p>
+												{edu.marksheet && (
+													<div className="d-flex gap-2">
+														<button
+															className="btn btn-outline-primary btn-sm"
+															onClick={() => viewDocument(edu.marksheet)}
+														>
+															<Eye size={14} className="me-1" />View
+														</button>
+														<button
+															className="btn btn-outline-secondary btn-sm"
+															onClick={() => downloadDocument(edu.marksheet, `marksheet_${index}.pdf`)}
+														>
+															<Download size={14} className="me-1" />Download
+														</button>
+													</div>
+												)}
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+					)}
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Mobile No.</h5>
-                                    <p className="mb-0 text-muted">{candidate.phone || 'Not provided'}</p>
-                                </div>
+					{/* Skills & Summary */}
+					{(candidate.skills?.length > 0 || candidate.profileSummary) && (
+						<div className="card shadow-sm mb-4">
+							<div className="card-header bg-light">
+								<h5 className="mb-0 d-flex align-items-center gap-2">
+									<Award size={20} style={{ color: "#f97316" }} />
+									Skills & Summary
+								</h5>
+							</div>
+							<div className="card-body">
+								{candidate.skills && candidate.skills.length > 0 && (
+									<div className="mb-3">
+										<h6>Key Skills</h6>
+										<div className="d-flex flex-wrap gap-2">
+											{candidate.skills.map((skill, index) => (
+												<span key={index} className="badge bg-secondary">{skill}</span>
+											))}
+										</div>
+									</div>
+								)}
+								{candidate.profileSummary && (
+									<div>
+										<h6>Profile Summary</h6>
+										<p className="text-muted" style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'pre-wrap' }}>{candidate.profileSummary}</p>
+									</div>
+								)}
+							</div>
+						</div>
+					)}
+				</div>
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Father's / Husband's Name</h5>
-                                    <p className="mb-0 text-muted">{candidate.fatherName || 'Not provided'}</p>
-                                </div>
+				{/* Right Column - Actions & Review */}
+				<div className="col-lg-4">
+					{/* Resume Card */}
+					{candidate.resume && (
+						<div className="card shadow-sm mb-4">
+							<div className="card-header bg-light">
+								<h5 className="mb-0 d-flex align-items-center gap-2">
+									<FileText size={20} style={{ color: "#f97316" }} />
+									Resume
+								</h5>
+							</div>
+							<div className="card-body text-center">
+								<button
+									className="btn btn-primary"
+									onClick={() => downloadDocument(candidate.resume, 'resume.pdf')}
+								>
+									<Download size={16} className="me-1" />Download Resume
+								</button>
+							</div>
+						</div>
+					)}
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Residential Address</h5>
-                                    <p className="mb-0 text-muted">{candidate.residentialAddress || 'Not provided'}</p>
-                                </div>
-                            </div>
+					{/* Interview Rounds */}
+					{interviewRounds.length > 0 && (
+						<div className="card shadow-sm mb-4">
+							<div className="card-header bg-light">
+								<h5 className="mb-0">Interview Rounds ({interviewRounds.length})</h5>
+							</div>
+							<div className="card-body">
+								{interviewRounds.map((round, index) => (
+									<div key={index} className="mb-3 p-2 border rounded">
+										<h6 className="mb-2">{round.name}</h6>
+										<select 
+											className="form-select form-select-sm mb-2"
+											value={round.status}
+											onChange={(e) => {
+												const updated = [...interviewRounds];
+												updated[index].status = e.target.value;
+												setInterviewRounds(updated);
+											}}
+										>
+											<option value="pending">Pending</option>
+											<option value="passed">Passed</option>
+											<option value="failed">Failed</option>
+										</select>
+										<input
+											type="text"
+											className="form-control form-control-sm"
+											placeholder="Feedback"
+											value={round.feedback}
+											onChange={(e) => {
+												const updated = [...interviewRounds];
+												updated[index].feedback = e.target.value;
+												setInterviewRounds(updated);
+											}}
+										/>
+									</div>
+								))}
+							</div>
+						</div>
+					)}
 
-                            <div className="col-lg-6 col-12">
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Date of Birth</h5>
-                                    <p className="mb-0 text-muted">{candidate.dateOfBirth ? formatDate(candidate.dateOfBirth) : 'Not provided'}</p>
-                                </div>
+					{/* Review & Actions */}
+					<div className="card shadow-sm">
+						<div className="card-header bg-light">
+							<h5 className="mb-0">Review & Actions</h5>
+						</div>
+						<div className="card-body">
+							<div className="mb-3">
+								<label className="form-label">Overall Remarks</label>
+								<textarea
+									className="form-control"
+									rows="3"
+									placeholder="Enter your remarks..."
+									value={remarks}
+									onChange={(e) => setRemarks(e.target.value)}
+								/>
+							</div>
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Gender</h5>
-                                    <p className="mb-0 text-muted">{candidate.gender || 'Not provided'}</p>
-                                </div>
+							<div className="form-check mb-3">
+								<input
+									className="form-check-input"
+									type="checkbox"
+									id="candidateSelection"
+									checked={isSelected}
+									onChange={(e) => setIsSelected(e.target.checked)}
+								/>
+								<label className="form-check-label" htmlFor="candidateSelection">
+									Select for further process
+								</label>
+							</div>
 
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Mother's Name</h5>
-                                    <p className="mb-0 text-muted">{candidate.motherName || 'Not provided'}</p>
-                                </div>
-
-                                <div className="mt-2">
-                                    <h5 className="mb-1">Permanent Address</h5>
-                                    <p className="mb-0 text-muted">{candidate.permanentAddress || 'Not provided'}</p>
-                                </div>
-
-							<div className="mt-2">
-                                    <h5 className="mb-1">Correspondence Address</h5>
-                                    <p className="mb-0 text-muted">{candidate.correspondenceAddress || 'Not provided'}</p>
-                                </div>
-                            </div>
-                        </div>
-                       
-                        <hr />
-
-                        <div className="row">
-                            {candidate.education && candidate.education[0] && (
-                                <div className="col-lg-6 col-12">
-                                    <div className="mt-2">
-                                        <h5 className="mb-1">10th Educational Details</h5>
-                                        <h6>School Name <p className="mb-0 text-muted">{candidate.education[0].collegeName || 'Not provided'}</p></h6>
-                                        <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[0].passYear || 'Not provided'}</p></h6>
-                                        <h6>{candidate.education[0].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[0].scoreValue || candidate.education[0].percentage || 'Not provided'}{candidate.education[0].scoreType === 'percentage' ? '%' : ''}</p></h6>
-                                        {candidate.education[0].marksheet && (
-                                            <div className="d-flex gap-2">
-                                                <button
-                                                    className="btn btn-outline-primary btn-sm"
-                                                    onClick={() => viewDocument(candidate.education[0].marksheet)}
-                                                >
-                                                    <i className="fa fa-eye me-1" />View Marksheet
-                                                </button>
-                                                <button
-                                                    className="btn btn-outline-secondary btn-sm"
-                                                    onClick={() => downloadDocument(candidate.education[0].marksheet, 'marksheet_10th.pdf')}
-                                                >
-                                                    <i className="fa fa-download me-1" />Download
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {candidate.education && candidate.education[1] && (
-                                <div className="col-lg-6 col-12">
-                                    <div className="mt-2">
-                                        <h5 className="mb-1">12th Educational Details</h5>
-                                        <h6>School Name <p className="mb-0 text-muted">{candidate.education[1].collegeName || 'Not provided'}</p></h6>
-                                        <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[1].passYear || 'Not provided'}</p></h6>
-                                        <h6>{candidate.education[1].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[1].scoreValue || candidate.education[1].percentage || 'Not provided'}{candidate.education[1].scoreType === 'percentage' ? '%' : ''}</p></h6>
-                                        {candidate.education[1].marksheet && (
-                                            <div className="d-flex gap-2">
-                                                <button
-                                                    className="btn btn-outline-primary btn-sm"
-                                                    onClick={() => viewDocument(candidate.education[1].marksheet)}
-                                                >
-                                                    <i className="fa fa-eye me-1" />View Marksheet
-                                                </button>
-                                                <button
-                                                    className="btn btn-outline-secondary btn-sm"
-                                                    onClick={() => downloadDocument(candidate.education[1].marksheet, 'marksheet_12th.pdf')}
-                                                >
-                                                    <i className="fa fa-download me-1" />Download
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {candidate.education && candidate.education[2] && (
-                                <div className="col-lg-6 col-12">
-                                    <div className="mt-2">
-                                        <h5 className="mb-1">Degree Educational Details</h5>
-                                        <h6>Degree Name <p className="mb-0 text-muted">{candidate.education[2].degreeName || 'Not provided'}</p></h6>
-                                        <h6>School Name <p className="mb-0 text-muted">{candidate.education[2].collegeName || 'Not provided'}</p></h6>
-                                        <h6>Passout Year <p className="mb-0 text-muted">{candidate.education[2].passYear || 'Not provided'}</p></h6>
-                                        <h6>{candidate.education[2].scoreType?.toUpperCase() || 'Score'} <p className="mb-0 text-muted">{candidate.education[2].scoreValue || candidate.education[2].percentage || 'Not provided'}{candidate.education[2].scoreType === 'percentage' ? '%' : ''}</p></h6>
-                                        {candidate.education[2].marksheet && (
-                                            <div className="d-flex gap-2">
-                                                <button
-                                                    className="btn btn-outline-primary btn-sm"
-                                                    onClick={() => viewDocument(candidate.education[2].marksheet)}
-                                                >
-                                                    <i className="fa fa-eye me-1" />View Marksheet
-                                                </button>
-                                                <button
-                                                    className="btn btn-outline-secondary btn-sm"
-                                                    onClick={() => downloadDocument(candidate.education[2].marksheet, 'marksheet_degree.pdf')}
-                                                >
-                                                    <i className="fa fa-download me-1" />Download
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {candidate.skills && candidate.skills.length > 0 && (
-                            <>
-                                <hr />
-                                <h5 className="mb-3">Key Skills</h5>
-                                <div className="d-flex flex-wrap gap-2 mb-3">
-                                    {candidate.skills.map((skill, index) => (
-                                        <span key={index} className="badge bg-secondary">{skill}</span>
-                                    ))}
-                                </div>
-                            </>
-                        )}
-
-                        {candidate.profileSummary && (
-                            <>
-                                <hr />
-                                <h5 className="mb-3">Profile Summary</h5>
-                                <p className="text-muted">{candidate.profileSummary}</p>
-                            </>
-                        )}
-
-                        {candidate.resume && (
-                            <>
-                                <hr />
-                                <h5 className="mb-3">Resume</h5>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => downloadDocument(candidate.resume, 'resume.pdf')}
-                                >
-                                    <i className="fa fa-download me-1" />Download Resume
-                                </button>
-                            </>
-                        )}
-
-                        <hr />
-                        <div className="mt-3">
-                            <h6>Application Details</h6>
-                            <p><strong>Applied for:</strong> {application.jobId?.title || 'Unknown Job'}</p>
-                            <p><strong>Applied on:</strong> {formatDate(application.createdAt)}</p>
-                        </div>
-
-                        {/* Interview Rounds Section */}
-                        {true && interviewRounds.length >= 0 && (
-                            <>
-                                <hr />
-                                <h5 className="mb-3">Interview Rounds ({interviewRounds.length})</h5>
-                                {interviewRounds.map((round, index) => (
-                                    <div key={index} className="border rounded p-3 mb-3">
-                                        <div className="row">
-                                            <div className="col-md-3">
-                                                <h6>{round.name || `Round ${round.round}`}</h6>
-                                            </div>
-                                            <div className="col-md-3">
-                                                <select 
-                                                    className="form-control"
-                                                    value={round.status}
-                                                    onChange={(e) => {
-                                                        const updated = [...interviewRounds];
-                                                        updated[index].status = e.target.value;
-                                                        setInterviewRounds(updated);
-                                                    }}
-                                                >
-                                                    <option value="pending">Pending</option>
-                                                    <option value="passed">Passed</option>
-                                                    <option value="failed">Failed</option>
-                                                </select>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Feedback/Comments"
-                                                    value={round.feedback}
-                                                    onChange={(e) => {
-                                                        const updated = [...interviewRounds];
-                                                        updated[index].feedback = e.target.value;
-                                                        setInterviewRounds(updated);
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </>
-                        )}
-
-                        {/* Remarks Section */}
-                        <hr />
-                        <h5 className="mb-3">Overall Remarks</h5>
-                        <textarea
-                            className="form-control mb-3"
-                            rows="4"
-                            placeholder="Enter your overall remarks about the candidate..."
-                            value={remarks}
-                            onChange={(e) => setRemarks(e.target.value)}
-                        />
-
-                        {/* Selection Checkbox */}
-                        <div className="form-check mb-3">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="candidateSelection"
-                                checked={isSelected}
-                                onChange={(e) => setIsSelected(e.target.checked)}
-                            />
-                            <label className="form-check-label" htmlFor="candidateSelection">
-                                Select this candidate for further process
-                            </label>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="d-flex gap-2">
-                            <button className="btn btn-success" onClick={saveReview}>
-                                <i className="fa fa-save me-1" />Save Review
-                            </button>
-                            <button className="btn btn-primary" onClick={shortlistCandidate}>
-                                <i className="fa fa-check me-1" />Shortlist
-                            </button>
-                            <button className="btn btn-danger" onClick={rejectCandidate}>
-                                <i className="fa fa-times me-1" />Reject
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+							<div className="d-grid gap-2">
+								<button className="btn btn-success" onClick={saveReview}>
+									<Save size={16} className="me-1" />Save Review
+								</button>
+								<button className="btn btn-primary" onClick={shortlistCandidate}>
+									<Check size={16} className="me-1" />Shortlist
+								</button>
+								<button className="btn btn-danger" onClick={rejectCandidate}>
+									<X size={16} className="me-1" />Reject
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	);
 }
 

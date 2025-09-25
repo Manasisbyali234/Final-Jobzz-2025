@@ -1,5 +1,5 @@
+import { Briefcase, Building, Calendar, FileText, Globe, Hash, IdCard, Image as ImageIcon, Mail, MapPin, Phone, Upload, User as UserIcon, Users as UsersIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import JobZImage from "../../../common/jobz-img";
 import { loadScript } from "../../../../globals/constants";
 
 function EmpCompanyProfilePage() {
@@ -335,7 +335,7 @@ function EmpCompanyProfilePage() {
     };
 
     return (
-        <>
+        <div className="emp-company-profile orange-icons">
             <div className="wt-admin-right-page-header clearfix">
                 <h2>Company Details</h2>
             </div>
@@ -343,14 +343,14 @@ function EmpCompanyProfilePage() {
             {/*Logo and Cover image*/}
             <div className="panel panel-default">
                 <div className="panel-heading wt-panel-heading p-a20">
-                    <h4 className="panel-tittle m-a0">Logo and Cover image</h4>
+                    <h4 className="panel-tittle m-a0"><ImageIcon size={18} className="me-2" /> Logo and Cover image</h4>
                 </div>
                 
                 <div className="panel-body wt-panel-body p-a20 p-b0 m-b30">
                     <div className="row">
                         <div className="col-lg-6 col-md-12">
                             <div className="form-group">
-                                <label>Company Logo</label>
+                                <label><ImageIcon size={16} className="me-2" /> Company Logo</label>
                                 <input
                                     type="file"
                                     className="form-control"
@@ -379,7 +379,7 @@ function EmpCompanyProfilePage() {
 
                         <div className="col-lg-6 col-md-12">
                             <div className="form-group">
-                                <label>Background Banner Image</label>
+                                <label><ImageIcon size={16} className="me-2" /> Background Banner Image</label>
                                 <input
                                     type="file"
                                     className="form-control"
@@ -413,7 +413,7 @@ function EmpCompanyProfilePage() {
                 {/*Basic Information*/}
                 <div className="panel panel-default">
                     <div className="panel-heading wt-panel-heading p-a20">
-                        <h4 className="panel-tittle m-a0">Basic Informations</h4>
+                        <h4 className="panel-tittle m-a0"><Briefcase size={18} className="me-2" /> Basic Informations</h4>
                     </div>
 
                     <div className="panel-body wt-panel-body p-a20 m-b30">
@@ -433,7 +433,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Company Name</label>
+                                    <label><Building size={16} className="me-2" /> Company Name</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -446,7 +446,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Phone</label>
+                                    <label><Phone size={16} className="me-2" /> Phone</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -459,7 +459,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Email Address</label>
+                                    <label><Mail size={16} className="me-2" /> Email Address</label>
                                     <input
                                         className="form-control"
                                         type="email"
@@ -472,7 +472,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Website</label>
+                                    <label><Globe size={16} className="me-2" /> Website</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -485,7 +485,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Est. Since</label>
+                                    <label><Calendar size={16} className="me-2" /> Est. Since</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -498,7 +498,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-xl-4 col-lg-12 col-md-12">
                                 <div className="form-group">
-                                    <label>Team Size</label>
+                                    <label><UsersIcon size={16} className="me-2" /> Team Size</label>
                                     <select
                                         className="form-control"
                                         value={formData.teamSize}
@@ -522,7 +522,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-12">
                                 <div className="form-group">
-                                    <label>Description</label>
+                                    <label><FileText size={16} className="me-2" /> Description</label>
                                     <textarea
                                         className="form-control"
                                         rows={3}
@@ -539,14 +539,14 @@ function EmpCompanyProfilePage() {
                 {/* Company Details */}
                 <div className="panel panel-default">
                     <div className="panel-heading wt-panel-heading p-a20">
-                        <h4 className="panel-tittle m-a0">Company Details</h4>
+                        <h4 className="panel-tittle m-a0"><IdCard size={18} className="me-2" /> Company Details</h4>
                     </div>
 
                     <div className="panel-body wt-panel-body p-a20 m-b30">
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Legal Entity Code (if any)</label>
+                                    <label><Hash size={16} className="me-2" /> Legal Entity Code (if any)</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -559,7 +559,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Corporate Office Address</label>
+                                    <label><MapPin size={16} className="me-2" /> Corporate Office Address</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -572,7 +572,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Branch Office Locations (if any)</label>
+                                    <label><MapPin size={16} className="me-2" /> Branch Office Locations (if any)</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -585,7 +585,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Official Email ID</label>
+                                    <label><Mail size={16} className="me-2" /> Official Email ID</label>
                                     <input
                                         className="form-control"
                                         type="email"
@@ -598,7 +598,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Official Mobile Number</label>
+                                    <label><Phone size={16} className="me-2" /> Official Mobile Number</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -611,7 +611,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Type of Company / Business</label>
+                                    <label><Briefcase size={16} className="me-2" /> Type of Company / Business</label>
                                     <select 
                                         className="form-control"
                                         value={formData.companyType}
@@ -631,7 +631,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Corporate Identification Number (CIN)</label>
+                                    <label><Hash size={16} className="me-2" /> Corporate Identification Number (CIN)</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -644,7 +644,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>GST Number</label>
+                                    <label><Hash size={16} className="me-2" /> GST Number</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -657,7 +657,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Industry Sector</label>
+                                    <label><Briefcase size={16} className="me-2" /> Industry Sector</label>
                                     <select 
                                         className="form-control"
                                         value={formData.industrySector}
@@ -677,7 +677,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Company PAN Card Number</label>
+                                    <label><Hash size={16} className="me-2" /> Company PAN Card Number</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -690,7 +690,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Upload PAN Card Image</label>
+                                    <label><Upload size={16} className="me-2" /> Upload PAN Card Image</label>
                                     <input
                                         className="form-control"
                                         type="file"
@@ -705,7 +705,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Upload CIN Document</label>
+                                    <label><Upload size={16} className="me-2" /> Upload CIN Document</label>
                                     <input
                                         className="form-control"
                                         type="file"
@@ -720,7 +720,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Upload GST Certificate</label>
+                                    <label><Upload size={16} className="me-2" /> Upload GST Certificate</label>
                                     <input
                                         className="form-control"
                                         type="file"
@@ -735,7 +735,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-6">
                                 <div className="form-group">
-                                    <label>Certificate of Incorporation (Issued by RoC)</label>
+                                    <label><Upload size={16} className="me-2" /> Certificate of Incorporation (Issued by RoC)</label>
                                     <input
                                         className="form-control"
                                         type="file"
@@ -750,7 +750,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-md-12">
                                 <div className="form-group">
-                                    <label className="mb-3">Authorization Letters (if registering on behalf of someone else)</label>
+                                    <label className="mb-3"><FileText size={16} className="me-2" /> Authorization Letters (if registering on behalf of someone else)</label>
                                     
                                     <div className="row">
                                     {/* Dynamic Authorization Letter Sections */}
@@ -758,7 +758,7 @@ function EmpCompanyProfilePage() {
                                         <div key={section.id} className="col-md-6 mb-3">
                                             <div className="form-group">
                                                 <div className="d-flex justify-content-between align-items-center">
-                                                    <label>Authorization Letter #{index + 1}</label>
+                                                    <label><Upload size={16} className="me-2" /> Authorization Letter #{index + 1}</label>
                                                     {authSections.length > 1 && (
                                                         <button 
                                                             type="button" 
@@ -863,13 +863,13 @@ function EmpCompanyProfilePage() {
                 {/* Primary Contact Person */}
                 <div className="panel panel-default">
                     <div className="panel-heading wt-panel-heading p-a20">
-                        <h4 className="panel-tittle m-a0">Primary Contact Person</h4>
+                        <h4 className="panel-tittle m-a0"><UserIcon size={18} className="me-2" /> Primary Contact Person</h4>
                     </div>
                     <div className="panel-body wt-panel-body p-a20 m-b30">
                         <div className="row">
                             <div className="col-lg-4 col-md-6">
                                 <div className="form-group">
-                                    <label>Full Name</label>
+                                    <label><UserIcon size={16} className="me-2" /> Full Name</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -882,7 +882,7 @@ function EmpCompanyProfilePage() {
 
                             <div className="col-lg-4 col-md-6">
                                 <div className="form-group">
-                                    <label>Designation</label>
+                                    <label><Briefcase size={16} className="me-2" /> Designation</label>
                                     <input
                                         className="form-control"
                                         type="text"
@@ -966,7 +966,7 @@ function EmpCompanyProfilePage() {
                     </div>
                 </div>
             </form>
-        </>
+        </div>
     );
 }
 

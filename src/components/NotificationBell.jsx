@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const NotificationBell = ({ userRole }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  // Animation flags for bell and badge
+  const [animateBell, setAnimateBell] = useState(false);
+  const [animateBadge, setAnimateBadge] = useState(false);
+
+  // Trigger a brief animation whenever unread count changes (>0)
+  useEffect(() => {
+    if (unreadCount > 0) {
+      setAnimateBell(true);
+      setAnimateBadge(true);
+      const t = setTimeout(() => {
+        setAnimateBell(false);
+        setAnimateBadge(false);
+      }, 700);
+      return () => clearTimeout(t);
+    }
+  }, [unreadCount]);
 
   useEffect(() => {
     if (userRole) {
@@ -85,9 +101,9 @@ const NotificationBell = ({ userRole }) => {
           backgroundColor: unreadCount > 0 ? '#e3f2fd' : 'transparent'
         }}
       >
-        <i className="fa fa-bell" style={{ fontSize: '18px' }}></i>
+        <i className={`fa fa-bell ${animateBell ? 'bell-wiggle' : ''}`} style={{ fontSize: '18px' }}></i>
         {userRole && unreadCount > 0 && (
-          <span style={{
+          <span className={`notif-badge ${animateBadge ? 'badge-pop' : ''}`} style={{
             position: 'absolute',
             top: '0',
             right: '0',

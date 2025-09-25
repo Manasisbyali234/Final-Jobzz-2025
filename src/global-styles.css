@@ -1,3 +1,8 @@
+/* Global Font */
+body {
+    font-family: 'Rubik', sans-serif !important;
+}
+
 .site-text-primary {
     color: #fd7e14 !important;
 }
@@ -101,6 +106,9 @@ button.site-button:hover,
     }
 }
 
+/* Smooth progress bar width animation */
+.progress-animated { transition: width 0.6s ease; }
+
 /* Enhanced button hover states */
 .site-button,
 button.site-button {
@@ -176,6 +184,20 @@ html {
 .animate-on-scroll:nth-child(3) { animation-delay: 0.3s; }
 .animate-on-scroll:nth-child(4) { animation-delay: 0.4s; }
 
+/* Notifications list subtle entrance */
+.notification-list .notification-item {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: notifItemUp 0.45s ease forwards;
+}
+.notification-list .notification-item:nth-child(1) { animation-delay: .05s; }
+.notification-list .notification-item:nth-child(2) { animation-delay: .10s; }
+.notification-list .notification-item:nth-child(3) { animation-delay: .15s; }
+.notification-list .notification-item:nth-child(4) { animation-delay: .20s; }
+.notification-list .notification-item:nth-child(5) { animation-delay: .25s; }
+.notification-list .notification-item:nth-child(6) { animation-delay: .30s; }
+@keyframes notifItemUp { to { opacity: 1; transform: translateY(0); } }
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .hover-card:hover {
@@ -234,4 +256,211 @@ html {
     .twm-media-bg img {
         max-height: 150px !important;
     }
+}
+
+/* Ensure form controls also use Rubik */
+button, input, textarea, select {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+/* Orange icons inside Employer Company Profile */
+.emp-company-profile.orange-icons svg {
+    color: #fd7e14 !important;   /* sets currentColor for Lucide */
+    stroke: #fd7e14 !important;  /* fallback for stroke-based icons */
+}
+
+/* Make main headings black and bold */
+h1, h2, h3,
+.h1, .h2, .h3 {
+    color: #000 !important;
+    font-weight: 700 !important; /* Bold */
+}
+
+/* Professional darker section styling for Employer Company Profile */
+.emp-company-profile .panel.panel-default {
+    background: #f7f9fc !important;           /* slightly darker than white */
+    border: 1px solid #e2e8f0 !important;     /* soft border */
+    border-radius: 10px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
+}
+.emp-company-profile .panel .panel-heading {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+.emp-company-profile .panel .panel-heading .panel-tittle,
+.emp-company-profile .panel .panel-heading h4 {
+    color: #0f172a !important;                /* near-black */
+    font-weight: 700 !important;
+}
+.emp-company-profile .panel .panel-body {
+    background: #f7f9fc !important;
+}
+
+/* Form controls polish */
+.emp-company-profile .form-group label {
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+}
+.emp-company-profile .form-control,
+.emp-company-profile select.form-control,
+.emp-company-profile textarea.form-control,
+.emp-company-profile input.form-control {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+.emp-company-profile .form-control:focus {
+    border-color: #fd7e14 !important;
+    box-shadow: 0 0 0 3px rgba(253,126,20,0.15) !important;
+}
+
+/* Cards inside body */
+.emp-company-profile .hover-card,
+.emp-company-profile .card,
+.emp-company-profile .wt-panel-body {
+    background: #f9fbff !important;
+}
+
+/* Section spacing improvements */
+.emp-company-profile .panel-body {
+    padding: 24px !important;
+}
+.emp-company-profile .panel-heading {
+    padding: 16px 20px !important;
+}
+
+/* Orange accent buttons stay consistent */
+.emp-company-profile .site-button {
+    background-color: #fd7e14 !important;
+    border-color: #fd7e14 !important;
+}
+.emp-company-profile .site-button:hover {
+    background-color: #e8690a !important;
+    border-color: #e8690a !important;
+}
+
+/* Employer Manage Jobs page polish */
+.manage-jobs-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 10px !important;
+    transition: box-shadow 0.2s ease, transform 0.1s ease !important;
+}
+.manage-jobs-card:hover {
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Status badges */
+.badge.twm-bg-green { background-color: #16a34a !important; color: #fff !important; }
+.badge.twm-bg-red { background-color: #dc2626 !important; color: #fff !important; }
+.badge.twm-bg-yellow { background-color: #f59e0b !important; color: #fff !important; }
+.badge.twm-bg-purple { background-color: #8b5cf6 !important; color: #fff !important; }
+.badge.twm-bg-orange { background-color: #f97316 !important; color: #fff !important; }
+.badge.twm-bg-light-blue { background-color: #38bdf8 !important; color: #0c4a6e !important; }
+
+/* Search input with icon spacing already handled via ps-5 in JSX */
+
+/* Notification bell animations */
+.bell-wiggle {
+    animation: bellWiggle 0.7s ease;
+    transform-origin: top center;
+}
+@keyframes bellWiggle {
+    0%   { transform: rotate(0); }
+    15%  { transform: rotate(-12deg); }
+    30%  { transform: rotate(10deg); }
+    45%  { transform: rotate(-8deg); }
+    60%  { transform: rotate(6deg); }
+    75%  { transform: rotate(-3deg); }
+    100% { transform: rotate(0); }
+}
+
+/* Notification badge pop animation */
+.notif-badge { will-change: transform; }
+.badge-pop {
+    animation: badgePop 0.35s ease;
+}
+@keyframes badgePop {
+    0%   { transform: scale(0.6); opacity: 0.7; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* Optional: subtle hover micro-interaction for the bell */
+.fa-bell:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+/* Prevent overflow in Skills & Summary on employer candidate review */
+.emp-candidate-review .card-body,
+.emp-candidate-review .card-body p,
+.emp-candidate-review .card-body .badge {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
+.emp-candidate-review .card-body p {
+    white-space: pre-wrap !important;
+}
+
+/* Job Grid page polish */
+.job-grid-page .hover-card.job-card {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+.job-grid-page .hover-card.job-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08) !important;
+}
+.job-grid-page .job-card .twm-media img {
+    border-radius: 8px !important;
+}
+.job-grid-page .job-card .ctc-text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #1967d2 !important;
+    margin-bottom: 4px !important;
+}
+.job-grid-page .vacancy-text {
+    font-size: 12px !important;
+    color: #64748b !important;
+}
+
+/* Skeleton loading for job cards */
+.job-card-skeleton {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, #ffffff, #f8fafc) !important;
+    padding: 16px !important;
+    display: flex !important;
+    gap: 16px !important;
+}
+.skeleton-logo {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 8px !important;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f1f5f9 37%, #e5e7eb 63%) !important;
+    background-size: 400% 100% !important;
+    animation: shine 1.4s ease infinite !important;
+}
+.skeleton-lines { flex: 1 !important; }
+.skeleton-line {
+    height: 12px !important;
+    background: linear-gradient(90deg, #e5e7eb 25%, #f1f5f9 37%, #e5e7eb 63%) !important;
+    background-size: 400% 100% !important;
+    animation: shine 1.4s ease infinite !important;
+    border-radius: 6px !important;
+    margin-top: 8px !important;
+}
+.skeleton-line.short { width: 40% !important; }
+@keyframes shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }

@@ -658,7 +658,7 @@ exports.getEmployerApplications = async (req, res) => {
     let query = { employerId: req.user._id };
     
     // If companyName filter is provided (for consultants)
-    if (companyName) {
+    if (companyName && companyName.trim() !== '') {
       const jobs = await Job.find({ 
         employerId: req.user._id, 
         companyName: new RegExp(companyName, 'i') 

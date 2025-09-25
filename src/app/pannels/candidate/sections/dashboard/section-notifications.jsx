@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function SectionNotifications() {
 	const [notifications, setNotifications] = useState([]);
@@ -42,7 +42,7 @@ function SectionNotifications() {
 	};
 
 	return (
-		<div className="panel panel-default mb-4" style={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', maxHeight: '400px' }}>
+		<div className="panel panel-default mb-4" data-aos="fade-up" style={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', maxHeight: '400px' }}>
 			<div className="panel-heading" style={{ background: 'linear-gradient(135deg, #ff5a1f 0%, #ff8c42 100%)', color: 'black', borderRadius: '8px 8px 0 0', padding: '12px 16px' }}>
 				<div className="d-flex align-items-center justify-content-between">
 					<h5 className="panel-title mb-0" style={{ fontSize: '14px', fontWeight: 'bold', color: 'black' }}>

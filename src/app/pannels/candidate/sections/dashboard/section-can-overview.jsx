@@ -193,7 +193,7 @@
 // export default SectionCandidateOverview;
 
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CountUp from "react-countup";
 
 function SectionCandidateOverview() {
@@ -273,11 +273,11 @@ function SectionCandidateOverview() {
 			<div className="twm-dash-b-blocks mb-5">
 				<div className="row">
 					{cards.map((card, index) => (
-						<div className="col-xl-4 col-lg-4 col-md-12 mb-3" key={index}>
+						<div className="col-xl-4 col-lg-4 col-md-12 mb-3" key={index} data-aos="fade-up" data-aos-delay={index * 100}>
 							<div className="panel panel-default">
 								<div
-									className="panel-body wt-panel-body dashboard-card-2"
-									style={{ backgroundColor: card.bg }}
+									className="panel-body wt-panel-body dashboard-card-2 hover-card"
+
 								>
 									<div
 										className="d-flex align-items-center"

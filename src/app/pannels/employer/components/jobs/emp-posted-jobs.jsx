@@ -1,7 +1,8 @@
 
-import React, { useEffect, useState } from "react";
-import { loadScript } from "../../../../../globals/constants";
+import { Building2, Calendar, Edit, Eye, MapPin, Pause, Play, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { loadScript } from "../../../../../globals/constants";
 import { employer, empRoute } from "../../../../../globals/route-names";
 
 export default function EmpPostedJobs() {
@@ -12,6 +13,7 @@ export default function EmpPostedJobs() {
     const [isApproved, setIsApproved] = useState(false);
     const [employerType, setEmployerType] = useState('company');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [searchText, setSearchText] = useState('');
     const [applicationCounts, setApplicationCounts] = useState({});
     
     useEffect(() => {
@@ -20,14 +22,24 @@ export default function EmpPostedJobs() {
     }, []);
 
     useEffect(() => {
-        if (statusFilter === 'all') {
-            setFilteredJobs(jobs);
-        } else if (statusFilter === 'active') {
-            setFilteredJobs(jobs.filter(job => job.status === 'active'));
+        // Filter by status first
+        let next = jobs;
+        if (statusFilter === 'active') {
+            next = jobs.filter(job => job.status === 'active');
         } else if (statusFilter === 'inactive') {
-            setFilteredJobs(jobs.filter(job => job.status !== 'active'));
+            next = jobs.filter(job => job.status !== 'active');
         }
-    }, [jobs, statusFilter]);
+        // Then filter by search text (title or location)
+        const query = (searchText || '').trim().toLowerCase();
+        if (query) {
+            next = next.filter(job => {
+                const title = (job.title || '').toLowerCase();
+                const location = (job.location || '').toLowerCase();
+                return title.includes(query) || location.includes(query);
+            });
+        }
+        setFilteredJobs(next);
+    }, [jobs, statusFilter, searchText]);
 
     const fetchJobs = async () => {
         try {
@@ -103,6 +115,13 @@ export default function EmpPostedJobs() {
 
     const getStatusBadge = (status) => {
         return status === 'active' ? 'twm-bg-green' : 'twm-bg-red';
+    };
+
+    // Simple utility for job CTC text
+    const formatCtc = (job) => {
+     if (!job.ctc || job.ctc.min <= 0) return 'CTC not specified';
+     if (job.ctc.min === job.ctc.max) return `₹${(job.ctc.min/100000).toFixed(0)}LPA`;
+     return `₹${(job.ctc.min/100000).toFixed(0)} - ${(job.ctc.max/100000).toFixed(0)} LPA`;
     };
 
     const handleDelete = async (jobId) => {
@@ -188,13 +207,17 @@ export default function EmpPostedJobs() {
 				</div>
 
 				<div className="panel-body wt-panel-body">
-					<div className="mb-4 d-flex justify-content-between align-items-center">
-						<input
-							type="text"
-							className="form-control"
-							style={{maxWidth: '300px'}}
-							placeholder="Search jobs..."
-						/>
+					<div className="mb-4 d-flex flex-wrap gap-3 justify-content-between align-items-center">
+						<div className="position-relative" style={{maxWidth: '360px', flex: '1 1 300px'}}>
+							<Search size={18} className="position-absolute" style={{left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#fd7e14'}} />
+							<input
+								type="text"
+								className="form-control ps-5"
+								placeholder="Search by title or location..."
+								value={searchText}
+								onChange={(e) => setSearchText(e.target.value)}
+							/>
+						</div>
 						<div className="btn-group" role="group">
 							<button 
 								type="button" 
@@ -245,25 +268,24 @@ export default function EmpPostedJobs() {
 							) : (
 								filteredJobs.map((job) => (
 									<div className="col-lg-6 col-12" key={job._id}>
-										<div className="d-flex justify-content-between align-items-center p-3 border rounded mb-3 shadow-sm" style={{cursor: 'pointer'}} onClick={() => handleJobClick(job._id)}>
+										<div className="manage-jobs-card d-flex justify-content-between align-items-center p-3 border rounded mb-3 shadow-sm" style={{cursor: 'pointer'}} onClick={() => handleJobClick(job._id)}>
 											<div className="d-flex align-items-center gap-3">
 												<div>
 													<h5 className="mb-1">{job.title}</h5>
-													<p className="mb-0 text-muted">{job.location}</p>
-													<small className="text-muted">
-														{job.ctc && job.ctc.min > 0 ? 
-															(job.ctc.min === job.ctc.max ? 
-																`₹${(job.ctc.min/100000).toFixed(0)}LPA` : 
-																`₹${(job.ctc.min/100000).toFixed(0)} - ${(job.ctc.max/100000).toFixed(0)} LPA`
-															) : 'CTC not specified'
-														}
-													</small><br/>
-													<small className="text-muted">
-														Posted {formatDate(job.createdAt)}
-													</small><br/>
-													<small className="text-primary fw-bold">
-														{applicationCounts[job._id] || 0} Applications
-													</small>
+									{job.companyName && (
+										<p className="mb-1 fw-bold text-dark">
+											<Building2 size={16} className="me-1" style={{ color: '#fd7e14' }} />
+											{job.companyName}
+										</p>
+									)}
+													<p className="mb-2 fw-bold text-dark">
+										<MapPin size={16} className="me-1" style={{ color: '#fd7e14' }} /> {job.location}
+									</p>
+													<div className="d-flex flex-wrap gap-3 text-muted small fw-bold">
+														<span className="d-inline-flex align-items-center">Annual CTC:&nbsp;{formatCtc(job)}</span>
+														<span className="d-inline-flex align-items-center"><Calendar size={14} className="me-1" /> Posted:&nbsp;{formatDate(job.createdAt)}</span>
+														<span className="text-primary fw-bold">Applications:&nbsp;{applicationCounts[job._id] || 0}</span>
+													</div>
 												</div>
 											</div>
 											<div className="d-flex align-items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -276,21 +298,21 @@ export default function EmpPostedJobs() {
 														onClick={() => navigate(`/employer/emp-job-review/${job._id}`)}
 														title="View Details"
 													>
-														<i className="fa fa-eye" />
+														<Eye size={16} />
 													</button>
 													<button
 														className="btn btn-outline-success btn-sm"
 														onClick={() => navigate(`/employer/edit-job/${job._id}`)}
 														title="Edit Job"
 													>
-														<i className="fa fa-edit" />
+														<Edit size={16} />
 													</button>
 													<button
 														className={`btn btn-outline-${job.status === 'active' ? 'warning' : 'info'} btn-sm`}
 														onClick={() => handleStatusToggle(job._id, job.status)}
 														title={job.status === 'active' ? 'Close Job' : 'Activate Job'}
 													>
-														<i className={`fa fa-${job.status === 'active' ? 'pause' : 'play'}`} />
+														{job.status === 'active' ? <Pause size={16} /> : <Play size={16} /> }
 													</button>
 
 												</div>

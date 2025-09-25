@@ -1,19 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import CountUp from "react-countup";
-import { 
-  Bell, 
-  ChevronRight, 
-  FileText, 
-  Clock, 
-  Star, 
-  Briefcase,
-  Users,
-  BarChart3,
-  AlertTriangle,
-  Eye,
-  User,
-  MapPin
+import {
+    MapPin
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import CountUp from "react-countup";
+import './emp-dashboard.css';
 
 
 function EmpDashboardPage() {
@@ -110,7 +100,7 @@ function EmpDashboardPage() {
 
     return (
         <>
-            <div className="twm-right-section-panel site-bg-gray">
+            <div className="twm-right-section-panel site-bg-gray emp-dashboard">
                 {/* Header */}
                 <div className="wt-admin-right-page-header clearfix" style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '2rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

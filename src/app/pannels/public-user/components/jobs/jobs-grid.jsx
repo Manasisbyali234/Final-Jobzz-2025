@@ -1,11 +1,11 @@
 
-import SectionJobsSidebar1 from "../../sections/jobs/sidebar/section-jobs-sidebar1";
-import SectionJobsGrid from "../../sections/jobs/section-jobs-grid";
-import SectionRecordsFilter from "../../sections/common/section-records-filter";
-import { Container, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { loadScript } from "../../../../../globals/constants";
+import SectionRecordsFilter from "../../sections/common/section-records-filter";
+import SectionJobsGrid from "../../sections/jobs/section-jobs-grid";
+import SectionJobsSidebar1 from "../../sections/jobs/sidebar/section-jobs-sidebar1";
 
 function JobsGridPage() {
     const [searchParams] = useSearchParams();
@@ -105,7 +105,7 @@ function JobsGridPage() {
 
     return (
         <>
-            <div className="section-full py-5 site-bg-white" data-aos="fade-up">
+            <div className="section-full py-5 site-bg-white job-grid-page" data-aos="fade-up">
                 <Container>
                     <Row className="mb-4">
                         <Col lg={4} md={12} className="rightSidebar" data-aos="fade-right" data-aos-delay="100">

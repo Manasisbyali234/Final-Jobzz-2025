@@ -1,0 +1,119 @@
+/* Employer Dashboard scoped styles */
+.emp-dashboard {
+  /* page background */
+  background: #f8fafc; /* light slate */
+}
+
+/* Header improvements */
+.emp-dashboard .wt-admin-right-page-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 28px !important;
+}
+
+/* Card base */
+.emp-dashboard .dashboard-card-2 {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06) !important;
+}
+
+/* Card titles */
+.emp-dashboard h5 {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  margin: 4px 0 0 0 !important;
+}
+
+/* Counter typography */
+.emp-dashboard .counter {
+  font-size: 28px !important;
+}
+
+/* Section containers */
+.emp-dashboard .panel,
+.emp-dashboard .wt-panel-body {
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  border: 1px solid #eef2f7 !important;
+}
+
+/* CTA buttons */
+.emp-dashboard .btn-primary,
+.emp-dashboard button[style*="background: #f97316"],
+.emp-dashboard .site-button {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.emp-dashboard .btn-primary:hover,
+.emp-dashboard button[style*="background: #f97316"]:hover,
+.emp-dashboard .site-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(249, 115, 22, 0.45) !important;
+}
+
+/* Soft badges */
+.emp-dashboard .badge-soft {
+  background: #fff7ed !important; /* orange-50 */
+  color: #9a3412 !important;     /* orange-800 */
+  border: 1px dashed #fed7aa !important; /* orange-200 */
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* Table styling (if present) */
+.emp-dashboard table {
+  border-collapse: separate !important;
+  border-spacing: 0 10px !important;
+}
+.emp-dashboard table thead th {
+  color: #6b7280 !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+.emp-dashboard table tbody tr {
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.05);
+}
+.emp-dashboard table tbody tr td {
+  border-top: none !important;
+  padding: 14px 16px !important;
+}
+
+/* Recent activity list */
+.emp-dashboard .activity-item {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: 10px 0;
+}
+.emp-dashboard .activity-item + .activity-item {
+  border-top: 1px dashed #e5e7eb;
+}
+
+/* Progress ring container tweak */
+.emp-dashboard .progress-ring {
+  filter: drop-shadow(0 4px 10px rgba(249, 115, 22, 0.25));
+}
+
+/* Generic card hover */
+.emp-dashboard .panel:hover,
+.emp-dashboard .wt-panel-body:hover,
+.emp-dashboard .dashboard-card-2:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* Responsive paddings */
+@media (max-width: 992px) {
+  .emp-dashboard .wt-admin-right-page-header { padding: 20px !important; }
+}
+@media (max-width: 768px) {
+  .emp-dashboard { padding-bottom: 20px; }
+}

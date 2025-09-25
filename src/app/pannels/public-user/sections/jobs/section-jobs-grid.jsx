@@ -1,15 +1,15 @@
-import JobZImage from "../../../../common/jobz-img";
+import { useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { publicUser } from "../../../../../globals/route-names";
+import JobZImage from "../../../../common/jobz-img";
 import SectionPagination from "../common/section-pagination";
-import { Container, Row, Col } from "react-bootstrap";
-import { useState, useEffect } from "react";
-import { isAuthenticated, redirectToLogin } from "../../../../../utils/auth";
 
 function SectionJobsGrid({ filters, onTotalChange }) {
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     useEffect(() => {
         fetchJobs();
@@ -82,6 +82,7 @@ function SectionJobsGrid({ filters, onTotalChange }) {
             }
         } finally {
             setLoading(false);
+            setIsFirstLoad(false);
         }
     };
 
@@ -90,9 +91,24 @@ function SectionJobsGrid({ filters, onTotalChange }) {
     return (
         <>
             <Row>
-                {jobs.length > 0 ? jobs.map((job, index) => (
-                    <Col key={job._id} lg={6} md={12} className="mb-4" data-aos="fade-up" data-aos-delay={index * 100}>
-                        <div className="twm-jobs-grid-style1 hover-card">
+                {loading && isFirstLoad && (
+                    [...Array(4)].map((_, idx) => (
+                        <Col key={`skeleton-${idx}`} lg={6} md={12} className="mb-4">
+                            <div className="twm-jobs-grid-style1 job-card-skeleton">
+                                <div className="skeleton-logo" />
+                                <div className="skeleton-lines">
+                                    <div className="skeleton-line short" />
+                                    <div className="skeleton-line" />
+                                    <div className="skeleton-line" />
+                                </div>
+                            </div>
+                        </Col>
+                    ))
+                )}
+
+                {!loading && jobs.length > 0 ? jobs.map((job, index) => (
+                    <Col key={job._id} lg={6} md={12} className="mb-4" data-aos="fade-up" data-aos-delay={index * 80}>
+                        <div className="twm-jobs-grid-style1 hover-card job-card">
                             <div className="twm-media">
                                 {job.employerProfile?.logo ? (
                                     <img src={job.employerProfile.logo} alt="Company Logo" />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../../../../../utils/api';
 import { calculateProfileCompletion } from '../../../../../utils/profileCompletion';
 
@@ -65,8 +65,11 @@ function CompleteProfileCard() {
 				style={{ height: "10px", borderRadius: "10px" }}
 			>
 				<div
-					className="progress-bar"
+					className="progress-bar progress-animated"
 					role="progressbar"
+					aria-valuemin={0}
+					aria-valuemax={100}
+					aria-valuenow={profileCompletion}
 					style={{
 						width: `${profileCompletion}%`,
 						backgroundColor: "#2563eb",

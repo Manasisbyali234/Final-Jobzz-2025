@@ -4,7 +4,7 @@ function SectionCandicateBasicInfo() {
             <form>
                 <div className="panel panel-default">
                     <div className="panel-heading wt-panel-heading p-a20">
-                        <h4 className="panel-tittle m-a0">Basic Informations</h4>
+                        <h4 className="panel-tittle m-a0"><i className="fa fa-id-card text-primary me-2" /> Basic Information</h4>
                     </div>
                     <div className="panel-body wt-panel-body p-a20 m-b30 ">
                         <div className="row">

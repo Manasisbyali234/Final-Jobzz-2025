@@ -97,7 +97,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-brown">Intership</span></div>
-                                    <div className="twm-jobs-amount">₹2500 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹2500</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-purple">Fulltime</span></div>
-                                    <div className="twm-jobs-amount">₹2500 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹2500</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-sky">Freelancer</span></div>
-                                    <div className="twm-jobs-amount">₹1500 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1500</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -154,7 +154,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-golden">Temporary</span></div>
-                                    <div className="twm-jobs-amount">₹800 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹800</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-green">New</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -192,7 +192,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-brown">Intership</span></div>
-                                    <div className="twm-jobs-amount">₹1500 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1500</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-purple">Fulltime</span></div>
-                                    <div className="twm-jobs-amount">₹2500 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹2500</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-sky">Freelancer</span></div>
-                                    <div className="twm-jobs-amount">₹3000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹3000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -249,7 +249,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-green">New</span></div>
-                                    <div className="twm-jobs-amount">₹2000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹2000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -268,7 +268,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-brown">Intership</span></div>
-                                    <div className="twm-jobs-amount">₹2000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹2000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -287,7 +287,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-purple">Fulltime</span></div>
-                                    <div className="twm-jobs-amount">₹1800 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1800</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -306,7 +306,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-sky">Freelancer</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -325,7 +325,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-golden">Temporary</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -344,7 +344,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-green">New</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -363,7 +363,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-brown">Intership</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -382,7 +382,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-purple">Fulltime</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>
@@ -401,7 +401,7 @@ function SectionJobsList() {
                                 </div>
                                 <div className="twm-right-content">
                                     <div className="twm-jobs-category green"><span className="twm-bg-sky">Freelancer</span></div>
-                                    <div className="twm-jobs-amount">₹1000 <span>/ Month</span></div>
+                                    <div className="twm-jobs-amount">₹1000</div>
                                     <NavLink to={publicUser.jobs.DETAIL1} className="twm-jobs-browse site-text-primary">Browse Job</NavLink>
                                 </div>
                             </div>

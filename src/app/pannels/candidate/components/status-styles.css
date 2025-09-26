@@ -1,0 +1,178 @@
+/* Application Status Page Custom Styles */
+
+/* Stats Cards */
+.stats-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+}
+
+/* Table Enhancements */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table tbody td {
+    color: #232323 !important;
+    font-weight: 600;
+}
+
+.table tbody td span {
+    color: #232323 !important;
+    font-weight: 600;
+}
+
+.table tbody td h6 {
+    color: #232323 !important;
+    font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+}
+
+/* Interview Round Cards */
+.interview-round-card {
+    transition: transform 0.2s ease;
+    border-radius: 8px;
+}
+
+.interview-round-card:hover {
+    transform: translateY(-1px);
+}
+
+.interview-round-card .text-muted {
+    color: #232323 !important;
+    font-weight: 600;
+}
+
+.card-body .text-muted {
+    color: #232323 !important;
+    font-weight: 600;
+}
+
+/* Company Logo Circle */
+.company-logo-circle {
+    transition: all 0.3s ease;
+}
+
+.company-logo-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+/* Header Styling */
+.status-header {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #ffe0b3;
+}
+
+/* Refresh Button */
+.refresh-btn {
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 60px 20px;
+}
+
+.empty-state i {
+    opacity: 0.7;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .stats-card {
+        margin-bottom: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 14px;
+    }
+    
+    .interview-round-card {
+        min-width: 120px;
+    }
+}
+
+/* Custom Badge Colors */
+.badge-pending {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border: 1px solid #ffeaa7 !important;
+}
+
+.badge-shortlisted {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border: 1px solid #bee5eb !important;
+}
+
+.badge-interviewed {
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+    border: 1px solid #99d6ff !important;
+}
+
+.badge-hired {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: 1px solid #c3e6cb !important;
+}
+
+.badge-rejected {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+.bg-secondary.text-white {
+    color: #fff !important;
+}
+
+/* Table Header Styling */
+.table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Card Shadow */
+.card-shadow {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: none;
+}
+
+.card-shadow:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}

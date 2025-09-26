@@ -12,6 +12,7 @@ import SectionCanProjects from "../sections/resume/section-can-projects";
 import SectionCanResumeHeadline from "../sections/resume/section-can-resume-headline";
 import { loadScript } from "../../../../globals/constants";
 import { api } from "../../../../utils/api";
+import "./resume-styles.css";
 
 function CanMyResumePage() {
     const [profile, setProfile] = useState(null);
@@ -44,8 +45,25 @@ function CanMyResumePage() {
     return (
 			<>
 				<div className="twm-right-section-panel site-bg-gray">
+					{/* Resume Page Header */}
+					<div className="panel panel-default mb-4">
+						<div className="panel-heading wt-panel-heading p-a20">
+							<h3 className="panel-tittle m-a0 text-center">
+								<i className="fa fa-file-text-o me-2" style={{color: '#ff6b35'}}></i>
+								My Resume
+							</h3>
+							<p className="text-center text-muted mb-0">
+								<i className="fa fa-wrench me-1" style={{color: '#ff6b35'}}></i>
+								Build and manage your professional resume
+							</p>
+						</div>
+					</div>
+
 					{loading ? (
-						<div className="text-center p-4">Loading profile...</div>
+						<div className="text-center p-4">
+							<i className="fa fa-spinner fa-spin fa-2x site-text-primary mb-3"></i>
+							<p>Loading profile...</p>
+						</div>
 					) : (
 						<>
 							<div className="panel panel-default mb-3">
@@ -62,8 +80,6 @@ function CanMyResumePage() {
 							<div className="panel panel-default mb-3">
 								<SectionCanPersonalDetail profile={profile} />
 							</div>
-
-
 
 							<div className="panel panel-default mb-3">
 								<SectionCanAttachment profile={profile} />

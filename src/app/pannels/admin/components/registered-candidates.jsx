@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../../../../utils/api';
 import { useNavigate } from 'react-router-dom';
+import './registered-candidates-styles.css';
 
 function RegisteredCandidatesPage() {
     const navigate = useNavigate();
@@ -63,7 +64,17 @@ function RegisteredCandidatesPage() {
     }
 
     return (
-        <div className="dashboard-content">
+        <div className="dashboard-content registered-candidates-container">
+            {/* Header Section */}
+            <div className="candidates-header" data-aos="fade-down">
+                <h2>
+                    Registered Candidates Management
+                </h2>
+                <p className="candidates-subtitle">
+                    <i className="fa fa-info-circle"></i>
+                    Manage and monitor all registered candidates in the system
+                </p>
+            </div>
 
             {/* Candidate Details Modal */}
             <div className="modal fade" id="candidateDetailsModal" tabIndex={-1} aria-hidden="true" ref={modalRef}>
@@ -112,110 +123,85 @@ function RegisteredCandidatesPage() {
                 </div>
             </div>
 
-            <div className="dashboard-widg">
-                <div className="row">
-                    <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                        <div className="card">
-                            <div className="card-header">
-                                <h4>All Registered Candidates ({candidates.length})</h4>
-                            </div>
-                            <div className="card-body">
-                                {candidates.length === 0 ? (
-                                    <div className="text-center py-4">
-                                        <p>No registered candidates found.</p>
-                                    </div>
-                                ) : (
-                                    <div className="table-responsive">
-                                        <table className="table table-striped" style={{color: 'black'}}>
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Email</th>
-                                                    <th>Phone</th>
-                                                    <th>Profile Status</th>
-                                                    <th>Location</th>
-
-                                                    <th>Shortlisted Status</th>
-                                                    <th>Current Round</th>
-                                                    <th>Selected</th>
-                                                    <th>Registered Date</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {candidates.map((candidate) => {
-                                                    const shortlistInfo = getCandidateShortlistInfo(candidate._id);
-                                                    return (
-                                                        <tr key={candidate._id}>
-                                                            <td>
-                                                                <div className="dash-list-thumb">
-                                                                    <h4 className="mb-0 ft-medium fs-sm">
-                                                                        {candidate.name}
-                                                                    </h4>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <span style={{color: 'black'}}>{candidate.email}</span>
-                                                            </td>
-                                                            <td>
-                                                                <span style={{color: 'black'}}>
-                                                                    {candidate.phone || 'Not provided'}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span className={`badge ${candidate.hasProfile ? 'badge-success' : 'badge-warning'}`} style={{color: 'black'}}>
-                                                                    {candidate.hasProfile ? 'Profile Completed' : 'Profile Incomplete'}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span style={{color: 'black'}}>
-                                                                    {candidate.profile?.location || 'Not specified'}
-                                                                </span>
-                                                            </td>
-
-                                                            <td>
-                                                                <span className={`badge ${shortlistInfo.status === 'Shortlisted' ? 'badge-success' : 'badge-secondary'}`} style={{color: 'black'}}>
-                                                                    {shortlistInfo.status}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span style={{color: 'black'}}>{shortlistInfo.round}</span>
-                                                            </td>
-                                                            <td>
-                                                                <span className={`badge ${
-                                                                    shortlistInfo.selected === 'Yes' ? 'badge-success' :
-                                                                    shortlistInfo.selected === 'No' ? 'badge-danger' :
-                                                                    'badge-warning'
-                                                                }`} style={{color: 'black'}}>
-                                                                    {shortlistInfo.selected}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span style={{color: 'black'}}>
-                                                                    {new Date(candidate.createdAt).toLocaleDateString()}
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <div className="dash-action-btns">
-                                                                    <button 
-                                                                        className="btn btn-outline-primary btn-sm"
-                                                                        onClick={() => viewCandidateDetails(candidate)}
-                                                                        title="View Details"
-                                                                    >
-                                                                        <i className="fa fa-eye"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                )}
-                            </div>
+            <div className="candidates-table-container" data-aos="fade-up" data-aos-delay="200">
+                <div className="candidates-table-header">
+                    <h4>
+                        <i className="fa fa-list-alt"></i>
+                        All Registered Candidates ({candidates.length})
+                    </h4>
+                </div>
+                <div className="card-body">
+                    {candidates.length === 0 ? (
+                        <div className="empty-state" data-aos="fade-in">
+                            <i className="fa fa-users"></i>
+                            <h3>No Registered Candidates</h3>
+                            <p>No candidates have registered yet.</p>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="candidates-table-responsive">
+                            <table className="table candidates-table">
+                                <thead>
+                                    <tr>
+                                        <th><i className="fa fa-user"></i> Name</th>
+                                        <th><i className="fa fa-envelope"></i> Email</th>
+                                        <th><i className="fa fa-phone"></i> Phone</th>
+                                        <th><i className="fa fa-id-card"></i> Profile Status</th>
+                                        <th><i className="fa fa-map-marker-alt"></i> Location</th>
+                                        <th><i className="fa fa-calendar"></i> Registered Date</th>
+                                        <th><i className="fa fa-cogs"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {candidates.map((candidate, index) => {
+                                        const shortlistInfo = getCandidateShortlistInfo(candidate._id);
+                                        return (
+                                            <tr key={candidate._id} data-aos="fade-left" data-aos-delay={300 + (index * 50)}>
+                                                <td>
+                                                    <span className="candidate-name">
+                                                        {candidate.name}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="candidate-email">
+                                                        {candidate.email}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {candidate.phone || 'Not provided'}
+                                                </td>
+                                                <td>
+                                                    <span className={`status-badge ${
+                                                        candidate.hasProfile ? 'badge-completed' : 'badge-incomplete'
+                                                    }`}>
+                                                        <i className={`fa ${
+                                                            candidate.hasProfile ? 'fa-check' : 'fa-exclamation-triangle'
+                                                        } me-1`}></i>
+                                                        {candidate.hasProfile ? 'Completed' : 'Incomplete'}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {candidate.profile?.location || 'Not specified'}
+                                                </td>
+                                                <td>
+                                                    {new Date(candidate.createdAt).toLocaleDateString()}
+                                                </td>
+                                                <td>
+                                                    <button 
+                                                        className="action-btn btn-view"
+                                                        onClick={() => viewCandidateDetails(candidate)}
+                                                        title="View Details"
+                                                    >
+                                                        <i className="fa fa-eye"></i>
+                                                        View
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

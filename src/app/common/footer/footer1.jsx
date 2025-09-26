@@ -129,31 +129,23 @@ function Footer1() {
 
 								<ul className="social-icons">
 									<li>
-										<a
-											href="https://www.facebook.com/"
-											className="fab fa-facebook-f"
-										/>
+										<a href="https://www.facebook.com/" style={{color: '#f97316', fontSize: '18px', textDecoration: 'none', display: 'inline-block', width: '35px', height: '35px', lineHeight: '35px', textAlign: 'center', borderRadius: '50%', backgroundColor: 'rgba(249, 115, 22, 0.1)', transition: 'all 0.3s ease'}}>f</a>
 									</li>
 
 									<li>
-										<a
-											href="https://www.twitter.com/"
-											className="fab fa-twitter"
-										/>
+										<a href="https://www.twitter.com/" style={{color: '#f97316', fontSize: '18px', textDecoration: 'none', display: 'inline-block', width: '35px', height: '35px', lineHeight: '35px', textAlign: 'center', borderRadius: '50%', backgroundColor: 'rgba(249, 115, 22, 0.1)', transition: 'all 0.3s ease'}}>t</a>
 									</li>
 
 									<li>
-										<a
-											href="https://www.instagram.com/"
-											className="fab fa-instagram"
-										/>
+										<a href="https://www.instagram.com/" style={{color: '#f97316', fontSize: '18px', textDecoration: 'none', display: 'inline-block', width: '35px', height: '35px', lineHeight: '35px', textAlign: 'center', borderRadius: '50%', backgroundColor: 'rgba(249, 115, 22, 0.1)', transition: 'all 0.3s ease'}}>i</a>
 									</li>
 
 									<li>
-										<a
-											href="https://www.youtube.com/"
-											className="fab fa-youtube"
-										/>
+										<a href="mailto:example@metromindz.com" style={{color: '#f97316', fontSize: '18px', textDecoration: 'none', display: 'inline-block', width: '35px', height: '35px', lineHeight: '35px', textAlign: 'center', borderRadius: '50%', backgroundColor: 'rgba(249, 115, 22, 0.1)', transition: 'all 0.3s ease'}}>@</a>
+									</li>
+
+									<li>
+										<a href="https://www.youtube.com/" style={{color: '#f97316', fontSize: '18px', textDecoration: 'none', display: 'inline-block', width: '35px', height: '35px', lineHeight: '35px', textAlign: 'center', borderRadius: '50%', backgroundColor: 'rgba(249, 115, 22, 0.1)', transition: 'all 0.3s ease'}}>y</a>
 									</li>
 								</ul>
 							</div>

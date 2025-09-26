@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { api } from '../../../../utils/api';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import './admin-emp-manage-styles.css';
 
 function AdminEmployersAllRequest() {
     const navigate = useNavigate();
@@ -9,6 +12,11 @@ function AdminEmployersAllRequest() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true
+        });
         fetchEmployers();
     }, []);
 
@@ -68,12 +76,20 @@ function AdminEmployersAllRequest() {
 
     if (loading) {
         return (
-            <div className="wt-admin-right-page-header clearfix">
-                <h2>Employers Details</h2>
-                <div className="panel panel-default site-bg-white">
-                    <div className="panel-body wt-panel-body p-a20">
-                        <div className="text-center">Loading employers...</div>
-                    </div>
+            <div className="admin-emp-manage-container">
+                <div className="admin-emp-header" data-aos="fade-down">
+                    <h2>
+                        <i className="fa fa-building me-3"></i>
+                        Employer Management
+                    </h2>
+                    <p className="admin-emp-subtitle mb-0">
+                        <i className="fa fa-users-cog me-2"></i>
+                        Manage and review employer applications
+                    </p>
+                </div>
+                <div className="loading-container" data-aos="fade-up">
+                    <div className="loading-spinner"></div>
+                    <div className="loading-text">Loading employers...</div>
                 </div>
             </div>
         );

@@ -209,13 +209,14 @@ export default function EmpPostedJobs() {
 				<div className="panel-body wt-panel-body">
 					<div className="mb-4 d-flex flex-wrap gap-3 justify-content-between align-items-center">
 						<div className="position-relative" style={{maxWidth: '360px', flex: '1 1 300px'}}>
-							<Search size={18} className="position-absolute" style={{left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#fd7e14'}} />
+							<i className="fa fa-search position-absolute" style={{left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#ff6b35', fontSize: '16px', zIndex: 10}}></i>
 							<input
 								type="text"
 								className="form-control ps-5"
 								placeholder="Search by title or location..."
 								value={searchText}
 								onChange={(e) => setSearchText(e.target.value)}
+								style={{paddingLeft: '40px'}}
 							/>
 						</div>
 						<div className="btn-group" role="group">
@@ -283,6 +284,7 @@ export default function EmpPostedJobs() {
 									</p>
 													<div className="d-flex flex-wrap gap-3 text-muted small fw-bold">
 														<span className="d-inline-flex align-items-center">Annual CTC:&nbsp;{formatCtc(job)}</span>
+														<span className="d-inline-flex align-items-center">Vacancies:&nbsp;{job.vacancies || 0}</span>
 														<span className="d-inline-flex align-items-center"><Calendar size={14} className="me-1" /> Posted:&nbsp;{formatDate(job.createdAt)}</span>
 														<span className="text-primary fw-bold">Applications:&nbsp;{applicationCounts[job._id] || 0}</span>
 													</div>

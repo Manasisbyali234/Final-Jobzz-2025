@@ -1,6 +1,7 @@
 import { Briefcase, Building, Calendar, FileText, Globe, Hash, IdCard, Image as ImageIcon, Mail, MapPin, Phone, Upload, User as UserIcon, Users as UsersIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { loadScript } from "../../../../globals/constants";
+import './emp-company-profile.css';
 
 function EmpCompanyProfilePage() {
     const [formData, setFormData] = useState({
@@ -338,6 +339,9 @@ function EmpCompanyProfilePage() {
         <div className="emp-company-profile orange-icons">
             <div className="wt-admin-right-page-header clearfix">
                 <h2>Company Details</h2>
+                <div className="progress-indicator">
+                    <div className="progress-bar" style={{width: '75%'}}></div>
+                </div>
             </div>
 
             {/*Logo and Cover image*/}

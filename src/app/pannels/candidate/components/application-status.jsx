@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { loadScript } from "../../../../globals/constants";
 import { api } from "../../../../utils/api";
 import CanPostedJobs from "./can-posted-jobs";
+import "./status-styles.css";
 
 // Add CSS for hover effect
 const styles = `
@@ -130,34 +131,63 @@ function CanStatusPage() {
 
 	return (
 		<>
-			<div className="wt-admin-right-page-header clearfix">
-				<h2>Job Applications</h2>
-				<div className="d-flex justify-content-between align-items-center">
-					<small className="text-muted">Updates automatically every 30 seconds</small>
-					<button 
-						className="btn btn-sm btn-outline-primary"
-						onClick={fetchApplications}
-						disabled={loading}
-					>
-						<i className="fa fa-refresh me-1" />
-						{loading ? 'Refreshing...' : 'Refresh Now'}
-					</button>
+			{/* Enhanced Header */}
+			<div className="panel panel-default mb-4 status-header">
+				<div className="panel-heading wt-panel-heading p-a20">
+					<h3 className="panel-tittle m-a0 text-center" style={{color: '#232323'}}>
+						<i className="fa fa-clipboard-list me-2" style={{color: '#ff6b35'}}></i>
+						Application Status
+					</h3>
+					<p className="text-center text-muted mb-0">Track your job applications and interview progress</p>
 				</div>
+			</div>
+
+
+
+			{/* Refresh Controls */}
+			<div className="d-flex justify-content-between align-items-center mb-3">
+				<div className="d-flex align-items-center">
+					<i className="fa fa-clock-o me-2" style={{color: '#ff6b35'}}></i>
+					<small className="text-muted">Updates automatically every 30 seconds</small>
+				</div>
+				<button 
+					className="btn btn-sm btn-outline-primary refresh-btn"
+					onClick={fetchApplications}
+					disabled={loading}
+				>
+					<i className="fa fa-refresh me-1" />
+					{loading ? 'Refreshing...' : 'Refresh Now'}
+				</button>
 			</div>
 			
 			<div className="twm-pro-view-chart-wrap">
 				<div className="col-lg-12 col-md-12 mb-4">
-					<div className="card shadow-sm border-0">
+					<div className="card card-shadow border-0">
 						<div className="card-body p-0">
 							<div className="table-responsive">
 								<table className="table table-hover mb-0">
-									<thead className="bg-light">
+									<thead style={{backgroundColor: '#f8f9fa'}}>
 										<tr>
-											<th className="border-0 px-4 py-3 text-muted fw-semibold">Applied Date</th>
-											<th className="border-0 px-4 py-3 text-muted fw-semibold">Company</th>
-											<th className="border-0 px-4 py-3 text-muted fw-semibold">Position</th>
-											<th className="border-0 px-4 py-3 text-muted fw-semibold">Status</th>
-											<th className="border-0 px-4 py-3 text-muted fw-semibold">Interview Progress</th>
+											<th className="border-0 px-4 py-3 fw-semibold" style={{color: '#232323'}}>
+												<i className="fa fa-calendar me-2" style={{color: '#ff6b35'}}></i>
+												Applied Date
+											</th>
+											<th className="border-0 px-4 py-3 fw-semibold" style={{color: '#232323'}}>
+												<i className="fa fa-building me-2" style={{color: '#ff6b35'}}></i>
+												Company
+											</th>
+											<th className="border-0 px-4 py-3 fw-semibold" style={{color: '#232323'}}>
+												<i className="fa fa-briefcase me-2" style={{color: '#ff6b35'}}></i>
+												Position
+											</th>
+											<th className="border-0 px-4 py-3 fw-semibold" style={{color: '#232323'}}>
+												<i className="fa fa-flag me-2" style={{color: '#ff6b35'}}></i>
+												Status
+											</th>
+											<th className="border-0 px-4 py-3 fw-semibold" style={{color: '#232323'}}>
+												<i className="fa fa-tasks me-2" style={{color: '#ff6b35'}}></i>
+												Interview Progress
+											</th>
 										</tr>
 									</thead>
 
@@ -165,17 +195,24 @@ function CanStatusPage() {
 										{loading ? (
 											<tr>
 												<td colSpan="5" className="text-center py-5">
-													<div className="spinner-border text-primary" role="status">
-														<span className="visually-hidden">Loading...</span>
+													<div className="d-flex flex-column align-items-center">
+														<i className="fa fa-spinner fa-spin fa-3x mb-3" style={{color: '#ff6b35'}}></i>
+														<p className="text-muted mb-0">Loading your applications...</p>
 													</div>
-													<p className="mt-2 text-muted">Loading applications...</p>
 												</td>
 											</tr>
 										) : applications.length === 0 ? (
 											<tr>
 												<td colSpan="5" className="text-center py-5">
-													<i className="fas fa-inbox fa-3x text-muted mb-3"></i>
-													<p className="text-muted">No applications found</p>
+													<div className="d-flex flex-column align-items-center">
+														<i className="fa fa-search fa-3x mb-3" style={{color: '#ff6b35'}}></i>
+														<h5 style={{color: '#232323'}}>No Applications Yet</h5>
+														<p className="text-muted mb-3">Start applying to jobs to see your application status here</p>
+														<button className="btn btn-primary" onClick={() => window.location.href = '/jobs'}>
+															<i className="fa fa-search me-2"></i>
+															Browse Jobs
+														</button>
+													</div>
 												</td>
 											</tr>
 										) : (
@@ -195,8 +232,8 @@ function CanStatusPage() {
 														<td className="px-4 py-3">
 															<div className="d-flex align-items-center">
 																<div className="me-3">
-																	<div className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style={{width: '40px', height: '40px'}}>
-																		<i className="fas fa-building text-primary"></i>
+																	<div className="rounded-circle d-flex align-items-center justify-content-center" style={{width: '45px', height: '45px', backgroundColor: '#fff3e0', border: '2px solid #ff6b35'}}>
+																		<i className="fa fa-building" style={{color: '#ff6b35', fontSize: '18px'}}></i>
 																	</div>
 																</div>
 																<div>
@@ -233,14 +270,44 @@ function CanStatusPage() {
 																{interviewRounds.length > 0 ? (
 																	interviewRounds.map((round, roundIndex) => {
 																		const roundStatus = getRoundStatus(app, roundIndex);
+																		// Get interview details for this round
+																		const roundTypeMap = {
+																			'Technical': 'technical',
+																			'HR': 'hr',
+																			'Managerial': 'managerial',
+																			'Non-Technical': 'nonTechnical',
+																			'Final': 'final'
+																		};
+																		const roundKey = roundTypeMap[round];
+																		const roundDetails = app.jobId?.interviewRoundDetails?.[roundKey];
 																		return (
-																			<div key={roundIndex} className="mb-2" style={{minWidth: '140px'}}>
+																			<div key={roundIndex} className="mb-2" style={{minWidth: '160px'}}>
 																				<div className="card border-0 shadow-sm" style={{fontSize: '11px'}}>
 																					<div className="card-body p-2">
 																						<div className="text-muted fw-medium mb-1">{round}</div>
 																						<span className={`badge ${roundStatus.class}`} style={{fontSize: '10px', padding: '4px 8px'}}>
 																							{roundStatus?.text || 'Pending'}
 																						</span>
+																						{/* Show interview dates and time */}
+																						{roundDetails && (
+																							<div className="mt-1" style={{fontSize: '9px', lineHeight: '1.2'}}>
+																								{roundDetails.fromDate && (
+																									<div className="text-primary">
+																										<i className="fa fa-calendar me-1"></i>
+																										{new Date(roundDetails.fromDate).toLocaleDateString()}
+																										{roundDetails.toDate && roundDetails.fromDate !== roundDetails.toDate && (
+																											<span> - {new Date(roundDetails.toDate).toLocaleDateString()}</span>
+																										)}
+																									</div>
+																								)}
+																								{roundDetails.time && (
+																									<div className="text-success">
+																										<i className="fa fa-clock me-1"></i>
+																										{roundDetails.time}
+																									</div>
+																								)}
+																							</div>
+																						)}
 																						{roundStatus.feedback && (
 																							<div className="text-muted mt-1" style={{fontSize: '9px', lineHeight: '1.2'}}>
 																								{roundStatus.feedback}

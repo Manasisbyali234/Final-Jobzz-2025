@@ -31,7 +31,10 @@ function SectionCanKeySkills({ profile }) {
     return (
         <>
             <div className="panel-heading wt-panel-heading p-a20 panel-heading-with-btn ">
-                <h4 className="panel-tittle m-a0">Key Skills</h4>
+                <h4 className="panel-tittle m-a0">
+                    <i className="fa fa-cogs site-text-primary me-2"></i>
+                    Key Skills
+                </h4>
                 <a data-bs-toggle="modal" href="#Key_Skills" role="button" title="Edit" className="site-text-primary">
                     <span className="fa fa-edit" />
                 </a>
@@ -41,10 +44,16 @@ function SectionCanKeySkills({ profile }) {
                     <div className="tagcloud">
                         {skills.length > 0 ? (
                             skills.map((skill, index) => (
-                                <a key={index} href="javascript:void(0)">{skill}</a>
+                                <a key={index} href="javascript:void(0)" className="skill-tag">
+                                    <i className="fa fa-tag me-1"></i>
+                                    {skill}
+                                </a>
                             ))
                         ) : (
-                            <p>No skills added yet</p>
+                            <p className="text-muted">
+                                <i className="fa fa-info-circle me-1"></i>
+                                No skills added yet. Click edit to add your skills.
+                            </p>
                         )}
                     </div>
                 </div>
@@ -55,7 +64,10 @@ function SectionCanKeySkills({ profile }) {
                     <div className="modal-content">
                         <form onSubmit={(e) => e.preventDefault()}>
                             <div className="modal-header">
-                                <h2 className="modal-title">Key Skills</h2>
+                                <h2 className="modal-title">
+                                    <i className="fa fa-cogs me-2"></i>
+                                    Key Skills
+                                </h2>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">

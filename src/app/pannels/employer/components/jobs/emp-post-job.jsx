@@ -31,11 +31,11 @@ export default function EmpPostJob({ onNext }) {
 		},
 		interviewRoundOrder: [],
 		interviewRoundDetails: {
-			technical: { description: '', date: '', time: '' },
-			nonTechnical: { description: '', date: '', time: '' },
-			managerial: { description: '', date: '', time: '' },
-			final: { description: '', date: '', time: '' },
-			hr: { description: '', date: '', time: '' }
+			technical: { description: '', fromDate: '', toDate: '', time: '' },
+			nonTechnical: { description: '', fromDate: '', toDate: '', time: '' },
+			managerial: { description: '', fromDate: '', toDate: '', time: '' },
+			final: { description: '', fromDate: '', toDate: '', time: '' },
+			hr: { description: '', fromDate: '', toDate: '', time: '' }
 		},
 		offerLetterDate: "",
 		joiningDate: "",
@@ -160,11 +160,11 @@ export default function EmpPostJob({ onNext }) {
 						},
 						interviewRoundOrder: job.interviewRoundOrder || [],
 						interviewRoundDetails: job.interviewRoundDetails || {
-							technical: { description: '', date: '', time: '' },
-							nonTechnical: { description: '', date: '', time: '' },
-							managerial: { description: '', date: '', time: '' },
-							final: { description: '', date: '', time: '' },
-							hr: { description: '', date: '', time: '' }
+							technical: { description: '', fromDate: '', toDate: '', time: '' },
+							nonTechnical: { description: '', fromDate: '', toDate: '', time: '' },
+							managerial: { description: '', fromDate: '', toDate: '', time: '' },
+							final: { description: '', fromDate: '', toDate: '', time: '' },
+							hr: { description: '', fromDate: '', toDate: '', time: '' }
 						},
 						offerLetterDate: job.offerLetterDate ? job.offerLetterDate.split('T')[0] : '',
 						transportation: job.transportation || {
@@ -271,6 +271,48 @@ export default function EmpPostJob({ onNext }) {
 			const token = localStorage.getItem('employerToken');
 			if (!token) {
 				alert('Please login first');
+				return;
+			}
+
+			// Validate required fields
+			if (!formData.jobTitle.trim()) {
+				alert('Please enter Job Title');
+				return;
+			}
+			if (!formData.category.trim()) {
+				alert('Please select Job Category');
+				return;
+			}
+			if (!formData.jobType.trim()) {
+				alert('Please select Job Type');
+				return;
+			}
+			if (!formData.jobLocation.trim()) {
+				alert('Please enter Job Location');
+				return;
+			}
+			if (!formData.vacancies || parseInt(formData.vacancies) <= 0) {
+				alert('Please enter valid Number of Vacancies');
+				return;
+			}
+			if (!formData.applicationLimit || parseInt(formData.applicationLimit) <= 0) {
+				alert('Please enter valid Application Limit');
+				return;
+			}
+			if (!formData.education.trim()) {
+				alert('Please select Required Educational Background');
+				return;
+			}
+			if (!formData.interviewRoundsCount || parseInt(formData.interviewRoundsCount) <= 0) {
+				alert('Please enter valid Number of Interview Rounds');
+				return;
+			}
+			if (!formData.offerLetterDate.trim()) {
+				alert('Please select Offer Letter Release Date');
+				return;
+			}
+			if (!formData.jobDescription.trim()) {
+				alert('Please enter Job Description');
 				return;
 			}
 
@@ -488,7 +530,7 @@ export default function EmpPostJob({ onNext }) {
 								</h4>
 							</div>
 							<div>
-								<label style={label}>Company Logo</label>
+								<label style={label}><i className="fa fa-image" style={{marginRight: '6px', color: '#ff6b35'}}></i>Company Logo</label>
 								<input
 									style={input}
 									type="file"
@@ -500,7 +542,7 @@ export default function EmpPostJob({ onNext }) {
 								)}
 							</div>
 							<div>
-								<label style={{...label, color: '#d32f2f', fontWeight: 'bold'}}>Company Name * (Required for Consultants)</label>
+								<label style={{...label, color: '#d32f2f', fontWeight: 'bold'}}><i className="fa fa-building" style={{marginRight: '6px', color: '#d32f2f'}}></i>Company Name * (Required for Consultants)</label>
 								<input
 									style={{...input, borderColor: formData.companyName ? '#4caf50' : '#f44336'}}
 									placeholder="e.g., Tech Solutions Inc."
@@ -511,7 +553,7 @@ export default function EmpPostJob({ onNext }) {
 								{!formData.companyName && <p style={{color: '#f44336', fontSize: '12px', margin: '4px 0 0 0'}}>Please enter company name</p>}
 							</div>
 							<div style={fullRow}>
-								<label style={{...label, color: '#d32f2f', fontWeight: 'bold'}}>Company Description * (Required for Consultants)</label>
+								<label style={{...label, color: '#d32f2f', fontWeight: 'bold'}}><i className="fa fa-info-circle" style={{marginRight: '6px', color: '#d32f2f'}}></i>Company Description * (Required for Consultants)</label>
 								<textarea
 									style={{...input, minHeight: '80px', borderColor: formData.companyDescription ? '#4caf50' : '#f44336'}}
 									placeholder="Brief description about the company..."
@@ -526,7 +568,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Row 1 */}
 					<div>
-						<label style={label}>Job Title / Designation *</label>
+						<label style={label}><i className="fa fa-briefcase" style={{marginRight: '6px', color: '#ff6b35'}}></i>Job Title / Designation *</label>
 						<input
 							style={input}
 							placeholder="e.g., Senior Software Engineer"
@@ -536,7 +578,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Job Category *</label>
+						<label style={label}><i className="fa fa-tags" style={{marginRight: '6px', color: '#ff6b35'}}></i>Job Category *</label>
 						<select
 							style={{ ...input, appearance: "none", backgroundImage: "none" }}
 							value={formData.category}
@@ -558,7 +600,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Job Type *</label>
+						<label style={label}><i className="fa fa-clock" style={{marginRight: '6px', color: '#ff6b35'}}></i>Job Type *</label>
 						<select
 							style={{ ...input, appearance: "none", backgroundImage: "none" }}
 							value={formData.jobType}
@@ -579,7 +621,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Row 2 */}
 					<div>
-						<label style={label}>Job Location *</label>
+						<label style={label}><i className="fa fa-map-marker-alt" style={{marginRight: '6px', color: '#ff6b35'}}></i>Job Location *</label>
 						<input
 							style={input}
 							placeholder="e.g., Bangalore, Mumbai, Remote"
@@ -589,7 +631,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>CTC (Annual) 
+						<label style={label}><i className="fa fa-rupee-sign" style={{marginRight: '6px', color: '#ff6b35'}}></i>CTC (Annual) 
 							<span style={{fontSize: '11px', color: '#10b981', fontWeight: 'normal'}}>✓ Auto-saved</span>
 						</label>
 						<input
@@ -602,7 +644,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Row 3 */}
 					<div>
-						<label style={label}>Net Salary (Monthly)</label>
+						<label style={label}><i className="fa fa-money-bill-wave" style={{marginRight: '6px', color: '#ff6b35'}}></i>Net Salary (Monthly)</label>
 						<input
 							style={input}
 							placeholder="e.g., ₹50,000"
@@ -612,7 +654,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Number of Vacancies *</label>
+						<label style={label}><i className="fa fa-users" style={{marginRight: '6px', color: '#ff6b35'}}></i>Number of Vacancies *</label>
 						<input
 							style={input}
 							type="number"
@@ -623,7 +665,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Application Limit *</label>
+						<label style={label}><i className="fa fa-file-alt" style={{marginRight: '6px', color: '#ff6b35'}}></i>Application Limit *</label>
 						<input
 							style={input}
 							type="number"
@@ -635,7 +677,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Row 4 */}
 					<div>
-						<label style={label}>Are Backlogs Allowed?</label>
+						<label style={label}><i className="fa fa-question-circle" style={{marginRight: '6px', color: '#ff6b35'}}></i>Are Backlogs Allowed?</label>
 						<select
 							style={{ ...input, appearance: "none" }}
 							value={formData.backlogsAllowed ? "Yes" : "No"}
@@ -649,7 +691,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Required Educational Background *</label>
+						<label style={label}><i className="fa fa-graduation-cap" style={{marginRight: '6px', color: '#ff6b35'}}></i>Required Educational Background *</label>
 						<select
 							style={{ ...input, appearance: "none" }}
 							value={formData.education}
@@ -669,7 +711,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Skills (full width) */}
 					<div style={fullRow}>
-						<label style={label}>Required Skills</label>
+						<label style={label}><i className="fa fa-cogs" style={{marginRight: '6px', color: '#ff6b35'}}></i>Required Skills</label>
 						<div style={{ display: "flex", alignItems: "center" }}>
 							<input
 								style={{ ...input, marginBottom: 0 }}
@@ -716,7 +758,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Experience & Rounds */}
 					<div>
-						<label style={label}>Experience Level</label>
+						<label style={label}><i className="fa fa-chart-line" style={{marginRight: '6px', color: '#ff6b35'}}></i>Experience Level</label>
 						<div style={{ display: "flex", gap: 12, alignItems: "center" }}>
 							<label style={{ fontSize: 14, color: "#374151" }}>
 								<input
@@ -765,7 +807,7 @@ export default function EmpPostJob({ onNext }) {
 					</div>
 
 					<div>
-						<label style={label}>Number of Interview Rounds *</label>
+						<label style={label}><i className="fa fa-comments" style={{marginRight: '6px', color: '#ff6b35'}}></i>Number of Interview Rounds *</label>
 						<input
 							style={input}
 							type="number"
@@ -777,7 +819,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Interview Round Types - full row */}
 					<div style={fullRow}>
-						<label style={label}>Interview Round Types 
+						<label style={label}><i className="fa fa-list-check" style={{marginRight: '6px', color: '#ff6b35'}}></i>Interview Round Types 
 							<span style={{fontSize: '11px', color: '#6b7280', fontWeight: 'normal'}}>
 								({Object.values(formData.interviewRoundTypes).filter(Boolean).length} selected)
 							</span>
@@ -884,7 +926,7 @@ export default function EmpPostJob({ onNext }) {
 											<h5 style={{ margin: '0 0 8px 0', fontSize: 14, color: '#374151' }}>
 												{roundNames[roundType]}
 											</h5>
-											<div style={{ display: 'grid', gridTemplateColumns: '1fr 150px 120px', gap: 12, alignItems: 'end' }}>
+											<div style={{ display: 'grid', gridTemplateColumns: '1fr 120px 120px 100px', gap: 12, alignItems: 'end' }}>
 												<div>
 													<label style={{...label, marginBottom: 4}}>Description</label>
 													<textarea
@@ -895,12 +937,21 @@ export default function EmpPostJob({ onNext }) {
 													/>
 												</div>
 												<div>
-													<label style={{...label, marginBottom: 4}}>Date</label>
+													<label style={{...label, marginBottom: 4}}>From Date</label>
 													<input
 														style={{...input, fontSize: 13}}
 														type="date"
-														value={formData.interviewRoundDetails[roundType].date}
-														onChange={(e) => updateRoundDetails(roundType, 'date', e.target.value)}
+														value={formData.interviewRoundDetails[roundType].fromDate}
+														onChange={(e) => updateRoundDetails(roundType, 'fromDate', e.target.value)}
+													/>
+												</div>
+												<div>
+													<label style={{...label, marginBottom: 4}}>To Date</label>
+													<input
+														style={{...input, fontSize: 13}}
+														type="date"
+														value={formData.interviewRoundDetails[roundType].toDate}
+														onChange={(e) => updateRoundDetails(roundType, 'toDate', e.target.value)}
 													/>
 												</div>
 												<div>
@@ -922,7 +973,7 @@ export default function EmpPostJob({ onNext }) {
 
 					{/* Dates */}
 					<div>
-						<label style={label}>Offer Letter Release Date *</label>
+						<label style={label}><i className="fa fa-calendar-alt" style={{marginRight: '6px', color: '#ff6b35'}}></i>Offer Letter Release Date *</label>
 						<input
 							style={input}
 							type="date"
@@ -934,7 +985,7 @@ export default function EmpPostJob({ onNext }) {
 					
 					{/* Job Description */}
 					<div style={fullRow}>
-						<label style={label}>Job Description *</label>
+						<label style={label}><i className="fa fa-align-left" style={{marginRight: '6px', color: '#ff6b35'}}></i>Job Description *</label>
 						<textarea 
 							style={{...input, minHeight: '100px'}} 
 							value={formData.jobDescription}
@@ -946,7 +997,7 @@ export default function EmpPostJob({ onNext }) {
 					{/* Candidate Transportation & Interview Facility (full row) */}
 					<div style={fullRow}>
 						<h4 style={{ margin: "12px 0", fontSize: 15 }}>
-							Candidate Transportation Options
+							<i className="fa fa-car" style={{marginRight: '8px', color: '#ff6b35'}}></i>Candidate Transportation Options
 						</h4>
 
 						<div

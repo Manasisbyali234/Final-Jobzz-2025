@@ -17,6 +17,7 @@ function EmpManageJobsPage() {
             setLoading(true);
             const response = await api.getEmployerJobs();
             if (response.success) {
+                console.log('Jobs data:', response.jobs); // Debug log
                 setJobs(response.jobs || []);
             } else {
                 setError(response.message || 'Failed to fetch jobs');
@@ -32,6 +33,7 @@ function EmpManageJobsPage() {
     const getStatusBadge = (status) => {
         const statusConfig = {
             'active': { className: 'status-active', text: 'Active', icon: 'fa-check-circle' },
+            'inactive': { className: 'status-inactive', text: 'Inactive', icon: 'fa-pause-circle' },
             'pending': { className: 'status-pending', text: 'Pending', icon: 'fa-clock' },
             'closed': { className: 'status-closed', text: 'Closed', icon: 'fa-times-circle' },
             'expired': { className: 'status-expired', text: 'Expired', icon: 'fa-calendar-times' }
@@ -144,6 +146,7 @@ function EmpManageJobsPage() {
                                         <th>Job Details</th>
                                         <th>Category</th>
                                         <th>Status</th>
+                                        <th>Vacancies</th>
                                         <th>Applications</th>
                                         <th>Dates</th>
                                         <th>Actions</th>
@@ -183,6 +186,12 @@ function EmpManageJobsPage() {
                                                 </span>
                                             </td>
                                             <td>{getStatusBadge(job.status)}</td>
+                                            <td>
+                                                <div className="vacancies-count">
+                                                    <span className="count">{job.vacancies || job.numberOfPositions || job.positions || 1}</span>
+                                                    <span className="label">Vacancies</span>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <div className="applications-count">
                                                     <span className="count">{job.applicationCount || 0}</span>

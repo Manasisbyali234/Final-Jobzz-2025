@@ -26,7 +26,10 @@ function SectionCanResumeHeadline({ profile }) {
     return (
         <>
             <div className="panel-heading wt-panel-heading p-a20 panel-heading-with-btn ">
-                <h4 className="panel-tittle m-a0">Resume Headline</h4>
+                <h4 className="panel-tittle m-a0">
+                    <i className="fa fa-newspaper-o site-text-primary me-2"></i>
+                    Resume Headline
+                </h4>
                 <a data-bs-toggle="modal" href="#Resume_Headline" role="button" title="Edit" className="site-text-primary">
                     <span className="fa fa-edit" />
                 </a>
@@ -42,7 +45,10 @@ function SectionCanResumeHeadline({ profile }) {
                     <div className="modal-content">
                         <form onSubmit={(e) => e.preventDefault()}>
                             <div className="modal-header">
-                                <h2 className="modal-title">Resume Headline</h2>
+                                <h2 className="modal-title">
+                                    <i className="fa fa-newspaper-o me-2"></i>
+                                    Resume Headline
+                                </h2>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                             </div>
                             <div className="modal-body">

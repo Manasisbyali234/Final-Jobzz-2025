@@ -673,13 +673,54 @@ exports.getCandidateDetails = async (req, res) => {
 
     const profile = await CandidateProfile.findOne({ candidateId });
     
+    // Get candidate's job applications with company details
+    const applications = await Application.find({ candidateId })
+      .populate({
+        path: 'jobId',
+        select: 'title category location',
+        populate: {
+          path: 'employerId',
+          select: 'companyName'
+        }
+      })
+      .populate('employerId', 'companyName')
+      .sort({ createdAt: -1 });
+
+    // Format applications data for the frontend
+    const formattedApplications = applications.map(app => ({
+      companyName: app.jobId?.employerId?.companyName || app.employerId?.companyName || 'N/A',
+      jobCategory: app.jobId?.category || 'N/A',
+      shortlistedStatus: app.status === 'shortlisted' || app.status === 'interview_scheduled' || app.status === 'selected',
+      currentRound: app.interviewRound || (app.status === 'applied' ? 'Initial' : app.status),
+      selected: app.status === 'selected',
+      appliedDate: app.createdAt,
+      createdAt: app.createdAt
+    }));
+    
     const candidateWithProfile = {
       ...candidate.toObject(),
       ...profile?.toObject(),
-      hasProfile: !!profile
+      hasProfile: !!profile,
+      applications: formattedApplications
     };
 
     res.json({ success: true, candidate: candidateWithProfile });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getEmployerJobs = async (req, res) => {
+  try {
+    const { employerId } = req.params;
+    
+    const jobs = await Job.find({ employerId })
+      .select('title status createdAt')
+      .sort({ createdAt: -1 });
+
+    const jobCount = jobs.length;
+
+    res.json({ success: true, jobs, jobCount });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

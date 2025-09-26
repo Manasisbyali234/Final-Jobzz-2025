@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { publicUser } from "../../../../../../globals/route-names";
 import SectionSideAdvert from "./section-side-advert";
 import { useState, useEffect } from "react";
+import "../../../../../../custom-tags.css";
 
 function SectionJobsSidebar1 ({ onFilterChange }) {
     const [jobTypes, setJobTypes] = useState([]);
@@ -150,23 +151,6 @@ function SectionJobsSidebar1 ({ onFilterChange }) {
             <div className="side-bar">
                 <div className="sidebar-elements search-bx">
                     <form>
-                        <div className="form-group mb-4">
-                            <h4 className="section-head-small mb-4">Job Title ({jobTitles.length} available)</h4>
-                            <select 
-                                className="wt-select-bar-large selectpicker" 
-                                data-live-search="true" 
-                                data-bv-field="size"
-                                value={filters.jobTitle}
-                                onChange={(e) => setFilters({...filters, jobTitle: e.target.value})}
-                            >
-                                <option value="">All Job Titles</option>
-                                {jobTitles.map((title, index) => (
-                                    <option key={index} value={title}>{title}</option>
-                                ))}
-                            </select>
-                        </div>
-
-
                         <div className="form-group mb-4">
                             <h4 className="section-head-small mb-4">Keyword</h4>
                             <div className="input-group">
@@ -392,19 +376,36 @@ function SectionJobsSidebar1 ({ onFilterChange }) {
                             </ul>
                         </div>
 
+                        <div className="form-group mb-4">
+                            <h4 className="section-head-small mb-4">Job Title ({jobTitles.length} available)</h4>
+                            <select 
+                                className="form-control" 
+                                value={filters.jobTitle}
+                                onChange={(e) => setFilters({...filters, jobTitle: e.target.value})}
+                            >
+                                <option value="">All Job Titles</option>
+                                {jobTitles.map((title, index) => (
+                                    <option key={index} value={title}>{title}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <div className="form-group mt-4">
                             <button 
                                 type="button" 
                                 className="btn btn-outline-secondary btn-sm w-100"
-                                onClick={() => setFilters({
-                                    keyword: '',
-                                    location: '',
-                                    jobType: [],
-                                    employmentType: '',
-                                    jobTitle: '',
-                                    skills: [],
-                                    category: ''
-                                })}
+                                onClick={() => {
+                                    setFilters({
+                                        keyword: '',
+                                        location: '',
+                                        jobType: [],
+                                        employmentType: '',
+                                        jobTitle: '',
+                                        skills: [],
+                                        category: ''
+                                    });
+                                    setShowLocationSuggestions(false);
+                                }}
                             >
                                 Clear All Filters
                             </button>
@@ -415,15 +416,30 @@ function SectionJobsSidebar1 ({ onFilterChange }) {
                 <div className="widget tw-sidebar-tags-wrap">
                     <h4 className="section-head-small mb-4">Tags</h4>
                     <div className="tagcloud">
-                        <NavLink to={publicUser.jobs.LIST}>General</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Jobs </NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Payment</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Application </NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Work</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Recruiting</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Employer</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Income</NavLink>
-                        <NavLink to={publicUser.jobs.LIST}>Tips</NavLink>
+                        {['General', 'Jobs', 'Payment', 'Application', 'Work', 'Recruiting', 'Employer', 'Income', 'Tips'].map(tag => (
+                            <a 
+                                key={tag}
+                                href="#" 
+                                className={`tag-link ${filters.keyword === tag ? 'active' : ''}`}
+                                onClick={(e) => { 
+                                    e.preventDefault(); 
+                                    if (filters.keyword === tag) {
+                                        // If clicking the same tag, clear the filter
+                                        setFilters({...filters, keyword: ''});
+                                    } else {
+                                        // Set the new tag filter
+                                        setFilters({...filters, keyword: tag});
+                                    }
+                                }}
+                                style={{
+                                    backgroundColor: filters.keyword === tag ? '#1967d2' : '',
+                                    color: filters.keyword === tag ? 'white' : '',
+                                    fontWeight: filters.keyword === tag ? 'bold' : 'normal'
+                                }}
+                            >
+                                {tag}
+                            </a>
+                        ))}
                     </div>
                 </div>
             </div>

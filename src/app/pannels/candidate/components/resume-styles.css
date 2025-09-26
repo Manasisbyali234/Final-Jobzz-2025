@@ -1,0 +1,130 @@
+/* Resume Page Custom Styles */
+
+/* Main header styling */
+.panel-heading h3.panel-tittle {
+    color: #232323;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.panel-heading h3.panel-tittle i {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+/* Panel heading icons */
+.panel-heading .panel-tittle {
+    color: #232323;
+}
+
+.panel-heading .panel-tittle i {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* Modal titles */
+.modal-title {
+    color: #232323;
+}
+
+/* Section headings */
+h5 {
+    color: #232323;
+}
+
+/* Loading spinner */
+.fa-spinner {
+    color: #ff6b35;
+}
+
+/* Form label icons */
+.form-label i, label i {
+    color: #ff6b35;
+    margin-right: 4px;
+}
+
+/* Skill tags with icons */
+.skill-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 4px;
+    background-color: #fff3e0;
+    color: #ff6b35;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+    background-color: #ff6b35;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.skill-tag i {
+    font-size: 11px;
+}
+
+/* Button icons */
+.btn i {
+    margin-right: 6px;
+}
+
+/* File upload section styling */
+.dashboard-cover-pic {
+    border: 2px dashed #ebeaf1;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #fafafa;
+}
+
+.dashboard-cover-pic:hover {
+    border-color: #686183;
+    background-color: #f8f8f8;
+}
+
+/* Education section styling */
+.border.rounded {
+    border-color: #ebeaf1 !important;
+    background-color: #fafafa;
+}
+
+/* Icon colors for different sections - All Orange */
+.fa-newspaper-o { color: #ff6b35; }
+.fa-user-circle { color: #ff6b35; }
+.fa-cogs { color: #ff6b35; }
+.fa-id-card { color: #ff6b35; }
+.fa-paperclip { color: #ff6b35; }
+.fa-graduation-cap { color: #ff6b35; }
+.fa-file-text-o { color: #ff6b35; }
+.fa-calendar { color: #ff6b35; }
+.fa-venus-mars { color: #ff6b35; }
+.fa-male { color: #ff6b35; }
+.fa-female { color: #ff6b35; }
+.fa-home { color: #ff6b35; }
+.fa-map-marker { color: #ff6b35; }
+.fa-envelope { color: #ff6b35; }
+.fa-file-text { color: #ff6b35; }
+.fa-upload { color: #ff6b35; }
+.fa-plus { color: #ff6b35; }
+.fa-save { color: #ff6b35; }
+.fa-tag { color: #ff6b35; }
+.fa-spinner { color: #ff6b35; }
+
+/* Status icons */
+.text-success i { color: #ff6b35; }
+.text-info i { color: #ff6b35; }
+.text-muted i { color: #ff6b35; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .panel-heading .panel-tittle {
+        font-size: 16px;
+    }
+    
+    .panel-heading .panel-tittle i {
+        font-size: 16px;
+    }
+}

@@ -59,7 +59,7 @@ function SectionNotifications() {
 						{notifications.slice(0, showAll ? notifications.length : 3).map((notification, index) => {
 							const getNotificationIcon = (type) => {
 								switch(type) {
-									case 'profile_approved': return { icon: 'feather-check-circle', color: '#10b981' };
+									case 'profile_approved': return { icon: 'feather-user', color: '#3b82f6' };
 									case 'profile_submitted': return { icon: 'feather-user', color: '#8b5cf6' };
 									case 'application_status': return { icon: 'feather-briefcase', color: '#3b82f6' };
 									case 'interview_scheduled': return { icon: 'feather-calendar', color: '#f59e0b' };

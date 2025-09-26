@@ -493,7 +493,7 @@ exports.getDashboardStats = async (req, res) => {
 exports.getCandidateApplicationsWithInterviews = async (req, res) => {
   try {
     const applications = await Application.find({ candidateId: req.user._id })
-      .populate('jobId', 'title location jobType status interviewRoundsCount interviewRoundTypes')
+      .populate('jobId', 'title location jobType status interviewRoundsCount interviewRoundTypes interviewRoundDetails')
       .populate('employerId', 'companyName')
       .sort({ createdAt: -1 });
 

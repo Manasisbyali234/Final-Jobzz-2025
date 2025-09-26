@@ -322,7 +322,7 @@ exports.createJob = async (req, res) => {
     // Check if interview rounds are scheduled
     const hasScheduledRounds = jobData.interviewRoundDetails && 
       Object.values(jobData.interviewRoundDetails).some(round => 
-        round.date && round.time && round.description
+        (round.date || round.fromDate) && round.time && round.description
       );
     
     if (hasScheduledRounds) {
@@ -408,7 +408,7 @@ exports.updateJob = async (req, res) => {
     // Check if interview rounds are being scheduled/updated
     const hasScheduledRounds = req.body.interviewRoundDetails && 
       Object.values(req.body.interviewRoundDetails).some(round => 
-        round.date && round.time && round.description
+        (round.date || round.fromDate) && round.time && round.description
       );
     
     const wasScheduled = oldJob.interviewScheduled;

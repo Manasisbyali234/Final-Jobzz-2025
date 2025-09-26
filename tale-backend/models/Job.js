@@ -44,26 +44,36 @@ const jobSchema = new mongoose.Schema({
     technical: {
       description: { type: String },
       date: { type: Date },
+      fromDate: { type: Date },
+      toDate: { type: Date },
       time: { type: String }
     },
     nonTechnical: {
       description: { type: String },
       date: { type: Date },
+      fromDate: { type: Date },
+      toDate: { type: Date },
       time: { type: String }
     },
     managerial: {
       description: { type: String },
       date: { type: Date },
+      fromDate: { type: Date },
+      toDate: { type: Date },
       time: { type: String }
     },
     final: {
       description: { type: String },
       date: { type: Date },
+      fromDate: { type: Date },
+      toDate: { type: Date },
       time: { type: String }
     },
     hr: {
       description: { type: String },
       date: { type: Date },
+      fromDate: { type: Date },
+      toDate: { type: Date },
       time: { type: String }
     }
   },

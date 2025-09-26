@@ -121,6 +121,43 @@ button.site-button:hover {
     box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
 }
 
+/* Specific orange button backgrounds */
+.twm-nav-sign-up,
+.twm-nav-post-a-job,
+.browse-btn,
+.view-all-btn,
+.show-more-btn,
+.twm-jobs-browse,
+.category-btn,
+.job-browse-btn,
+button,
+.btn,
+.site-button,
+a.site-button {
+    background-color: #fd7e14 !important;
+    color: #fff !important;
+    border-color: #fd7e14 !important;
+    text-decoration: none !important;
+}
+
+.twm-nav-sign-up:hover,
+.twm-nav-post-a-job:hover,
+.browse-btn:hover,
+.view-all-btn:hover,
+.show-more-btn:hover,
+.twm-jobs-browse:hover,
+.category-btn:hover,
+.job-browse-btn:hover,
+button:hover,
+.btn:hover,
+.site-button:hover,
+a.site-button:hover {
+    background-color: #e8690a !important;
+    color: #fff !important;
+    border-color: #e8690a !important;
+    text-decoration: none !important;
+}
+
 /* Smooth scrolling for the entire page */
 html {
     scroll-behavior: smooth;
@@ -463,4 +500,30 @@ h1, h2, h3,
 @keyframes shine {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+}
+/* Universal button orange background override */
+button,
+.btn,
+.site-button,
+a.site-button,
+input[type="submit"],
+input[type="button"],
+.twm-nav-sign-up,
+.twm-nav-post-a-job {
+  background-color: #fd7e14 !important;
+  color: #fff !important;
+  border-color: #fd7e14 !important;
+}
+
+button:hover,
+.btn:hover,
+.site-button:hover,
+a.site-button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.twm-nav-sign-up:hover,
+.twm-nav-post-a-job:hover {
+  background-color: #e8690a !important;
+  color: #fff !important;
+  border-color: #e8690a !important;
 }

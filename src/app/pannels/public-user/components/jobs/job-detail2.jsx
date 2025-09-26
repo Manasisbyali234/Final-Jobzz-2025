@@ -47,7 +47,7 @@ function JobDetail2Page() {
                                         <div className="twm-job-self-mid">
                                             <div className="twm-job-self-mid-left">
                                                 <a href="https://themeforest.net/user/thewebmax/portfolio" className="twm-job-websites site-text-primary">https://thewebmax.com</a>
-                                                <div className="twm-jobs-amount">₹2000 - ₹2500 <span>/ Month</span></div>
+                                                <div className="twm-jobs-amount">₹2000 - ₹2500</div>
                                             </div>
                                             <div className="twm-job-apllication-area">Application ends:
                                                 <span className="twm-job-apllication-date">October 1, 2025</span>

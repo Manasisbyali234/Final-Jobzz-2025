@@ -80,6 +80,8 @@ exports.getJobs = async (req, res) => {
       }
     }
 
+    console.log('Query for jobs:', JSON.stringify(query, null, 2));
+    
     const jobs = await Job.find(query)
       .select('title location jobType salary vacancies description requiredSkills status createdAt employerId companyName category ctc netSalary')
       .populate({
@@ -91,7 +93,18 @@ exports.getJobs = async (req, res) => {
       .limit(parseInt(limit))
       .skip((parseInt(page) - 1) * parseInt(limit));
     
+    console.log(`Found ${jobs.length} jobs before filtering`);
     const approvedJobs = jobs.filter(job => job.employerId);
+    console.log(`Found ${approvedJobs.length} jobs after employer approval filtering`);
+    
+    if (employerId) {
+      console.log(`Found ${approvedJobs.length} jobs for employer ${employerId}`);
+      console.log('Jobs for employer:', approvedJobs.map(job => ({ 
+        title: job.title, 
+        employerId: job.employerId?._id,
+        status: job.status 
+      })));
+    }
     
     if (category) {
       console.log(`Found ${approvedJobs.length} jobs after category filter for '${category}'`);

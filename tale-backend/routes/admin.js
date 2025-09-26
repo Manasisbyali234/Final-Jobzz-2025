@@ -37,6 +37,7 @@ router.put('/employer-profile/:id', adminController.updateEmployerProfile);
 router.get('/download-document/:employerId/:documentType', adminController.downloadDocument);
 router.put('/employers/:id/status', adminController.updateEmployerStatus);
 router.delete('/employers/:id', adminController.deleteEmployer);
+router.get('/employer-jobs/:employerId', adminController.getEmployerJobs);
 
 // Candidate Management Routes
 router.get('/candidates', adminController.getAllCandidates);

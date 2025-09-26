@@ -93,7 +93,10 @@ function SectionCanPersonalDetail({ profile }) {
     return (
         <>
             <div className="panel-heading wt-panel-heading p-a20 panel-heading-with-btn ">
-                <h4 className="panel-tittle m-a0">Personal Details</h4>
+                <h4 className="panel-tittle m-a0">
+                    <i className="fa fa-id-card site-text-primary me-2"></i>
+                    Personal Details
+                </h4>
             </div>
 
             <form onSubmit={(e) => e.preventDefault()}>
@@ -101,7 +104,7 @@ function SectionCanPersonalDetail({ profile }) {
                     <div className="panel-body wt-panel-body p-a20 m-b30">
                         <div className="row">
                             <div className="col-md-6">
-                                <label>Date of Birth</label>
+                                <label><i className="fa fa-calendar me-1"></i> Date of Birth</label>
                                 <input
                                     className="form-control"
                                     type="date"
@@ -111,7 +114,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Gender</label>
+                                <label><i className="fa fa-venus-mars me-1"></i> Gender</label>
                                 <select 
                                     className="form-control"
                                     value={formData.gender}
@@ -124,7 +127,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Father's / Husband's Name</label>
+                                <label><i className="fa fa-male me-1"></i> Father's / Husband's Name</label>
                                 <input
                                     className="form-control"
                                     type="text"
@@ -135,7 +138,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Mother's Name</label>
+                                <label><i className="fa fa-female me-1"></i> Mother's Name</label>
                                 <input
                                     className="form-control"
                                     type="text"
@@ -146,7 +149,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-12">
-                                <label>Residential Address</label>
+                                <label><i className="fa fa-home me-1"></i> Residential Address</label>
                                 <textarea
                                     className="form-control"
                                     rows={2}
@@ -157,7 +160,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-12">
-                                <label>Permanent Address</label>
+                                <label><i className="fa fa-map-marker me-1"></i> Permanent Address</label>
                                 <textarea
                                     className="form-control"
                                     rows={2}
@@ -168,7 +171,7 @@ function SectionCanPersonalDetail({ profile }) {
                             </div>
 
                             <div className="col-md-12">
-                                <label>Correspondence Address</label>
+                                <label><i className="fa fa-envelope me-1"></i> Correspondence Address</label>
                                 <textarea
                                     className="form-control"
                                     rows={2}
@@ -181,7 +184,10 @@ function SectionCanPersonalDetail({ profile }) {
 
                         <hr />
 
-                        <h5 className="mt-3">Educational Qualification Details</h5>
+                        <h5 className="mt-3">
+                            <i className="fa fa-graduation-cap site-text-primary me-2"></i>
+                            Educational Qualification Details
+                        </h5>
 
                         {educationList.map((edu, index) => (
                             <div className="border rounded p-3 mb-3 position-relative" key={index}>
@@ -190,10 +196,8 @@ function SectionCanPersonalDetail({ profile }) {
                                     className="btn btn-sm btn-outline-danger position-absolute"
                                     style={{ top: '10px', right: '10px', zIndex: 10 }}
                                     onClick={() => {
-                                        if (educationList.length > 1) {
-                                            const updated = educationList.filter((_, i) => i !== index);
-                                            setEducationList(updated);
-                                        }
+                                        const updated = educationList.filter((_, i) => i !== index);
+                                        setEducationList(updated);
                                     }}
                                     title="Remove this education entry"
                                 >
@@ -318,12 +322,14 @@ function SectionCanPersonalDetail({ profile }) {
                                 className="btn btn-secondary"
                                 onClick={handleAddEducation}
                             >
-                                + Add New
+                                <i className="fa fa-plus me-1"></i>
+                                Add New
                             </button>
                         </div>
 
                         <div className="text-left mt-4">
                             <button type="button" onClick={handleSubmit} className="btn btn-primary" disabled={loading}>
+                                <i className="fa fa-save me-1"></i>
                                 {loading ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>

@@ -1,57 +1,94 @@
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function AdminCreditsPage() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [assignAllCount, setAssignAllCount] = useState(0);
-	const [users, setUsers] = useState([
-		{
-			id: 1,
-			name: "srah",
-			email: "srah@metromindz.com",
-			credits: 2,
-			assignCount: 2,
-		},
-		{
-			id: 1,
-			name: "can",
-			email: "can@metromindz.com",
-			credits: 2,
-			assignCount: 2,
-		},
-	]);
+	const [candidates, setCandidates] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		fetchCandidates();
+	}, []);
+
+	const fetchCandidates = async () => {
+		try {
+			const token = localStorage.getItem('adminToken');
+			const response = await fetch('http://localhost:5000/api/admin/candidates', {
+				headers: { 'Authorization': `Bearer ${token}` }
+			});
+			const data = await response.json();
+			if (data.success) {
+				setCandidates(data.candidates.map(candidate => ({
+					...candidate,
+					assignCount: 0
+				})));
+			}
+		} catch (error) {
+			console.error('Error fetching candidates:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleSearchChange = (e) => {
 		setSearchTerm(e.target.value);
 	};
 
-	const handleIncrement = (userId) => {
-		setUsers(
-			users.map((user) =>
-				user.id === userId
+	const handleIncrement = (candidateId) => {
+		setCandidates(
+			candidates.map((candidate) =>
+				candidate._id === candidateId
 					? {
-							...user,
-							assignCount: user.assignCount + 1,
-							credits: user.credits + 1,
+							...candidate,
+							assignCount: candidate.assignCount + 1
 					  }
-					: user
+					: candidate
 			)
 		);
 	};
 
-	const handleDecrement = (userId) => {
-		setUsers(
-			users.map((user) =>
-				user.id === userId && user.assignCount > 0
+	const handleDecrement = (candidateId) => {
+		setCandidates(
+			candidates.map((candidate) =>
+				candidate._id === candidateId && candidate.assignCount > 0
 					? {
-							...user,
-							assignCount: user.assignCount - 1,
-							credits: user.credits - 1 >= 0 ? user.credits - 1 : 0,
+							...candidate,
+							assignCount: candidate.assignCount - 1
 					  }
-					: user
+					: candidate
 			)
 		);
+	};
+
+	const updateCandidateCredits = async (candidateId, creditsToAdd) => {
+		try {
+			const token = localStorage.getItem('adminToken');
+			const response = await fetch(`http://localhost:5000/api/admin/candidates/${candidateId}/credits`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({ creditsToAdd })
+			});
+			const data = await response.json();
+			if (data.success) {
+				// Update local state
+				setCandidates(candidates.map(candidate => 
+					candidate._id === candidateId 
+						? { ...candidate, credits: data.candidate.credits, assignCount: 0 }
+						: candidate
+				));
+				alert(`Successfully updated credits for ${data.candidate.name}`);
+			} else {
+				alert(data.message || 'Failed to update credits');
+			}
+		} catch (error) {
+			console.error('Error updating credits:', error);
+			alert('Failed to update credits');
+		}
 	};
 
 	const handleAssignAllChange = (e) => {
@@ -59,22 +96,60 @@ function AdminCreditsPage() {
 		setAssignAllCount(value);
 	};
 
-	const assignToAll = () => {
-		const value = assignAllCount;
-		setUsers(
-			users.map((user) => ({
-				...user,
-				assignCount: value,
-				credits: value,
-			}))
-		);
+	const assignToAll = async () => {
+		if (assignAllCount <= 0) {
+			alert('Please enter a valid number of credits');
+			return;
+		}
+		
+		const confirmAssign = window.confirm(`Are you sure you want to assign ${assignAllCount} credits to all ${filteredCandidates.length} candidates?`);
+		if (!confirmAssign) return;
+		
+		try {
+			const token = localStorage.getItem('adminToken');
+			const response = await fetch('http://localhost:5000/api/admin/candidates/credits/bulk', {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				},
+				body: JSON.stringify({ 
+					creditsToAdd: assignAllCount,
+					candidateIds: filteredCandidates.map(c => c._id)
+				})
+			});
+			const data = await response.json();
+			if (data.success) {
+				fetchCandidates(); // Refresh data
+				setAssignAllCount(0);
+				alert(`Successfully assigned ${assignAllCount} credits to ${data.updatedCount} candidates`);
+			} else {
+				alert(data.message || 'Failed to assign credits');
+			}
+		} catch (error) {
+			console.error('Error assigning credits:', error);
+			alert('Failed to assign credits');
+		}
 	};
 
-	const filteredUsers = users.filter(
-		(user) =>
-			user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			user.email.toLowerCase().includes(searchTerm.toLowerCase())
+	const filteredCandidates = candidates.filter(
+		(candidate) =>
+			candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			candidate.email.toLowerCase().includes(searchTerm.toLowerCase())
 	);
+
+	if (loading) {
+		return (
+			<div className="container py-4">
+				<div className="text-center">
+					<div className="spinner-border" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</div>
+					<p className="mt-2">Loading candidates...</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="container py-4">
@@ -109,44 +184,54 @@ function AdminCreditsPage() {
 						</div>
 					</div>
 
-					{filteredUsers.length === 0 ? (
+					{filteredCandidates.length === 0 ? (
 						<p className="text-muted">No candidates found.</p>
 					) : (
 						<div className="list-group">
-							{filteredUsers.map((user) => (
+							{filteredCandidates.map((candidate) => (
 								<div
-									key={user.id}
+									key={candidate._id}
 									className="list-group-item list-group-item-light rounded mb-3 shadow-sm d-flex justify-content-between align-items-center"
 								>
 									<div>
-										<h6 className="mb-1 fw-semibold">{user.name}</h6>
-										<small className="text-muted">{user.email}</small>
+										<h6 className="mb-1 fw-semibold">{candidate.name}</h6>
+										<small className="text-muted">{candidate.email}</small>
+										{candidate.registrationMethod === 'placement' && (
+											<span className="badge bg-info ms-2">Placement</span>
+										)}
 									</div>
 									<div className="d-flex align-items-center gap-3">
-										<span className="badge bg-light text-dark border px-3 py-2">
-											<i className="fa fa-key me-1" />
-											{user.credits} credits
+										<span className={`badge px-3 py-2 ${candidate.credits > 0 ? 'bg-success' : 'bg-danger'}`}>
+											<i className="fa fa-credit-card me-1" />
+											{candidate.credits || 0} credits
 										</span>
-										<div className="input-group" style={{ width: "120px" }}>
+										<div className="input-group" style={{ width: "140px" }}>
 											<button
 												className="btn btn-outline-secondary"
-												onClick={() => handleDecrement(user.id)}
+												onClick={() => handleDecrement(candidate._id)}
 											>
 												-
 											</button>
 											<input
 												type="text"
 												className="form-control text-center"
-												value={user.assignCount}
+												value={candidate.assignCount}
 												readOnly
 											/>
 											<button
 												className="btn btn-outline-secondary"
-												onClick={() => handleIncrement(user.id)}
+												onClick={() => handleIncrement(candidate._id)}
 											>
 												+
 											</button>
 										</div>
+										<button
+											className="btn btn-primary btn-sm"
+											onClick={() => updateCandidateCredits(candidate._id, candidate.assignCount)}
+											disabled={candidate.assignCount === 0}
+										>
+											Update
+										</button>
 									</div>
 								</div>
 							))}

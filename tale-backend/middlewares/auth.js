@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const Candidate = require('../models/Candidate');
 const Employer = require('../models/Employer');
 const Admin = require('../models/Admin');
+const Placement = require('../models/Placement');
 
 const auth = (roles = []) => {
   return async (req, res, next) => {
@@ -21,6 +22,8 @@ const auth = (roles = []) => {
         user = await Employer.findById(decoded.id).select('-password');
       } else if (decoded.role === 'admin') {
         user = await Admin.findById(decoded.id).select('-password');
+      } else if (decoded.role === 'placement') {
+        user = await Placement.findById(decoded.id).select('-password');
       }
       
       if (!user) {

@@ -282,7 +282,7 @@ exports.getAllCandidates = async (req, res) => {
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
-    res.json({ success: true, data: candidates });
+    res.json({ success: true, data: candidates, candidates });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -898,6 +898,80 @@ exports.assignPlacementCredits = async (req, res) => {
     console.log('Update result:', updateResult);
 
     res.json({ success: true, placement: updatedPlacement });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Credit Management Controllers
+exports.updateCandidateCredits = async (req, res) => {
+  try {
+    const { candidateId } = req.params;
+    const { creditsToAdd } = req.body;
+    
+    if (typeof creditsToAdd !== 'number') {
+      return res.status(400).json({ success: false, message: 'Credits must be a number' });
+    }
+    
+    const candidate = await Candidate.findById(candidateId);
+    if (!candidate) {
+      return res.status(404).json({ success: false, message: 'Candidate not found' });
+    }
+    
+    const newCredits = Math.max(0, (candidate.credits || 0) + creditsToAdd);
+    
+    const updatedCandidate = await Candidate.findByIdAndUpdate(
+      candidateId,
+      { credits: newCredits },
+      { new: true }
+    ).select('-password');
+    
+    res.json({ success: true, candidate: updatedCandidate });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.bulkUpdateCandidateCredits = async (req, res) => {
+  try {
+    const { creditsToAdd, candidateIds } = req.body;
+    
+    if (typeof creditsToAdd !== 'number' || !Array.isArray(candidateIds)) {
+      return res.status(400).json({ success: false, message: 'Invalid request data' });
+    }
+    
+    // Get all candidates to calculate new credits
+    const candidates = await Candidate.find({ _id: { $in: candidateIds } });
+    
+    // Update each candidate's credits
+    const updatePromises = candidates.map(candidate => {
+      const newCredits = Math.max(0, (candidate.credits || 0) + creditsToAdd);
+      return Candidate.findByIdAndUpdate(
+        candidate._id,
+        { credits: newCredits },
+        { new: true }
+      );
+    });
+    
+    await Promise.all(updatePromises);
+    
+    res.json({ 
+      success: true, 
+      message: `Successfully updated credits for ${candidates.length} candidates`,
+      updatedCount: candidates.length
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getCandidatesForCredits = async (req, res) => {
+  try {
+    const candidates = await Candidate.find()
+      .select('name email credits registrationMethod placementId')
+      .sort({ createdAt: -1 });
+    
+    res.json({ success: true, candidates });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -16,6 +16,7 @@ function PlacementDetails() {
 
     useEffect(() => {
         fetchPlacementDetails();
+        handleViewData();
     }, [id]);
 
     const fetchPlacementDetails = async () => {
@@ -301,6 +302,13 @@ function PlacementDetails() {
                             <h5>Actions</h5>
                             <div className="mb-2">
                                 <button
+                                    className="btn btn-info placement-action-btn me-2"
+                                    onClick={handleViewData}
+                                    disabled={loadingData}
+                                >
+                                    <i className="fa fa-eye"></i> {loadingData ? 'Loading...' : 'View Student Data'}
+                                </button>
+                                <button
                                     className="btn btn-success placement-action-btn"
                                     onClick={handleApprove}
                                     disabled={placement.status === 'approved'}
@@ -340,20 +348,23 @@ function PlacementDetails() {
                 </div>
             </div>
 
-            {studentData.length > 0 && (
-                <div className="panel panel-default site-bg-white mt-4">
-                    <div className="panel-heading wt-panel-heading p-a20">
-                        <h4 className="panel-tittle m-a0">Student Data ({studentData.length} records)</h4>
-                    </div>
-                    <div className="panel-body wt-panel-body p-a20">
+            <div className="panel panel-default site-bg-white mt-4">
+                <div className="panel-heading wt-panel-heading p-a20">
+                    <h4 className="panel-tittle m-a0">Student Data {studentData.length > 0 && `(${studentData.length} records)`}</h4>
+                </div>
+                <div className="panel-body wt-panel-body p-a20">
+                    {loadingData ? (
+                        <div className="text-center">Loading student data...</div>
+                    ) : studentData.length > 0 ? (
                         <div className="table-responsive">
                             <table className="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>S.No</th>
+                                        <th>Candidate Name</th>
+                                        <th>Phone</th>
                                         <th>Email</th>
                                         <th>Password</th>
-                                        <th>Phone</th>
                                         <th>Credits</th>
                                     </tr>
                                 </thead>
@@ -361,18 +372,21 @@ function PlacementDetails() {
                                     {studentData.map((student, index) => (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
+                                            <td>{student.name || 'N/A'}</td>
+                                            <td>{student.phone || ''}</td>
                                             <td>{student.email || 'N/A'}</td>
                                             <td><code>{student.password || 'N/A'}</code></td>
-                                            <td>{student.phone || 'N/A'}</td>
-                                            <td>{placement.credits || student.credits || 0}</td>
+                                            <td>{placement?.credits || student.credits || 0}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="text-center text-muted">No student data available</div>
+                    )}
                 </div>
-            )}
+            </div>
         </>
     );
 }

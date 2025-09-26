@@ -243,7 +243,7 @@ function SectionCandidateOverview() {
 		}
 	};
 
-	const cards = [
+	const baseCards = [
 		{
 			bg: "#e0f7fa",
 			icon: "flaticon-resume",
@@ -267,56 +267,41 @@ function SectionCandidateOverview() {
 		},
 	];
 
-	// Credits card disabled for all candidates
-	const hasCredits = false;
+	const creditsCard = {
+		bg: "#f0f4ff",
+		icon: "flaticon-job",
+		color: "text-primary",
+		count: candidate.credits || 0,
+		label: "Credits Available",
+	};
+
+	// Only show credits for placement candidates
+	const hasCredits = candidate.registrationMethod === 'placement';
+	const cards = hasCredits ? [creditsCard, ...baseCards] : baseCards;
 
 	return (
 		<>
-			<div className="wt-admin-right-page-header d-flex justify-content-between align-items-center">
-				<h2>{candidate.name}</h2>
-				<button 
-					className="btn btn-outline-primary btn-sm"
-					onClick={fetchDashboardData}
-				>
-					<i className="fa fa-refresh"></i> Refresh
-				</button>
-			</div>
-
-			<div className="twm-dash-b-blocks mb-5">
-				<div className="row">
-					{cards.map((card, index) => (
-						<div className={`col-xl-${hasCredits ? '3' : '4'} col-lg-${hasCredits ? '3' : '4'} col-md-6 mb-3`} key={index} data-aos="fade-up" data-aos-delay={index * 100}>
-							<div className="panel panel-default">
-								<div
-									className="panel-body wt-panel-body dashboard-card-2 hover-card"
-
-								>
-									<div
-										className="d-flex align-items-center"
-										style={{ display: "flex", justifyContent: "flex-end" }}
-									>
-										<div
-											className={`wt-card-icon-2 me-3 fs-2 ${card.color}`}
-											style={{ lineHeight: "1" }}
-										>
-											<i className={card.icon} />
+			<div className="row" style={{ marginBottom: '2rem' }}>
+				{cards.map((card, index) => (
+					<div className={`col-xl-${hasCredits ? '3' : '4'} col-lg-${hasCredits ? '3' : '4'} col-md-6 mb-3`} key={index}>
+						<div className="panel panel-default">
+							<div className="panel-body wt-panel-body dashboard-card-2" style={{ backgroundColor: card.bg }}>
+								<div className="d-flex align-items-center" style={{ display: "flex", justifyContent: "flex-end" }}>
+									<div className={`wt-card-icon-2 me-3 fs-2 ${card.color}`} style={{ lineHeight: "1" }}>
+										<i className={card.icon} />
+									</div>
+									<div>
+										<div className={`counter fw-bold fs-4 ${card.color}`}>
+											<CountUp end={card.count} duration={2} />
 										</div>
-
-										<div>
-											<div className={`counter fw-bold fs-4 ${card.color}`}>
-												<CountUp end={card.count} duration={2} />
-											</div>
-											<h5 className="mb-0 mt-1">{card.label}</h5>
-										</div>
+										<h5 className="mb-0 mt-1">{card.label}</h5>
 									</div>
 								</div>
 							</div>
 						</div>
-					))}
-				</div>
+					</div>
+				))}
 			</div>
-
-
 		</>
 	);
 }

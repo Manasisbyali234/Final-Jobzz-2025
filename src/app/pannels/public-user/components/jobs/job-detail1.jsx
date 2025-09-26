@@ -23,6 +23,7 @@ function JobDetail1Page() {
     const [hasApplied, setHasApplied] = useState(false);
     const [candidateId, setCandidateId] = useState(null);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [candidateCredits, setCandidateCredits] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem('candidateToken');
@@ -32,6 +33,7 @@ function JobDetail1Page() {
         
         if (token && storedCandidateId && jobId) {
             checkApplicationStatus();
+            fetchCandidateCredits();
         }
     }, [jobId]);
 
@@ -69,6 +71,21 @@ function JobDetail1Page() {
             }
         } catch (error) {
             console.error('Error checking application status:', error);
+        }
+    };
+
+    const fetchCandidateCredits = async () => {
+        try {
+            const token = localStorage.getItem('candidateToken');
+            const response = await fetch('http://localhost:5000/api/candidate/dashboard/stats', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setCandidateCredits(data.candidate.credits || 0);
+            }
+        } catch (error) {
+            console.error('Error fetching candidate credits:', error);
         }
     };
 
@@ -115,9 +132,30 @@ function JobDetail1Page() {
         } else if (hasApplied) {
             alert('You have already applied for this job!');
         } else {
-            // Check if candidate has uploaded resume
             try {
                 const token = localStorage.getItem('candidateToken');
+                
+                // Check candidate credits first
+                const statsResponse = await fetch('http://localhost:5000/api/candidate/dashboard/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const statsData = await statsResponse.json();
+                
+                if (statsData.success && statsData.candidate.registrationMethod === 'placement') {
+                    const credits = statsData.candidate.credits || 0;
+                    if (credits <= 0) {
+                        alert('You have insufficient credits to apply for jobs. Please contact your placement coordinator to get more credits.');
+                        return;
+                    }
+                    
+                    // Show credit deduction warning
+                    const confirmApply = window.confirm(`You have ${credits} credits remaining. Applying for this job will deduct 1 credit. Do you want to continue?`);
+                    if (!confirmApply) {
+                        return;
+                    }
+                }
+                
+                // Check if candidate has uploaded resume
                 const profileResponse = await fetch('http://localhost:5000/api/candidate/profile', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -212,6 +250,7 @@ function JobDetail1Page() {
 																</span>
 															</div>
 														)}
+
 														<div className="twm-job-self-bottom">
 															<button
 																className={`site-button ${(hasApplied || isEnded) ? 'disabled' : ''}`}

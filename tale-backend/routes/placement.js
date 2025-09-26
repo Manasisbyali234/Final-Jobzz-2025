@@ -4,6 +4,7 @@ const router = express.Router();
 const placementController = require('../controllers/placementController');
 const handleValidationErrors = require('../middlewares/validation');
 const { upload } = require('../middlewares/upload');
+const auth = require('../middlewares/auth');
 
 // Registration route with file upload
 router.post('/register', upload.single('studentData'), [
@@ -24,5 +25,8 @@ router.post('/login', [
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').notEmpty().withMessage('Password is required')
 ], handleValidationErrors, placementController.loginPlacement);
+
+// Get placement officer's student data
+router.get('/students', auth(['placement']), placementController.getMyStudents);
 
 module.exports = router;

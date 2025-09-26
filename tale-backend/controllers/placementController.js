@@ -92,6 +92,23 @@ exports.getPlacementData = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Placement officer not found' });
     }
 
+    // If placement is processed, get data from database
+    if (placement.isProcessed) {
+      const candidates = await Candidate.find({ placementId }).select('name email password phone credits');
+      const students = candidates.map(candidate => ({
+        name: candidate.name,
+        email: candidate.email,
+        password: candidate.password,
+        phone: candidate.phone,
+        credits: candidate.credits
+      }));
+      
+      return res.json({
+        success: true,
+        students: students
+      });
+    }
+
     if (!placement.studentData) {
       return res.status(400).json({ success: false, message: 'No student data file found' });
     }
@@ -273,5 +290,32 @@ exports.processPlacementApproval = async (req, res) => {
   } catch (error) {
     console.error('Error processing placement approval:', error);
     res.status(500).json({ success: false, message: error.message, stack: error.stack });
+  }
+};
+
+// Get placement officer's students
+exports.getMyStudents = async (req, res) => {
+  try {
+    const placementId = req.user.id;
+    
+    // Find candidates created by this placement officer
+    const candidates = await Candidate.find({ placementId }).select('name email password phone credits');
+    
+    const students = candidates.map(candidate => ({
+      name: candidate.name,
+      email: candidate.email,
+      password: candidate.password,
+      phone: candidate.phone,
+      credits: candidate.credits
+    }));
+    
+    res.json({
+      success: true,
+      students
+    });
+    
+  } catch (error) {
+    console.error('Error getting placement students:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };

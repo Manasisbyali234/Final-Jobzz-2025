@@ -45,6 +45,10 @@ router.get('/registered-candidates', adminController.getRegisteredCandidates);
 router.get('/candidates/:candidateId', adminController.getCandidateDetails);
 router.delete('/candidates/:id', adminController.deleteCandidate);
 
+// Credit Management Routes
+router.put('/candidates/:candidateId/credits', adminController.updateCandidateCredits);
+router.put('/candidates/credits/bulk', adminController.bulkUpdateCandidateCredits);
+
 // Content Management Routes
 router.post('/content/:type', upload.single('image'), [
   body('title').optional().notEmpty(),

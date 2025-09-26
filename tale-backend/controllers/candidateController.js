@@ -245,8 +245,8 @@ exports.applyForJob = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Candidate not found' });
     }
 
-    // Check if candidate has credits
-    if (candidate.credits <= 0) {
+    // Check if candidate has credits (only for placement candidates)
+    if (candidate.registrationMethod === 'placement' && candidate.credits <= 0) {
       console.log('Application blocked - insufficient credits');
       return res.status(400).json({ success: false, message: 'Insufficient credits to apply for jobs' });
     }
@@ -261,16 +261,20 @@ exports.applyForJob = async (req, res) => {
       resume: profile?.resume
     });
 
-    // Deduct credit for all candidates
-    console.log('About to deduct credit. Current credits:', candidate.credits);
-    if (candidate.credits > 0) {
-      const updateResult = await Candidate.findByIdAndUpdate(req.user._id, {
-        $inc: { credits: -1 }
-      });
-      console.log(`Successfully deducted 1 credit from candidate ${candidate.email}. Previous: ${candidate.credits}, New: ${candidate.credits - 1}`);
-      console.log('Update result:', updateResult ? 'Success' : 'Failed');
+    // Deduct credit only for placement candidates
+    if (candidate.registrationMethod === 'placement') {
+      console.log('About to deduct credit. Current credits:', candidate.credits);
+      if (candidate.credits > 0) {
+        const updateResult = await Candidate.findByIdAndUpdate(req.user._id, {
+          $inc: { credits: -1 }
+        });
+        console.log(`Successfully deducted 1 credit from candidate ${candidate.email}. Previous: ${candidate.credits}, New: ${candidate.credits - 1}`);
+        console.log('Update result:', updateResult ? 'Success' : 'Failed');
+      } else {
+        console.log('No credits to deduct');
+      }
     } else {
-      console.log('No credits to deduct');
+      console.log('Signup candidate - no credit deduction needed');
     }
 
     // Update job application count

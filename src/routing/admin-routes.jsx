@@ -12,6 +12,10 @@ import AdminEmployersAllRequest from "../app/pannels/admin/components/admin-emp-
 import AdminEmployersApproved from "../app/pannels/admin/components/admin-emp-approve";
 import AdminEmployersRejected from "../app/pannels/admin/components/admin-emp-reject";
 import EmployerDetails from "../app/pannels/admin/components/adminEmployerDetails";
+import AdminPlacementOfficersAllRequest from "../app/pannels/admin/components/admin-placement-manage";
+import AdminPlacementOfficersApproved from "../app/pannels/admin/components/admin-placement-approve";
+import AdminPlacementOfficersRejected from "../app/pannels/admin/components/admin-placement-reject";
+import PlacementDetails from "../app/pannels/admin/components/placement-details";
 
 import RegisteredCandidatesPage from "../app/pannels/admin/components/registered-candidates";
 import AdminCandidateReviewPage from "../app/pannels/admin/components/admin-candidate-review";
@@ -39,6 +43,10 @@ function AdminRoutes() {
 
 				<Route path={admin.REGISTERED_CANDIDATES} element={<RegisteredCandidatesPage />} />
 				<Route path={admin.CANDIDATE_REVIEW} element={<AdminCandidateReviewPage />} />
+				<Route path={admin.PLACEMENT_MANAGE} element={<AdminPlacementOfficersAllRequest />} />
+				<Route path={admin.PLACEMENT_APPROVE} element={<AdminPlacementOfficersApproved />} />
+				<Route path={admin.PLACEMENT_REJECT} element={<AdminPlacementOfficersRejected />} />
+				<Route path={admin.PLACEMENT_DETAILS} element={<PlacementDetails />} />
 			</Routes>
 		);
 }

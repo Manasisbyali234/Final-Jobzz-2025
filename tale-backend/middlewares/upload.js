@@ -16,6 +16,14 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error('Only PDF and image files allowed for documents'), false);
     }
+  } else if (file.fieldname === 'studentData') {
+    if (file.mimetype === 'application/vnd.ms-excel' || 
+        file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+        file.mimetype === 'text/csv') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Excel (.xls, .xlsx) and CSV files allowed'), false);
+    }
   } else {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);

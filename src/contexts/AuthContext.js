@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
     const candidateToken = localStorage.getItem('candidateToken');
     const employerToken = localStorage.getItem('employerToken');
     const adminToken = localStorage.getItem('adminToken');
+    const placementToken = localStorage.getItem('placementToken');
 
     if (candidateToken) {
       const candidateUser = JSON.parse(localStorage.getItem('candidateUser') || '{}');
@@ -37,6 +38,10 @@ export const AuthProvider = ({ children }) => {
       const adminUser = JSON.parse(localStorage.getItem('adminUser') || '{}');
       setUser(adminUser);
       setUserType('admin');
+    } else if (placementToken) {
+      const placementUser = JSON.parse(localStorage.getItem('placementUser') || '{}');
+      setUser(placementUser);
+      setUserType('placement');
     }
     
     setLoading(false);
@@ -55,6 +60,9 @@ export const AuthProvider = ({ children }) => {
           break;
         case 'admin':
           response = await api.adminLogin(credentials);
+          break;
+        case 'placement':
+          response = await api.placementLogin(credentials);
           break;
         default:
           throw new Error('Invalid user type');
@@ -84,9 +92,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('candidateToken');
     localStorage.removeItem('employerToken');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('placementToken');
     localStorage.removeItem('candidateUser');
     localStorage.removeItem('employerUser');
     localStorage.removeItem('adminUser');
+    localStorage.removeItem('placementUser');
     
     setUser(null);
     setUserType(null);

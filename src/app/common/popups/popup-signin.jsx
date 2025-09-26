@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { canRoute, candidate, empRoute, employer } from "../../../globals/route-names";
+import { canRoute, candidate, empRoute, employer, placementRoute, placement } from "../../../globals/route-names";
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -9,8 +9,10 @@ function SignInPopup() {
     const { login } = useAuth();
     const [canusername, setCanUsername] = useState('');
     const [empusername, setEmpUsername] = useState('');
+    const [placementusername, setPlacementUsername] = useState('');
     const [canpassword, setCanPassword] = useState('');
     const [emppassword, setEmpPassword] = useState('');
+    const [placementpassword, setPlacementPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -56,6 +58,28 @@ function SignInPopup() {
 
     const moveToEmployer = () => {
         navigate(empRoute(employer.DASHBOARD));
+    }
+
+    const handlePlacementLogin = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setError('');
+        
+        const result = await login({
+            email: placementusername,
+            password: placementpassword
+        }, 'placement');
+        
+        if (result.success) {
+            moveToPlacement();
+        } else {
+            setError(result.message);
+        }
+        setLoading(false);
+    }
+
+    const moveToPlacement = () => {
+        navigate(placementRoute(placement.DASHBOARD));
     }
 
     return (
@@ -109,6 +133,18 @@ function SignInPopup() {
 											>
 												<i className="fas fa-building" />
 												Employer
+											</button>
+										</li>
+
+										<li className="nav-item">
+											<button
+												className="nav-link"
+												data-bs-toggle="tab"
+												data-bs-target="#login-Placement"
+												type="button"
+											>
+												<i className="fas fa-graduation-cap" />
+												Placement
 											</button>
 										</li>
 									</ul>
@@ -254,6 +290,69 @@ function SignInPopup() {
 																<a href="/forgot-password">Forgot Password</a>
 															</label>
 														</div>
+													</div>
+												</div>
+
+												<div className="col-md-12">
+													<button
+														type="submit"
+														className="site-button"
+														data-bs-dismiss="modal"
+													>
+														Log in
+													</button>
+
+													<div className="mt-3 mb-3">
+														Don't have an account ?
+														<button
+															className="twm-backto-login"
+															data-bs-target="#sign_up_popup"
+															data-bs-toggle="modal"
+															data-bs-dismiss="modal"
+														>
+															Sign Up
+														</button>
+													</div>
+												</div>
+											</div>
+										</form>
+
+										{/*Login Placement Content*/}
+										<form
+											onSubmit={handlePlacementLogin}
+											className="tab-pane fade"
+											id="login-Placement"
+										>
+											<div className="row">
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="username"
+															type="text"
+															required
+															className="form-control"
+															placeholder="Email*"
+															value={placementusername}
+															onChange={(event) => {
+																setPlacementUsername(event.target.value);
+															}}
+														/>
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="password"
+															type="password"
+															className="form-control"
+															required
+															placeholder="Password*"
+															value={placementpassword}
+															onChange={(event) => {
+																setPlacementPassword(event.target.value);
+															}}
+														/>
 													</div>
 												</div>
 

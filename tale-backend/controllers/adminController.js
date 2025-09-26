@@ -3,6 +3,7 @@ const Admin = require('../models/Admin');
 const Candidate = require('../models/Candidate');
 const CandidateProfile = require('../models/CandidateProfile');
 const Employer = require('../models/Employer');
+const Placement = require('../models/Placement');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
 const Blog = require('../models/Blog');
@@ -721,6 +722,182 @@ exports.getEmployerJobs = async (req, res) => {
     const jobCount = jobs.length;
 
     res.json({ success: true, jobs, jobCount });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Placement Management Controllers
+exports.getAllPlacements = async (req, res) => {
+  try {
+    const { status, page = 1, limit = 50 } = req.query;
+    
+    let query = {};
+    if (status) query.status = status;
+
+    const placements = await Placement.find(query)
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    res.json({ success: true, data: placements });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.updatePlacementStatus = async (req, res) => {
+  try {
+    const { status, isApproved } = req.body;
+
+    const updateData = {};
+    if (status !== undefined) {
+      const normalized = String(status).toLowerCase();
+      if (normalized === 'approved') {
+        updateData.status = 'active';
+      } else if (normalized === 'rejected') {
+        updateData.status = 'inactive';
+      }
+    }
+
+    if (isApproved !== undefined) updateData.isApproved = !!isApproved;
+    if (updateData.isApproved === true && updateData.status === undefined) {
+      updateData.status = 'active';
+    }
+    
+    const placement = await Placement.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!placement) {
+      return res.status(404).json({ success: false, message: 'Placement officer not found' });
+    }
+
+    // If approved and has student data, automatically process candidates
+    if (updateData.status === 'active' && placement.studentData && !placement.isProcessed) {
+      console.log('Triggering background processing for placement:', placement._id);
+    }
+
+    res.json({ success: true, placement });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getPlacementDetails = async (req, res) => {
+  try {
+    const placement = await Placement.findById(req.params.id).select('-password');
+    
+    if (!placement) {
+      return res.status(404).json({ success: false, message: 'Placement officer not found' });
+    }
+
+    res.json({ success: true, placement });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.downloadPlacementFile = async (req, res) => {
+  try {
+    const placement = await Placement.findById(req.params.id);
+    if (!placement || !placement.studentData) {
+      return res.status(404).json({ success: false, message: 'File not found' });
+    }
+
+    const { buffer, mimeType } = base64ToBuffer(placement.studentData);
+    const filename = placement.fileName || 'student_data.xlsx';
+
+    res.setHeader('Content-Type', mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.assignPlacementCredits = async (req, res) => {
+  try {
+    const { credits } = req.body;
+    const creditsNum = Math.min(10000, Math.max(0, parseInt(credits) || 0));
+    
+    const placement = await Placement.findById(req.params.id);
+    if (!placement) {
+      return res.status(404).json({ success: false, message: 'Placement officer not found' });
+    }
+
+    // Update Excel/CSV file with credits if file exists
+    let updatedStudentData = placement.studentData;
+    if (placement.studentData && placement.fileType) {
+      try {
+        const XLSX = require('xlsx');
+        const { buffer } = base64ToBuffer(placement.studentData);
+        
+        let workbook;
+        if (placement.fileType.includes('csv')) {
+          // Handle CSV
+          const csvData = buffer.toString('utf8');
+          workbook = XLSX.read(csvData, { type: 'string' });
+        } else {
+          // Handle Excel
+          workbook = XLSX.read(buffer, { type: 'buffer' });
+        }
+        
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        
+        // Add Credits Assigned column to all rows
+        const updatedData = jsonData.map(row => ({
+          ...row,
+          'Credits Assigned': creditsNum
+        }));
+        
+        // Convert back to Excel/CSV
+        const newWorksheet = XLSX.utils.json_to_sheet(updatedData);
+        const newWorkbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, sheetName);
+        
+        let newBuffer;
+        let mimeType;
+        if (placement.fileType.includes('csv')) {
+          const csvOutput = XLSX.utils.sheet_to_csv(newWorksheet);
+          newBuffer = Buffer.from(csvOutput, 'utf8');
+          mimeType = 'text/csv';
+        } else {
+          newBuffer = XLSX.write(newWorkbook, { type: 'buffer', bookType: 'xlsx' });
+          mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        }
+        
+        updatedStudentData = `data:${mimeType};base64,${newBuffer.toString('base64')}`;
+      } catch (fileError) {
+        console.error('Error updating file:', fileError);
+      }
+    }
+    
+    const updatedPlacement = await Placement.findByIdAndUpdate(
+      req.params.id,
+      { 
+        credits: creditsNum,
+        studentData: updatedStudentData
+      },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    // Update all candidates linked to this placement with new credits
+    const placementObjectId = new mongoose.Types.ObjectId(req.params.id);
+    const updateResult = await Candidate.updateMany(
+      { placementId: placementObjectId },
+      { $set: { credits: creditsNum } }
+    );
+
+    console.log(`Updated credits to ${creditsNum} for ${updateResult.modifiedCount} candidates linked to placement ${req.params.id}`);
+    console.log('Update result:', updateResult);
+
+    res.json({ success: true, placement: updatedPlacement });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

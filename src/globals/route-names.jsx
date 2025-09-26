@@ -6,7 +6,8 @@ export const base = {
     PUBLIC_PRE: "",
     CANDIDATE_PRE: "/candidate",
     EMPLOYER_PRE: "/employer",
-    ADMIN_PRE: "/admin"
+    ADMIN_PRE: "/admin",
+    PLACEMENT_PRE: "/placement"
 }
 
 export const publicUser = {
@@ -35,7 +36,6 @@ export const publicUser = {
         COMING:         "/coming-soon",
         LOGIN:          "/login",
         ADMIN_LOGIN:    "/admin-login",
-        AFTER_LOGIN:    "/after-login",
         ICONS:          "/icons",
         FORGOT:         "/forgot-password"
     },
@@ -102,7 +102,11 @@ export const admin = {
     CAN_MANAGE:   "/admin-emp-manage",
     CAN_APPROVE:   "/admin-emp-approved",
     CAN_REJECT:   "/admin-emp-rejected",
-    EMPLOYER_DETAILS:   "/employer-details/:id"       
+    EMPLOYER_DETAILS:   "/employer-details/:id",
+    PLACEMENT_MANAGE: "/admin-placement-manage",
+    PLACEMENT_APPROVE: "/admin-placement-approved",
+    PLACEMENT_REJECT: "/admin-placement-rejected",
+    PLACEMENT_DETAILS: "/placement-details/:id"
 }
 
 export function pubRoute(_route) {
@@ -119,4 +123,16 @@ export function canRoute(_route) {
 
 export function adminRoute(_route) {
     return base.ADMIN_PRE + _route;
+}
+
+export const placement = {
+    INITIAL: "/",
+    DASHBOARD: "/dashboard",
+    PROFILE: "/profile",
+    STUDENTS: "/students",
+    UPLOAD: "/upload-data"
+};
+
+export function placementRoute(_route) {
+    return base.PLACEMENT_PRE + _route;
 }

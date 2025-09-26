@@ -202,11 +202,14 @@ function SectionCandidateOverview() {
 		inProgress: 0,
 		shortlisted: 0
 	});
-	const [candidate, setCandidate] = useState({ name: 'Loading...' });
+	const [candidate, setCandidate] = useState({ name: 'Loading...', credits: 0 });
 	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
 		fetchDashboardData();
+		// Set up interval to refresh data every 30 seconds
+		const interval = setInterval(fetchDashboardData, 30000);
+		return () => clearInterval(interval);
 	}, []);
 
 	const fetchDashboardData = async () => {
@@ -264,16 +267,25 @@ function SectionCandidateOverview() {
 		},
 	];
 
+	// Credits card disabled for all candidates
+	const hasCredits = false;
+
 	return (
 		<>
-			<div className="wt-admin-right-page-header">
+			<div className="wt-admin-right-page-header d-flex justify-content-between align-items-center">
 				<h2>{candidate.name}</h2>
+				<button 
+					className="btn btn-outline-primary btn-sm"
+					onClick={fetchDashboardData}
+				>
+					<i className="fa fa-refresh"></i> Refresh
+				</button>
 			</div>
 
 			<div className="twm-dash-b-blocks mb-5">
 				<div className="row">
 					{cards.map((card, index) => (
-						<div className="col-xl-4 col-lg-4 col-md-12 mb-3" key={index} data-aos="fade-up" data-aos-delay={index * 100}>
+						<div className={`col-xl-${hasCredits ? '3' : '4'} col-lg-${hasCredits ? '3' : '4'} col-md-6 mb-3`} key={index} data-aos="fade-up" data-aos-delay={index * 100}>
 							<div className="panel panel-default">
 								<div
 									className="panel-body wt-panel-body dashboard-card-2 hover-card"

@@ -188,6 +188,15 @@ export const api = {
     }).then((res) => res.json());
   },
 
+  // Placement APIs
+  placementLogin: (data) => {
+    return fetch(`${API_BASE_URL}/placement/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }).then((res) => res.json());
+  },
+
   // Admin APIs
   adminLogin: (data) => {
     return fetch(`${API_BASE_URL}/admin/login`, {
@@ -270,6 +279,43 @@ export const api = {
 
   getShortlistedApplications: () => {
     return fetch(`${API_BASE_URL}/admin/applications?status=shortlisted`, {
+      headers: getAuthHeaders('admin'),
+    }).then((res) => res.json());
+  },
+
+  getAllPlacements: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return fetch(`${API_BASE_URL}/admin/placements?${queryString}`, {
+      headers: getAuthHeaders('admin'),
+    }).then((res) => res.json());
+  },
+
+  updatePlacementStatus: (placementId, status) => {
+    const isApproved = status === 'approved';
+    return fetch(`${API_BASE_URL}/admin/placements/${placementId}/status`, {
+      method: 'PUT',
+      headers: getAuthHeaders('admin'),
+      body: JSON.stringify({ status, isApproved }),
+    }).then((res) => res.json());
+  },
+
+  getPlacementDetails: (placementId) => {
+    return fetch(`${API_BASE_URL}/admin/placements/${placementId}`, {
+      headers: getAuthHeaders('admin'),
+    }).then((res) => res.json());
+  },
+
+  assignPlacementCredits: (placementId, credits) => {
+    return fetch(`${API_BASE_URL}/admin/placements/${placementId}/credits`, {
+      method: 'PUT',
+      headers: getAuthHeaders('admin'),
+      body: JSON.stringify({ credits }),
+    }).then((res) => res.json());
+  },
+
+  processPlacementData: (placementId) => {
+    return fetch(`${API_BASE_URL}/admin/placements/${placementId}/process`, {
+      method: 'POST',
       headers: getAuthHeaders('admin'),
     }).then((res) => res.json());
   },

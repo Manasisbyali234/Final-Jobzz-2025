@@ -12,6 +12,7 @@ const publicRoutes = require('./routes/public');
 const candidateRoutes = require('./routes/candidate');
 const employerRoutes = require('./routes/employer');
 const adminRoutes = require('./routes/admin');
+const placementRoutes = require('./routes/placement');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/public', publicRoutes);
 app.use('/api/candidate', candidateRoutes);
 app.use('/api/employer', employerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/placement', placementRoutes);
 app.use('/api/notifications', require('./routes/notifications'));
 
 // Health Check Route

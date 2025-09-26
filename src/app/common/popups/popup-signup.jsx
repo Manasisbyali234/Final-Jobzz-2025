@@ -18,6 +18,15 @@ function SignUpPopup() {
         employerCategory: ''
     });
     
+    const [placementData, setPlacementData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: '',
+        studentData: null
+    });
+    
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -50,6 +59,26 @@ function SignUpPopup() {
                 setPasswordError('Passwords do not match');
             } else {
                 setPasswordError('');
+            }
+        }
+    };
+
+    const handlePlacementChange = (e) => {
+        const { name, value, files } = e.target;
+        if (name === 'studentData') {
+            setPlacementData({ ...placementData, [name]: files[0] });
+        } else {
+            setPlacementData({ ...placementData, [name]: value });
+            
+            if (name === 'confirmPassword' || name === 'password') {
+                const password = name === 'password' ? value : placementData.password;
+                const confirmPassword = name === 'confirmPassword' ? value : placementData.confirmPassword;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    setPasswordError('Passwords do not match');
+                } else {
+                    setPasswordError('');
+                }
             }
         }
     };
@@ -137,6 +166,46 @@ function SignUpPopup() {
         }
     };
 
+    const handlePlacementSubmit = async (e) => {
+        e.preventDefault();
+        if (placementData.password !== placementData.confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+        
+        setLoading(true);
+        setError('');
+        
+        try {
+            const formData = new FormData();
+            formData.append('name', placementData.name);
+            formData.append('email', placementData.email);
+            formData.append('phone', placementData.phone);
+            formData.append('password', placementData.password);
+            formData.append('confirmPassword', placementData.confirmPassword);
+            if (placementData.studentData) {
+                formData.append('studentData', placementData.studentData);
+            }
+            
+            const response = await fetch('http://localhost:5000/api/placement/register', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                alert('Registration successful! Please login.');
+                setPlacementData({ name: '', email: '', phone: '', password: '', confirmPassword: '', studentData: null });
+            } else {
+                setError(data.message || 'Registration failed');
+            }
+        } catch (error) {
+            setError('Registration failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
 			<>
 				<div
@@ -187,6 +256,18 @@ function SignUpPopup() {
 											>
 												<i className="fas fa-building" />
 												Employer
+											</button>
+										</li>
+
+										<li className="nav-item" role="presentation">
+											<button
+												className="nav-link"
+												data-bs-toggle="tab"
+												data-bs-target="#sign-Placement"
+												type="button"
+											>
+												<i className="fas fa-graduation-cap" style={{color: 'white'}} />
+												Placement Officer
 											</button>
 										</li>
 									</ul>
@@ -418,6 +499,139 @@ function SignUpPopup() {
 															<label
 																className="form-check-label"
 																htmlFor="agree2"
+															>
+																I agree to the{" "}
+																<a href="#">Terms and conditions</a>
+															</label>
+															<p>
+																Already registered?
+																<button
+																	type="button"
+																	className="twm-backto-login"
+																	data-bs-target="#sign_up_popup2"
+																	data-bs-toggle="modal"
+																	data-bs-dismiss="modal"
+																>
+																	Sign in
+																</button>
+															</p>
+														</div>
+													</div>
+												</div>
+
+												<div className="col-md-12">
+													<button type="submit" className="site-button" disabled={loading || passwordError}>
+														{loading ? 'Signing Up...' : 'Sign Up'}
+													</button>
+												</div>
+											</div>
+											</form>
+										</div>
+
+										<div className="tab-pane fade" id="sign-Placement">
+											<form onSubmit={handlePlacementSubmit}>
+											<div className="row">
+												{error && (
+													<div className="col-12">
+														<div className="alert alert-danger">{error}</div>
+													</div>
+												)}
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="name"
+															type="text"
+															className="form-control"
+															placeholder="Name*"
+															value={placementData.name}
+															onChange={handlePlacementChange}
+															required
+														/>
+													</div>
+												</div>
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="email"
+															type="email"
+															className="form-control"
+															placeholder="Email*"
+															value={placementData.email}
+															onChange={handlePlacementChange}
+															required
+														/>
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="phone"
+															type="tel"
+															className="form-control"
+															placeholder="Phone Number*"
+															value={placementData.phone}
+															onChange={handlePlacementChange}
+															required
+														/>
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="password"
+															type="password"
+															className="form-control"
+															placeholder="Password*"
+															value={placementData.password}
+															onChange={handlePlacementChange}
+															required
+														/>
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<input
+															name="confirmPassword"
+															type="password"
+															className="form-control"
+															placeholder="Confirm Password*"
+															value={placementData.confirmPassword}
+															onChange={handlePlacementChange}
+															required
+														/>
+														{passwordError && <small className="text-danger">{passwordError}</small>}
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<label className="form-label">Upload Student Data (Excel/CSV)</label>
+														<input
+															name="studentData"
+															type="file"
+															className="form-control"
+															accept=".xlsx,.xls,.csv"
+															onChange={handlePlacementChange}
+														/>
+														<small className="text-muted">Optional: Upload Excel or CSV file with student data</small>
+													</div>
+												</div>
+
+												<div className="col-lg-12">
+													<div className="form-group mb-3">
+														<div className=" form-check">
+															<input
+																type="checkbox"
+																className="form-check-input"
+																id="agree3"
+																required
+															/>
+															<label
+																className="form-check-label"
+																htmlFor="agree3"
 															>
 																I agree to the{" "}
 																<a href="#">Terms and conditions</a>

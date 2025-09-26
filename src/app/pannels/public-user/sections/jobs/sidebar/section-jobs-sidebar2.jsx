@@ -116,76 +116,7 @@ function SectionJobsSidebar2 ({ _config, job }) {
 					</div>
 				</div>
 
-				{_config.showJobInfo && (
-					<div className="twm-s-info3-wrap mb-5">
-						<div className="twm-s-info3">
-							<div className="twm-s-info-logo-section">
-								<div className="twm-media">
-									{job?.employerProfile?.logo ? (
-										<img src={job.employerProfile.logo.startsWith('data:') ? job.employerProfile.logo : `data:image/jpeg;base64,${job.employerProfile.logo}`} alt="Company Logo" />
-									) : (
-										<JobZImage src="images/jobs-company/pic1.jpg" alt="#" />
-									)}
-								</div>
-								<h4 className="twm-title">{job?.employerId?.companyName || 'Company Name'}</h4>
-							</div>
 
-							<ul>
-								<li>
-									<div className="twm-s-info-inner">
-										<i className="fas fa-building" />
-										<span className="twm-title">Company</span>
-										<div className="twm-s-info-discription">
-											{job?.employerProfile?.industrySector || job?.employerProfile?.companyType || 'Not specified'}
-										</div>
-									</div>
-								</li>
-
-								{/* <li>
-									<div className="twm-s-info-inner">
-										<i className="fas fa-mobile-alt" />
-										<span className="twm-title">Phone</span>
-										<div className="twm-s-info-discription">+91 9876543210</div>
-									</div>
-								</li> */}
-
-								<li>
-									<div className="twm-s-info-inner">
-										<i className="fas fa-at" />
-										<span className="twm-title">Email</span>
-										<div className="twm-s-info-discription">
-											{job?.employerId?.email || job?.employerProfile?.email || 'Not available'}
-										</div>
-									</div>
-								</li>
-
-								<li>
-									<div className="twm-s-info-inner">
-										<i className="fas fa-desktop" />
-										<span className="twm-title">Website</span>
-										<div className="twm-s-info-discription">
-											{job?.employerProfile?.website || 'Not available'}
-										</div>
-									</div>
-								</li>
-
-								<li>
-									<div className="twm-s-info-inner">
-										<i className="fas fa-map-marker-alt" />
-										<span className="twm-title">Address</span>
-										<div className="twm-s-info-discription">
-											{job?.employerProfile?.corporateAddress || job?.employerProfile?.location || 'Not available'}
-										</div>
-									</div>
-								</li>
-							</ul>
-
-							<NavLink to={`/emp-detail/${job?.employerId?._id}`} className=" site-button">
-								View Profile
-							</NavLink>
-						</div>
-					</div>
-				)}
 
 				{/* <SectionSideAdvert /> */}
 			</>

@@ -62,6 +62,15 @@ router.delete('/contacts/:contactId', adminController.deleteContactForm);
 // Applications Routes
 router.get('/applications', adminController.getApplications);
 
+// Placement Management Routes
+router.get('/placements', adminController.getAllPlacements);
+router.get('/placements/:id', adminController.getPlacementDetails);
+router.put('/placements/:id/status', adminController.updatePlacementStatus);
+router.post('/placements/:id/process', require('../controllers/placementController').processPlacementApproval);
+router.get('/placements/:id/download', adminController.downloadPlacementFile);
+router.get('/placements/:id/data', require('../controllers/placementController').getPlacementData);
+router.put('/placements/:id/credits', adminController.assignPlacementCredits);
+
 // Site Settings Routes
 router.get('/settings', adminController.getSettings);
 router.put('/settings', upload.fields([

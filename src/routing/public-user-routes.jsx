@@ -24,7 +24,6 @@ import ContactUsPage from "../app/pannels/public-user/components/pages/contact-u
 import UnderMaintenancePage from "../app/pannels/public-user/components/pages/under-maintenance";
 import ComingSoonPage from "../app/pannels/public-user/components/pages/coming-soon";
 import LoginPage from "../app/pannels/public-user/components/pages/login";
-import AfterLoginPage from "../app/pannels/public-user/components/pages/after-login";
 import IconsPage from "../app/pannels/public-user/components/pages/icons";
 
 import CandidateGridPage from "../app/pannels/public-user/components/candidates/can-grid";
@@ -66,7 +65,6 @@ function PublicUserRoutes() {
             <Route path={publicUser.pages.COMING} element={<ComingSoonPage />} />
             <Route path={publicUser.pages.LOGIN} element={<LoginPage />} />
             <Route path={publicUser.pages.ADMIN_LOGIN} element={<AdminLogin />} />
-            <Route path={publicUser.pages.AFTER_LOGIN} element={<AfterLoginPage />} />
             <Route path={publicUser.pages.FORGOT} element={<ForgotPassword/>} />
             <Route path={publicUser.pages.ICONS} element={<IconsPage />} />
             <Route path={publicUser.candidate.GRID} element={<CandidateGridPage />} />

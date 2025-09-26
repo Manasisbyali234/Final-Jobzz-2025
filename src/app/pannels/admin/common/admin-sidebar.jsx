@@ -50,6 +50,23 @@ function AdminSidebarSection(props) {
                                 <span className="admin-nav-text">Registered Candidates</span>
                             </NavLink>
                         </li>
+
+                        <li
+                            className={
+                                setMenuActive(currentpath, adminRoute(admin.PLACEMENT_MANAGE)) +
+                                setMenuActive(currentpath, adminRoute(admin.PLACEMENT_APPROVE)) +
+                                setMenuActive(currentpath, adminRoute(admin.PLACEMENT_REJECT))
+                            }>
+                            <a href="#">
+                                <i className="fa fa-graduation-cap" />
+                                <span className="admin-nav-text">Placement Officers</span>
+                            </a>
+                            <ul className="sub-menu">
+                                <li><NavLink to={adminRoute(admin.PLACEMENT_MANAGE)}><span className="admin-nav-text">All Submissions</span></NavLink></li>
+                                <li><NavLink to={adminRoute(admin.PLACEMENT_APPROVE)}><span className="admin-nav-text">Approved</span></NavLink></li>
+                                <li><NavLink to={adminRoute(admin.PLACEMENT_REJECT)}><span className="admin-nav-text">Rejected</span></NavLink></li>
+                            </ul>
+                        </li>
     
                         <li>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#logout-dash-profile">

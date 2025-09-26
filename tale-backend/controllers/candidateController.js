@@ -42,11 +42,29 @@ exports.registerCandidate = async (req, res) => {
 exports.loginCandidate = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt for:', email);
 
     const candidate = await Candidate.findOne({ email });
-    if (!candidate || !(await candidate.comparePassword(password))) {
+    if (!candidate) {
+      console.log('Candidate not found:', email);
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
+
+    console.log('Candidate found:', candidate.name, 'Status:', candidate.status);
+    console.log('Password hash exists:', !!candidate.password);
+    
+    console.log('Candidate registration method:', candidate.registrationMethod);
+    console.log('Stored password:', candidate.password);
+    console.log('Login password:', password);
+    const passwordMatch = await candidate.comparePassword(password);
+    console.log('Password match:', passwordMatch);
+    
+    if (!passwordMatch) {
+      console.log('Password mismatch for:', email);
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+    
+    console.log('Login successful for:', email);
 
     if (candidate.status !== 'active') {
       return res.status(401).json({ success: false, message: 'Account is inactive' });
@@ -60,10 +78,12 @@ exports.loginCandidate = async (req, res) => {
       candidate: {
         id: candidate._id,
         name: candidate.name,
-        email: candidate.email
+        email: candidate.email,
+        credits: candidate.credits || 0
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -217,6 +237,20 @@ exports.applyForJob = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Already applied to this job' });
     }
 
+    // Get full candidate data to check credits
+    const candidate = await Candidate.findById(req.user._id);
+    console.log('Candidate applying for job:', candidate.email, 'Credits:', candidate.credits);
+    
+    if (!candidate) {
+      return res.status(404).json({ success: false, message: 'Candidate not found' });
+    }
+
+    // Check if candidate has credits
+    if (candidate.credits <= 0) {
+      console.log('Application blocked - insufficient credits');
+      return res.status(400).json({ success: false, message: 'Insufficient credits to apply for jobs' });
+    }
+
     const profile = await CandidateProfile.findOne({ candidateId: req.user._id });
     
     const application = await Application.create({
@@ -226,6 +260,18 @@ exports.applyForJob = async (req, res) => {
       coverLetter,
       resume: profile?.resume
     });
+
+    // Deduct credit for all candidates
+    console.log('About to deduct credit. Current credits:', candidate.credits);
+    if (candidate.credits > 0) {
+      const updateResult = await Candidate.findByIdAndUpdate(req.user._id, {
+        $inc: { credits: -1 }
+      });
+      console.log(`Successfully deducted 1 credit from candidate ${candidate.email}. Previous: ${candidate.credits}, New: ${candidate.credits - 1}`);
+      console.log('Update result:', updateResult ? 'Success' : 'Failed');
+    } else {
+      console.log('No credits to deduct');
+    }
 
     // Update job application count
     await Job.findByIdAndUpdate(jobId, { $inc: { applicationCount: 1 } });
@@ -465,7 +511,10 @@ exports.getDashboard = async (req, res) => {
       success: true,
       stats: { applied, inProgress, shortlisted },
       recentApplications,
-      candidate: { name: req.user.name }
+      candidate: { 
+        name: req.user.name,
+        credits: req.user.credits || 0
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -480,10 +529,25 @@ exports.getDashboardStats = async (req, res) => {
     const inProgress = await Application.countDocuments({ candidateId, status: { $in: ['pending', 'interviewed'] } });
     const shortlisted = await Application.countDocuments({ candidateId, status: 'shortlisted' });
     
+    // Get fresh candidate data with credits
+    const candidate = await Candidate.findById(candidateId).select('name email credits registrationMethod placementId');
+    
+    console.log('Dashboard candidate data:', {
+      name: candidate.name,
+      credits: candidate.credits,
+      registrationMethod: candidate.registrationMethod,
+      placementId: candidate.placementId
+    });
+    
     res.json({
       success: true,
       stats: { applied, inProgress, shortlisted },
-      candidate: { name: req.user.name }
+      candidate: { 
+        name: candidate.name,
+        credits: candidate.credits || 0,
+        registrationMethod: candidate.registrationMethod || 'signup',
+        placementId: candidate.placementId
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -28,7 +28,10 @@ const base64ToBuffer = (base64String) => {
     'image/gif': 'gif',
     'application/pdf': 'pdf',
     'application/msword': 'doc',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx'
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.ms-excel': 'xls',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+    'text/csv': 'csv'
   };
 
   const extension = extensionMap[mimeType] || 'bin';
